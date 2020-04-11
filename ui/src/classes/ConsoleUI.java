@@ -20,6 +20,7 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public void showOutput(String outputMsg) {
+
         System.out.println(outputMsg);
     }
 
@@ -31,8 +32,8 @@ public class ConsoleUI implements UIHandler {
         do {
             showOptions();
             String chosenAction = getInput();
-
             RequestType requestType = getRequestType(chosenAction);
+
             if (requestType != RequestType.INVALID) {
                 requestIsValid = true;
                 request = createRelevantRequest(requestType);
@@ -45,21 +46,65 @@ public class ConsoleUI implements UIHandler {
 
     private UserRequest createRelevantRequest(RequestType reqType){
         UserRequest userRequest = null;
+
         switch (reqType){
+            case LOAD_XML_FILE:
+                userRequest = loadXMLFile();
+                break;
+            case NEW_TREMP:
+                userRequest = getRequestForNewTremp();
+                break;
+            case NEW_RIDE:
+                userRequest = getRequestForNewRide();
+                break;
+            case GET_STATUS_OF_RIDES:
+                userRequest = getRequestForStatusOfRides();
+                break;
+            case GET_STATUS_OF_TREMPS:
+                userRequest = getRequestForStatusOfTremps();
+                break;
+            case MATCH_TREMP_TO_RIDE:
+                userRequest = getRequestForMatchTrempToRide();
+                break;
             case EXIT:
                 userRequest = getRequestForExit();
+                break;
+            case INVALID:
+                userRequest = getInvalidReques();
                 break;
         }
 
         return userRequest;
     }
 
-    private RequestType getRequestType(String chosenRequest){
-        //TODO: add function 'TryParse(string)' to RequestType class
-        return RequestType.NEW_RIDE;
+    private UserRequest getInvalidReques() {
+
+        return null;
     }
-    private UserRequest getRequestForExit(){
-        return new ExitRequest();
+
+    private UserRequest loadXMLFile() {
+
+        return null;
+    }
+
+    private UserRequest getRequestForMatchTrempToRide() {
+
+        return null;
+    }
+
+    private UserRequest getRequestForStatusOfTremps() {
+
+        return null;
+    }
+
+    private UserRequest getRequestForStatusOfRides() {
+
+        return null;
+    }
+
+    private UserRequest getRequestForNewTremp() {
+
+        return null;
     }
 
     private NewRideRequest getRequestForNewRide(){
@@ -74,8 +119,19 @@ public class ConsoleUI implements UIHandler {
         showOutput("What your name?");
         req.name = getInput();
 
-
         return req;
-
     }
+
+
+    private RequestType getRequestType(String chosenRequest){
+
+        return RequestType.valueOf(chosenRequest);
+    }
+
+    private UserRequest getRequestForExit(){
+
+        return new ExitRequest();
+    }
+
+
 }

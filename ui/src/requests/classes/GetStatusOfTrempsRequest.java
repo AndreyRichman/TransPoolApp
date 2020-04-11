@@ -3,7 +3,7 @@ package requests.classes;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
-public class TrempsStatusRequest implements UserRequest {
+public class GetStatusOfTrempsRequest implements UserRequest {
 
     @Override
     public RequestType getRequestType() {

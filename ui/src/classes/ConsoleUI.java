@@ -1,11 +1,11 @@
 package classes;
 
 import interfaces.UIHandler;
-import requests.classes.ExitRequest;
-import requests.classes.LoadXMLRequest;
-import requests.classes.NewRideRequest;
+import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
+
+import java.util.Scanner;
 
 public class ConsoleUI implements UIHandler {
 
@@ -22,14 +22,16 @@ public class ConsoleUI implements UIHandler {
                 requestIsValid = true;
                 request = createRelevantRequest(requestType);
             }
-        }while (!requestIsValid);
+        }
+        while (!requestIsValid);
 
         return request;
     }
 
     @Override
     public void showOptions() {
-        String optionsScreen = "1. Load XML DB " +
+        String optionsScreen =
+                "1. Load XML File " +
                 "2. Ask for new tremp " +
                 "3. Show status of all avaible riders " +
                 "4. Show status of all avaible temp requsts" +
@@ -39,8 +41,9 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public String getInput() {
-
-        return null;
+        Scanner in = new Scanner(System.in);
+        String input = in.nextLine();
+        return input;
     }
 
     @Override
@@ -49,12 +52,17 @@ public class ConsoleUI implements UIHandler {
         System.out.println(outputMsg);
     }
 
+    private RequestType getRequestType(String chosenRequest){
+
+        return RequestType.values()[Integer.parseInt(chosenRequest)];
+    }
+
     private UserRequest createRelevantRequest(RequestType reqType){
         UserRequest userRequest = null;
 
         switch (reqType){
             case LOAD_XML_FILE:
-                userRequest = loadXMLFile();
+                userRequest = new LoadXMLRequest("");
                 break;
             case NEW_TREMP:
                 userRequest = getRequestForNewTremp();
@@ -63,82 +71,46 @@ public class ConsoleUI implements UIHandler {
                 userRequest = getRequestForNewRide();
                 break;
             case GET_STATUS_OF_RIDES:
-                userRequest = getRequestForStatusOfRides();
+                userRequest = new GetStatusOfRidesRequest();
                 break;
             case GET_STATUS_OF_TREMPS:
-                userRequest = getRequestForStatusOfTremps();
+                userRequest = new GetStatusOfTrempsRequest();
                 break;
             case MATCH_TREMP_TO_RIDE:
-                userRequest = getRequestForMatchTrempToRide();
+                userRequest = new MatchTrempToRideRequest();
                 break;
             case EXIT:
-                userRequest = getRequestForExit();
+                userRequest = new ExitRequest();
                 break;
             case INVALID:
-                userRequest = getInvalidReques();
+                userRequest = new InvalidRequest();
                 break;
         }
 
         return userRequest;
     }
 
-    private UserRequest getInvalidReques() {
-
-        return null;
-    }
-
-    private UserRequest loadXMLFile() {
-
-        return null;
-    }
-
-    private UserRequest getRequestForMatchTrempToRide() {
-
-        return null;
-    }
-
-    private UserRequest getRequestForStatusOfTremps() {
-
-        return null;
-    }
-
-    private UserRequest getRequestForStatusOfRides() {
-
-        return null;
-    }
-
     private UserRequest getRequestForNewTremp() {
+        NewTrempRequest req = new NewTrempRequest();
 
-        return null;
-    }
+        showOutput("What your name?");
+        req.name(getInput());
 
-    private UserRequest getRequestForExit(){
+        showOutput("what is your origen Station?");
+        req.from(getInput());
 
-        return new ExitRequest();
+        showOutput("What is your destanation Station?");
+        req.to(getInput());
+
+        showOutput("departure time?");
+        req.deptTime(getInput());
+
+        return req;
     }
 
     private NewRideRequest getRequestForNewRide(){
         NewRideRequest req = new NewRideRequest();
 
-        showOutput("From Which Station?");
-        req.from = getInput();
-
-        showOutput("To Which Station?");
-        req.to = getInput();
-
-        showOutput("What your name?");
-        req.name = getInput();
-
         return req;
     }
-
-
-    private RequestType getRequestType(String chosenRequest){
-
-        return RequestType.valueOf(chosenRequest);
-    }
-
-
-
-
 }

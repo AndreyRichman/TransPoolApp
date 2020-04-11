@@ -17,4 +17,10 @@ public class LoadXMLRequest implements UserRequest {
 
         fileDirectory = directoryToFile;
     }
+
+    public String getFileDirectory()
+    {
+
+        return fileDirectory;
+    }
 }

@@ -6,10 +6,12 @@ public class Ride {
     private int id;
 
     public Ride() {
+
         this.id = unique_id++;
     }
 
     public int getID(){
+
         return this.id;
     }
 }

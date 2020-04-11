@@ -8,7 +8,7 @@ import requests.interfaces.UserRequest;
 
 public class App {
     UIHandler uiHandler;
-//    LogicHandler logicHandler;
+    LogicHandler logicHandler;
     Boolean exit;
 
     public App() {
@@ -29,24 +29,48 @@ public class App {
         RequestType requestType = req.getRequestType();
 
         switch (requestType){
+            case LOAD_XML_FILE:
+                logicHandler.loadXMLFile("");
+                break;
+            case NEW_TREMP:
+                addNewTremp(req);
+                break;
+            case NEW_RIDE:
+                addNewRide(req);
+                break;
+            case GET_STATUS_OF_RIDES:
+
+                break;
+            case GET_STATUS_OF_TREMPS:
+
+                break;
+            case MATCH_TREMP_TO_RIDE:
+
+                break;
             case EXIT:
                 exitApp();
                 break;
-//            case NEW_RIDE:
-//                addNewRide((NewRideRequest)req);
-//                break;
-//            case GET_STATUS_OF_TREMPS:
-//                showAllStatusesOfTremps();
-//                break;
-//            case LOAD_XML_FILE:
-//                loadXMLFile( (LoadXMLRequest)req);
-//                break;
+            case INVALID:
 
+                break;
         }
+
     }
+
+    private void addNewRide(UserRequest req) {
+
+    }
+
+    private void addNewTremp(UserRequest req) {
+
+    }
+
     private void exitApp(){
+
         exit = true;
     }
+
+
 //    private void addNewRide(NewRideRequest req){
 //        Ride r = new Ride();
 //

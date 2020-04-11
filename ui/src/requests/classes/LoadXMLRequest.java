@@ -5,7 +5,7 @@ import requests.interfaces.UserRequest;
 
 public class LoadXMLRequest implements UserRequest {
 
-    public String fileDirectory = "C://Documents....";
+    private String fileDirectory = "C://Documents....";
 
     @Override
     public RequestType getRequestType() {

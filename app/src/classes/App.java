@@ -30,7 +30,7 @@ public class App {
 
         switch (requestType){
             case LOAD_XML_FILE:
-                logicHandler.loadXMLFile("");
+                logicHandler.loadXMLFile((((LoadXMLRequest)req).getFileDirectory());
                 break;
             case NEW_TREMP:
                 addNewTremp(req);

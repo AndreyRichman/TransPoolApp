@@ -1,8 +1,11 @@
 package interfaces;
 
+import requests.interfaces.UserRequest;
+
 public interface UIHandler {
 
-    public void showOptions();
-    public void ShowOutput(String outputMsg);
-    public String getInput();
+    void showOptions();
+    void showOutput(String outputMsg);
+    String getInput();
+    UserRequest getRequestFromUser();
 }

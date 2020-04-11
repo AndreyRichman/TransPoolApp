@@ -7,6 +7,7 @@ public class ExitRequest implements UserRequest {
 
     @Override
     public RequestType getRequestType() {
+
         return RequestType.EXIT;
     }
 }

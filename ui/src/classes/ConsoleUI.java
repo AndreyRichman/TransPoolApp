@@ -3,6 +3,7 @@ package classes;
 import interfaces.UIHandler;
 import requests.classes.ExitRequest;
 import requests.classes.LoadXMLRequest;
+import requests.classes.NewRideRequest;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
@@ -13,6 +14,7 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public String getInput() {
+
         return null;
     }
 
@@ -39,9 +41,6 @@ public class ConsoleUI implements UIHandler {
 
         return request;
 
-
-
-
     }
 
     private UserRequest createRelevantRequest(RequestType reqType){
@@ -62,18 +61,21 @@ public class ConsoleUI implements UIHandler {
     private UserRequest getRequestForExit(){
         return new ExitRequest();
     }
-//
-//    private NewRideRequest getRequestForNewRide(){
-//        NewRideRequest req = new NewRideRequest();
-//        showOutput("From Which Station?");
-//        req.from = getInput();
-//        showOutput("To Which Station?");
-//        req.to = getInput();
-//        showOutput("What your name?");
-//        req.name = getInput();
-//
 
-//        return req;
+    private NewRideRequest getRequestForNewRide(){
+        NewRideRequest req = new NewRideRequest();
 
-//    }
+        showOutput("From Which Station?");
+        req.from = getInput();
+
+        showOutput("To Which Station?");
+        req.to = getInput();
+
+        showOutput("What your name?");
+        req.name = getInput();
+
+
+        return req;
+
+    }
 }

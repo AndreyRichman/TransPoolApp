@@ -8,8 +8,33 @@ import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
 public class ConsoleUI implements UIHandler {
+
+    @Override
+    public UserRequest getRequestFromUser(){
+        UserRequest request = null;
+        boolean requestIsValid = false;
+
+        do {
+            showOptions();
+            String chosenAction = getInput();
+            RequestType requestType = getRequestType(chosenAction);
+            if (requestType != RequestType.INVALID) {
+                requestIsValid = true;
+                request = createRelevantRequest(requestType);
+            }
+        }while (!requestIsValid);
+
+        return request;
+    }
+
     @Override
     public void showOptions() {
+        String optionsScreen = "1. Load XML DB " +
+                "2. Ask for new tremp " +
+                "3. Show status of all avaible riders " +
+                "4. Show status of all avaible temp requsts" +
+                "5. Find a match " +
+                "6. Exit";
     }
 
     @Override
@@ -22,26 +47,6 @@ public class ConsoleUI implements UIHandler {
     public void showOutput(String outputMsg) {
 
         System.out.println(outputMsg);
-    }
-
-    @Override
-    public UserRequest getRequestFromUser(){
-        UserRequest request = null;
-        boolean requestIsValid = false;
-
-        do {
-            showOptions();
-            String chosenAction = getInput();
-            RequestType requestType = getRequestType(chosenAction);
-
-            if (requestType != RequestType.INVALID) {
-                requestIsValid = true;
-                request = createRelevantRequest(requestType);
-            }
-        }while (!requestIsValid);
-
-        return request;
-
     }
 
     private UserRequest createRelevantRequest(RequestType reqType){
@@ -107,6 +112,11 @@ public class ConsoleUI implements UIHandler {
         return null;
     }
 
+    private UserRequest getRequestForExit(){
+
+        return new ExitRequest();
+    }
+
     private NewRideRequest getRequestForNewRide(){
         NewRideRequest req = new NewRideRequest();
 
@@ -128,10 +138,7 @@ public class ConsoleUI implements UIHandler {
         return RequestType.valueOf(chosenRequest);
     }
 
-    private UserRequest getRequestForExit(){
 
-        return new ExitRequest();
-    }
 
 
 }

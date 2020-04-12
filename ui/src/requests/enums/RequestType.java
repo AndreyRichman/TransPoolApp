@@ -8,6 +8,7 @@ public enum RequestType {
     GET_STATUS_OF_TREMPS,
     MATCH_TREMP_TO_RIDE,
     EXIT,
-    INVALID
+    INVALID;
 
 }
+

@@ -58,6 +58,8 @@ public class App {
     }
 
     private void addNewRide(UserRequest req) {
+        Ride ride = new Ride();
+
 
     }
 

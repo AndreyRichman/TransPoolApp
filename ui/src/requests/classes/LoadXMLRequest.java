@@ -13,14 +13,12 @@ public class LoadXMLRequest implements UserRequest {
         return RequestType.LOAD_XML_FILE;
     }
 
-    public LoadXMLRequest(String directoryToFile){
-
-        fileDirectory = directoryToFile;
+    public void setFileDirectory(String fileDirectory) {
+        this.fileDirectory = fileDirectory;
     }
 
     public String getFileDirectory()
     {
-
         return fileDirectory;
     }
 }

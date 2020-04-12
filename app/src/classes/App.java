@@ -22,7 +22,7 @@ public class App {
         while(!exit) {
             UserRequest req = uiHandler.getRequestFromUser();
             processRequest(req);
-        };
+        }
     }
 
     private void processRequest(UserRequest req){
@@ -30,7 +30,7 @@ public class App {
 
         switch (requestType){
             case LOAD_XML_FILE:
-                logicHandler.loadXMLFile((((LoadXMLRequest)req).getFileDirectory());
+                logicHandler.loadXMLFile((((LoadXMLRequest)req).getFileDirectory()));
                 break;
             case NEW_TREMP:
                 addNewTremp(req);

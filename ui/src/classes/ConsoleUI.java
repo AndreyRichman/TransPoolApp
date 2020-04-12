@@ -5,9 +5,17 @@ import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUI implements UIHandler {
+
+    Scanner inputReader;
+
+    public ConsoleUI() {
+        this.inputReader = new Scanner(System.in);
+    }
 
     @Override
     public UserRequest getRequestFromUser(){
@@ -41,8 +49,7 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public String getInput() {
-        Scanner in = new Scanner(System.in);
-        String input = in.nextLine();
+        String input = this.inputReader.nextLine();
         return input;
     }
 
@@ -62,7 +69,7 @@ public class ConsoleUI implements UIHandler {
 
         switch (reqType){
             case LOAD_XML_FILE:
-                userRequest = new LoadXMLRequest("");
+                userRequest = new LoadXMLRequest();
                 break;
             case NEW_TREMP:
                 userRequest = getRequestForNewTremp();
@@ -82,9 +89,6 @@ public class ConsoleUI implements UIHandler {
             case EXIT:
                 userRequest = new ExitRequest();
                 break;
-            case INVALID:
-                userRequest = new InvalidRequest();
-                break;
         }
 
         return userRequest;
@@ -94,23 +98,26 @@ public class ConsoleUI implements UIHandler {
         NewTrempRequest req = new NewTrempRequest();
 
         showOutput("What your name?");
-        req.name(getInput());
+        String userName = getInput();
+        req.setUserName(userName);
 
         showOutput("what is your origen Station?");
-        req.from(getInput());
+        String stationFrom = getInput();
+        req.setFromStation(stationFrom);
 
         showOutput("What is your destanation Station?");
-        req.to(getInput());
+        String stationTo = getInput();
+        req.setToStation(stationTo);
 
         showOutput("departure time?");
-        req.deptTime(getInput());
+        String departureTime = getInput();
+        req.setDepartTime(departureTime);
 
         return req;
     }
 
     private NewRideRequest getRequestForNewRide(){
-        NewRideRequest req = new NewRideRequest();
 
-        return req;
+        return new NewRideRequest();
     }
 }

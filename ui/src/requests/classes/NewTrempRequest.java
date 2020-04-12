@@ -4,46 +4,54 @@ import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
 public class NewTrempRequest implements UserRequest {
-
-    private String name;
-    private String from;
-    private String to;
-    private String deptTime;
-
-    public String name() {
-        return name;
-    }
-
-    public void name(String name) {
-        this.name = name;
-    }
-
-    public String from() {
-        return from;
-    }
-
-    public void from(String from) {
-        this.from = from;
-    }
-
-    public String to() {
-        return to;
-    }
-
-    public void to(String to) {
-        this.to = to;
-    }
-
-    public String deptTime() {
-        return deptTime;
-    }
-
-    public void deptTime(String deptTime) {
-        this.deptTime = deptTime;
-    }
+    private String userName;
+    private String fromStation;
+    private String toStation;
+    private String departTime;
+    private String departDay;
 
     @Override
     public RequestType getRequestType() {
         return RequestType.NEW_TREMP;
+    }
+
+    public void setDepartDay(String departDay) {
+        this.departDay = departDay;
+    }
+
+    public void setDepartTime(String departTime) {
+        this.departTime = departTime;
+    }
+
+    public void setFromStation(String fromStation) {
+        this.fromStation = fromStation;
+    }
+
+    public void setToStation(String toStation) {
+        this.toStation = toStation;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getDepartDay() {
+        return departDay;
+    }
+
+    public String getDepartTime() {
+        return departTime;
+    }
+
+    public String getFromStation() {
+        return fromStation;
+    }
+
+    public String getToStation() {
+        return toStation;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

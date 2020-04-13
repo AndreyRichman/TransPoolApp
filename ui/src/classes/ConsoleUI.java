@@ -4,10 +4,9 @@ import interfaces.UIHandler;
 import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import static requests.enums.RequestType.*;
 
 public class ConsoleUI implements UIHandler {
 
@@ -26,25 +25,42 @@ public class ConsoleUI implements UIHandler {
             showOptions();
             String chosenAction = getInput();
             RequestType requestType = getRequestType(chosenAction);
-            if (requestType != RequestType.INVALID) {
-                requestIsValid = true;
-                request = createRelevantRequest(requestType);
-            }
+           if (requestType != RequestType.INVALID) {
+               requestIsValid = true;
+               request = createRelevantRequest(requestType);
+               //request = createRelevantRequestViaMapDIrecttly(chosenAction);
+               showOutput(request);
+          }
         }
         while (!requestIsValid);
 
         return request;
     }
+/*
+    private UserRequest createRelevantRequestViaMapDIrecttly(String chosenAction) {
 
+        Map<String, UserRequest> reqType = new HashMap<>();
+
+        reqType.put("1", new LoadXMLRequest());
+        reqType.put("2", getRequestForNewRide());
+        reqType.put("3", GetStatusOfRidesRequest::new);
+        reqType.put("4", GetStatusOfTrempsRequest::new);
+        reqType.put("5", MatchTrempToRideRequest::new);
+        reqType.put("6", ExitRequest::new);
+
+        return reqType.get(chosenAction);
+    }
+*/
     @Override
     public void showOptions() {
         String optionsScreen =
-                "1. Load XML File " +
-                "2. Ask for new tremp " +
-                "3. Show status of all avaible riders " +
-                "4. Show status of all avaible temp requsts" +
-                "5. Find a match " +
+                "1. Load XML File " + System.lineSeparator() +
+                "2. Ask for new tremp " + System.lineSeparator() +
+                "3. Show status of all avaible riders " + System.lineSeparator() +
+                "4. Show status of all avaible temp requsts" + System.lineSeparator() +
+                "5. Find a match " + System.lineSeparator() +
                 "6. Exit";
+        showOutput(optionsScreen);
     }
 
     @Override
@@ -54,14 +70,28 @@ public class ConsoleUI implements UIHandler {
     }
 
     @Override
-    public void showOutput(String outputMsg) {
-
+    public void showOutput(Object outputMsg) {
         System.out.println(outputMsg);
+    }
+
+    private Map<String, RequestType> createMapRequest()
+    {
+        Map<String, RequestType> reqType = new HashMap<>();
+        reqType.put("1",LOAD_XML_FILE);
+        reqType.put("2",NEW_TREMP);
+        reqType.put("3",GET_STATUS_OF_RIDES);
+        reqType.put("4",GET_STATUS_OF_TREMPS);
+        reqType.put("5",MATCH_TREMP_TO_RIDE);
+        reqType.put("6",EXIT);
+
+        return reqType;
     }
 
     private RequestType getRequestType(String chosenRequest){
 
-        return RequestType.values()[Integer.parseInt(chosenRequest)];
+        Map<String, RequestType> reqType = createMapRequest();
+
+        return reqType.get(chosenRequest);
     }
 
     private UserRequest createRelevantRequest(RequestType reqType){

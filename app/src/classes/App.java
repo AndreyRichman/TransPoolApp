@@ -30,7 +30,7 @@ public class App {
 
         switch (requestType){
             case LOAD_XML_FILE:
-                logicHandler.loadXMLFile((((LoadXMLRequest)req).getFileDirectory()));
+                //1logicHandler.loadXMLFile((((LoadXMLRequest)req).getFileDirectory()));
                 break;
             case NEW_TREMP:
                 addNewTremp(req);
@@ -50,9 +50,6 @@ public class App {
             case EXIT:
                 exitApp();
                 break;
-            case INVALID:
-
-                break;
         }
 
     }
@@ -68,7 +65,7 @@ public class App {
     }
 
     private void exitApp(){
-
+        uiHandler.showOutput("IM IN EXIT");
         exit = true;
     }
 

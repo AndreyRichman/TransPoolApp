@@ -65,7 +65,6 @@ public class App {
     }
 
     private void exitApp(){
-        uiHandler.showOutput("IM IN EXIT");
         exit = true;
     }
 

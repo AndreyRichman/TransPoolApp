@@ -65,8 +65,7 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public String getInput() {
-        String input = this.inputReader.nextLine();
-        return input;
+        return this.inputReader.nextLine();
     }
 
     @Override

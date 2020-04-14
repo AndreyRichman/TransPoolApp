@@ -6,6 +6,8 @@ import requests.classes.LoadXMLRequest;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
+import java.util.ArrayList;
+
 public class App {
     UIHandler uiHandler;
     LogicHandler logicHandler;
@@ -39,22 +41,33 @@ public class App {
                 addNewRide(req);
                 break;
             case GET_STATUS_OF_RIDES:
-
+                getStatusOfRides();
                 break;
             case GET_STATUS_OF_TREMPS:
-
+                getStatusOfTremps();
                 break;
             case MATCH_TREMP_TO_RIDE:
-
+                MatchTrempToRIde();
                 break;
             case EXIT:
                 exitApp();
                 break;
-            case INVALID:
-
-                break;
         }
 
+    }
+
+    private void MatchTrempToRIde() {
+
+    }
+
+    private ArrayList<Ride> getStatusOfRides() {
+
+        return null;
+    }
+
+    private ArrayList<Tremp> getStatusOfTremps() {
+
+        return null;
     }
 
     private void addNewRide(UserRequest req) {
@@ -71,39 +84,4 @@ public class App {
 
         exit = true;
     }
-
-
-//    private void addNewRide(NewRideRequest req){
-//        Ride r = new Ride();
-//
-//        r.from = req.from;
-//        r.to = req.to;
-//        r.userName = req.name;
-//
-//        logic.addNewRide(r);
-//    }
-//    private void loadXMLFile(LoadXMLRequest request){
-//        logic.loadXMLFile(request.fileDirectory);
-//    }
-
-//    //from, to
-//    {
-//        "from": "...",
-//        "to": "..."
-//    }
-//    request.type = CREATE_NEW
-//    //option2 -- dicitonary
-//    from = dict.get("from");
-//    to = dict.get("to");
-//
-//    //option3 -- class
-//    obj.
-//    from = obj.from;
-//    to = obj.to;
-
-//    private void showStatusOfAllRides(){
-//        List<Ride> rides = logic.getAllRides();
-//
-//        uiHandler.showOutput(output);
-//    }
 }

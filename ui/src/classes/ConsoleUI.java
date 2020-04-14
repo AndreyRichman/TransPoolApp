@@ -29,17 +29,23 @@ public class ConsoleUI implements UIHandler {
 
         do {
             showOptions();
-            String chosenAction = getInput();
-            RequestType requestType = getRequestType(chosenAction);
-            if (requestType != RequestType.INVALID) {
+            String chosenRequestNumSTR = getInput();
+
+            if (checkRequestIsValid(chosenRequestNumSTR)){
                 requestIsValid = true;
-                //request = createRelevantRequest(requestType);
-                request = getRelevantRequest(chosenAction);
+                request = getRelevantRequest(chosenRequestNumSTR);
+            }
+            else {
+                showErrorMessage();
             }
         }
         while (!requestIsValid);
 
         return request;
+    }
+
+    private void showErrorMessage(){
+        //TODO: print some error message
     }
 
     @Override
@@ -66,55 +72,51 @@ public class ConsoleUI implements UIHandler {
         System.out.println(outputMsg);
     }
 
-    private RequestType getRequestType(String chosenRequest){
-
-        return RequestType.values()[Integer.parseInt(chosenRequest)];
+    private boolean checkRequestIsValid(String chosenRequest){
+        //TODO: validation - check that input is in kyes of Map of functions
+        return true;
     }
 
 
     private UserRequest getRelevantRequest(String chosenRequest)
     {
-        Map<String,Pair <RequestType, Supplier<UserRequest>>> mapRequestToInt = new HashMap<>();
+        Map<String,Pair <RequestType, Supplier<UserRequest>>> stringNumToRequest = new HashMap<>();
 
-        mapRequestToInt.put("1",(new Pair <RequestType,Supplier<UserRequest>> (LOAD_XML_FILE,LoadXMLRequest::new)));
-        mapRequestToInt.put("2",(new Pair <RequestType,Supplier<UserRequest>> (NEW_TREMP, (Supplier<UserRequest>)getRequestForNewTremp())));
-        mapRequestToInt.put("3",(new Pair <RequestType,Supplier<UserRequest>> (GET_STATUS_OF_RIDES, GetStatusOfRidesRequest::new)));
-        mapRequestToInt.put("4",(new Pair <RequestType,Supplier<UserRequest>> (GET_STATUS_OF_TREMPS, GetStatusOfTrempsRequest::new)));
-        mapRequestToInt.put("5",(new Pair <RequestType,Supplier<UserRequest>> (MATCH_TREMP_TO_RIDE, MatchTrempToRideRequest::new)));
-        mapRequestToInt.put("6",(new Pair <RequestType,Supplier<UserRequest>> (EXIT, ExitRequest::new)));
+        stringNumToRequest.put("1",(new Pair <> (LOAD_XML_FILE,this::getLoadXMLRequest)));
+        stringNumToRequest.put("2",(new Pair <> (NEW_TREMP, this::getRequestForNewRide)));
+        stringNumToRequest.put("3",(new Pair <> (GET_STATUS_OF_RIDES, this::getStatusOfRidesRequest)));
+        stringNumToRequest.put("4",(new Pair <> (GET_STATUS_OF_TREMPS, this::getStatusOfTrempsRequest)));
+        stringNumToRequest.put("5",(new Pair <> (MATCH_TREMP_TO_RIDE, this::getMatchTrempToRideRequest)));
+        stringNumToRequest.put("6",(new Pair <> (EXIT, this::getExitRequest)));
 
-        return mapRequestToInt.get(chosenRequest).getValue().get();
+        return stringNumToRequest.get(chosenRequest).getValue().get();
     }
 
-    private UserRequest createRelevantRequest(RequestType reqType){
+    private ExitRequest getExitRequest(){
+        return new ExitRequest();
+    }
+    private UserRequest getMatchTrempToRideRequest(){
+        MatchTrempToRideRequest newRequest = new MatchTrempToRideRequest();
+        int trempID = 1;  //TODO: get from User
+        int rideID = 400; //TODO: get from User
+        newRequest.setTrempRequestID(trempID);
+        newRequest.setRideID(rideID);
 
-        UserRequest userRequest = null;
+        return newRequest;
+    }
+    private UserRequest getStatusOfTrempsRequest(){
+        return new GetStatusOfTrempsRequest();
+    }
+    private UserRequest getStatusOfRidesRequest(){
+        return new GetStatusOfRidesRequest();
+    }
 
-        switch (reqType){
-            case LOAD_XML_FILE:
-                userRequest = new LoadXMLRequest();
-                break;
-            case NEW_TREMP:
-                userRequest = getRequestForNewTremp();
-                break;
-            case NEW_RIDE:
-                userRequest = getRequestForNewRide();
-                break;
-            case GET_STATUS_OF_RIDES:
-                userRequest = new GetStatusOfRidesRequest();
-                break;
-            case GET_STATUS_OF_TREMPS:
-                userRequest = new GetStatusOfTrempsRequest();
-                break;
-            case MATCH_TREMP_TO_RIDE:
-                userRequest = new MatchTrempToRideRequest();
-                break;
-            case EXIT:
-                userRequest = new ExitRequest();
-                break;
-        }
+    private UserRequest getLoadXMLRequest(){
+        String fileDirectory = "C://....";
+        LoadXMLRequest newRequest = new LoadXMLRequest();
+        newRequest.setFileDirectory(fileDirectory);
 
-        return userRequest;
+        return newRequest;
     }
 
     private UserRequest getRequestForNewTremp() {
@@ -140,7 +142,6 @@ public class ConsoleUI implements UIHandler {
     }
 
     private NewRideRequest getRequestForNewRide(){
-
         return new NewRideRequest();
     }
 }

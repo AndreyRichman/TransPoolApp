@@ -10,16 +10,18 @@ import requests.interfaces.UserRequest;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static requests.enums.RequestType.*;
 
 public class ConsoleUI implements UIHandler {
 
     Scanner inputReader;
+    Map<String,Pair <String, Supplier<UserRequest>>> mapRequestToInt;
 
     public ConsoleUI() {
         this.inputReader = new Scanner(System.in);
-
+        mapRequestToInt = getEnumMap();
     }
 
     @Override
@@ -30,10 +32,8 @@ public class ConsoleUI implements UIHandler {
         do {
             showOptions();
             String chosenAction = getInput();
-            RequestType requestType = getRequestType(chosenAction);
-            if (requestType != RequestType.INVALID) {
-                requestIsValid = true;
-                //request = createRelevantRequest(requestType);
+            requestIsValid = checkRequestIsValid(chosenAction);
+            if (requestIsValid) {
                 request = getRelevantRequest(chosenAction);
             }
         }
@@ -44,15 +44,7 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public void showOptions() {
-        String optionsScreen =
-                "1. Load XML File " + System.lineSeparator() +
-                "2. Ask for new tremp " + System.lineSeparator() +
-                "3. Show status of all avaible riders " + System.lineSeparator() +
-                "4. Show status of all avaible temp requsts" + System.lineSeparator() +
-                "5. Find a match " + System.lineSeparator() +
-                "6. Exit";
-
-        showOutput(optionsScreen);
+        mapRequestToInt.forEach((k,v) -> System.out.println(v.getKey()));
     }
 
     @Override
@@ -62,59 +54,30 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public void showOutput(String outputMsg) {
-
         System.out.println(outputMsg);
     }
 
-    private RequestType getRequestType(String chosenRequest){
-
-        return RequestType.values()[Integer.parseInt(chosenRequest)];
+    private boolean checkRequestIsValid(String chosenRequest) {
+        return mapRequestToInt.containsKey(chosenRequest);
     }
 
+    private  Map<String,Pair <String, Supplier<UserRequest>>> getEnumMap(){
+
+        Map<String,Pair <String, Supplier<UserRequest>>> mapRequestToInt = new HashMap<>();
+
+        mapRequestToInt.put("1",(new Pair <> ("1. Load XML File ",LoadXMLRequest::new)));
+        mapRequestToInt.put("2",(new Pair <> ("2. Ask for new tremp ", this::getRequestForNewTremp)));
+        mapRequestToInt.put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
+        mapRequestToInt.put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
+        mapRequestToInt.put("5",(new Pair <> ("5. Find a match ", MatchTrempToRideRequest::new)));
+        mapRequestToInt.put("6",(new Pair <> ("6. Exit", ExitRequest::new)));
+
+        return mapRequestToInt;
+    }
 
     private UserRequest getRelevantRequest(String chosenRequest)
     {
-        Map<String,Pair <RequestType, Supplier<UserRequest>>> mapRequestToInt = new HashMap<>();
-
-        mapRequestToInt.put("1",(new Pair <RequestType,Supplier<UserRequest>> (LOAD_XML_FILE,LoadXMLRequest::new)));
-        mapRequestToInt.put("2",(new Pair <RequestType,Supplier<UserRequest>> (NEW_TREMP, (Supplier<UserRequest>)getRequestForNewTremp())));
-        mapRequestToInt.put("3",(new Pair <RequestType,Supplier<UserRequest>> (GET_STATUS_OF_RIDES, GetStatusOfRidesRequest::new)));
-        mapRequestToInt.put("4",(new Pair <RequestType,Supplier<UserRequest>> (GET_STATUS_OF_TREMPS, GetStatusOfTrempsRequest::new)));
-        mapRequestToInt.put("5",(new Pair <RequestType,Supplier<UserRequest>> (MATCH_TREMP_TO_RIDE, MatchTrempToRideRequest::new)));
-        mapRequestToInt.put("6",(new Pair <RequestType,Supplier<UserRequest>> (EXIT, ExitRequest::new)));
-
         return mapRequestToInt.get(chosenRequest).getValue().get();
-    }
-
-    private UserRequest createRelevantRequest(RequestType reqType){
-
-        UserRequest userRequest = null;
-
-        switch (reqType){
-            case LOAD_XML_FILE:
-                userRequest = new LoadXMLRequest();
-                break;
-            case NEW_TREMP:
-                userRequest = getRequestForNewTremp();
-                break;
-            case NEW_RIDE:
-                userRequest = getRequestForNewRide();
-                break;
-            case GET_STATUS_OF_RIDES:
-                userRequest = new GetStatusOfRidesRequest();
-                break;
-            case GET_STATUS_OF_TREMPS:
-                userRequest = new GetStatusOfTrempsRequest();
-                break;
-            case MATCH_TREMP_TO_RIDE:
-                userRequest = new MatchTrempToRideRequest();
-                break;
-            case EXIT:
-                userRequest = new ExitRequest();
-                break;
-        }
-
-        return userRequest;
     }
 
     private UserRequest getRequestForNewTremp() {

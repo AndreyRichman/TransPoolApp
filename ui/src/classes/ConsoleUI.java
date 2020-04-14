@@ -1,13 +1,17 @@
 package classes;
 
+import com.sun.javafx.collections.MappingChange;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import interfaces.UIHandler;
+import javafx.util.Pair;
 import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Supplier;
+
+import static requests.enums.RequestType.*;
 
 public class ConsoleUI implements UIHandler {
 
@@ -15,6 +19,7 @@ public class ConsoleUI implements UIHandler {
 
     public ConsoleUI() {
         this.inputReader = new Scanner(System.in);
+
     }
 
     @Override
@@ -28,7 +33,8 @@ public class ConsoleUI implements UIHandler {
             RequestType requestType = getRequestType(chosenAction);
             if (requestType != RequestType.INVALID) {
                 requestIsValid = true;
-                request = createRelevantRequest(requestType);
+                //request = createRelevantRequest(requestType);
+                request = getRelevantRequest(chosenAction);
             }
         }
         while (!requestIsValid);
@@ -39,18 +45,19 @@ public class ConsoleUI implements UIHandler {
     @Override
     public void showOptions() {
         String optionsScreen =
-                "1. Load XML File " +
-                "2. Ask for new tremp " +
-                "3. Show status of all avaible riders " +
-                "4. Show status of all avaible temp requsts" +
-                "5. Find a match " +
+                "1. Load XML File " + System.lineSeparator() +
+                "2. Ask for new tremp " + System.lineSeparator() +
+                "3. Show status of all avaible riders " + System.lineSeparator() +
+                "4. Show status of all avaible temp requsts" + System.lineSeparator() +
+                "5. Find a match " + System.lineSeparator() +
                 "6. Exit";
+
+        showOutput(optionsScreen);
     }
 
     @Override
     public String getInput() {
-        String input = this.inputReader.nextLine();
-        return input;
+        return this.inputReader.nextLine();
     }
 
     @Override
@@ -64,7 +71,23 @@ public class ConsoleUI implements UIHandler {
         return RequestType.values()[Integer.parseInt(chosenRequest)];
     }
 
+
+    private UserRequest getRelevantRequest(String chosenRequest)
+    {
+        Map<String,Pair <RequestType, Supplier<UserRequest>>> mapRequestToInt = new HashMap<>();
+
+        mapRequestToInt.put("1",(new Pair <RequestType,Supplier<UserRequest>> (LOAD_XML_FILE,LoadXMLRequest::new)));
+        mapRequestToInt.put("2",(new Pair <RequestType,Supplier<UserRequest>> (NEW_TREMP, (Supplier<UserRequest>)getRequestForNewTremp())));
+        mapRequestToInt.put("3",(new Pair <RequestType,Supplier<UserRequest>> (GET_STATUS_OF_RIDES, GetStatusOfRidesRequest::new)));
+        mapRequestToInt.put("4",(new Pair <RequestType,Supplier<UserRequest>> (GET_STATUS_OF_TREMPS, GetStatusOfTrempsRequest::new)));
+        mapRequestToInt.put("5",(new Pair <RequestType,Supplier<UserRequest>> (MATCH_TREMP_TO_RIDE, MatchTrempToRideRequest::new)));
+        mapRequestToInt.put("6",(new Pair <RequestType,Supplier<UserRequest>> (EXIT, ExitRequest::new)));
+
+        return mapRequestToInt.get(chosenRequest).getValue().get();
+    }
+
     private UserRequest createRelevantRequest(RequestType reqType){
+
         UserRequest userRequest = null;
 
         switch (reqType){

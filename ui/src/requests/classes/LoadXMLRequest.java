@@ -21,4 +21,9 @@ public class LoadXMLRequest implements UserRequest {
     {
         return fileDirectory;
     }
+
+    public LoadXMLRequest()
+    {
+        System.out.println("im in XML constractor");
+    }
 }

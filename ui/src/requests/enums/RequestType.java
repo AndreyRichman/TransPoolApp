@@ -1,5 +1,8 @@
 package requests.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum RequestType {
     LOAD_XML_FILE,
     NEW_TREMP,
@@ -9,6 +12,7 @@ public enum RequestType {
     MATCH_TREMP_TO_RIDE,
     EXIT,
     INVALID;
+
 
 }
 

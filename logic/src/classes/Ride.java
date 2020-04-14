@@ -1,9 +1,12 @@
 package classes;
 
+import java.util.List;
+
 public class Ride {
 
     private static int unique_id = 6000;
-    private int id;
+    private final int id;
+    private List<PartOfRide> parts;
 
     public Ride() {
 

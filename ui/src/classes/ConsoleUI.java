@@ -10,16 +10,18 @@ import requests.interfaces.UserRequest;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static requests.enums.RequestType.*;
 
 public class ConsoleUI implements UIHandler {
 
     Scanner inputReader;
+    Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest ;
 
     public ConsoleUI() {
         this.inputReader = new Scanner(System.in);
-
+        stringNumToRequest  = getEnumMap();
     }
 
     @Override
@@ -29,14 +31,10 @@ public class ConsoleUI implements UIHandler {
 
         do {
             showOptions();
-            String chosenRequestNumSTR = getInput();
-
-            if (checkRequestIsValid(chosenRequestNumSTR)){
-                requestIsValid = true;
-                request = getRelevantRequest(chosenRequestNumSTR);
-            }
-            else {
-                showErrorMessage();
+            String chosenAction = getInput();
+            requestIsValid = checkRequestIsValid(chosenAction);
+            if (requestIsValid) {
+                request = getRelevantRequest(chosenAction);
             }
         }
         while (!requestIsValid);
@@ -50,15 +48,7 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public void showOptions() {
-        String optionsScreen =
-                "1. Load XML File " + System.lineSeparator() +
-                "2. Ask for new tremp " + System.lineSeparator() +
-                "3. Show status of all avaible riders " + System.lineSeparator() +
-                "4. Show status of all avaible temp requsts" + System.lineSeparator() +
-                "5. Find a match " + System.lineSeparator() +
-                "6. Exit";
-
-        showOutput(optionsScreen);
+        stringNumToRequest .forEach((k,v) -> System.out.println(v.getKey()));
     }
 
     @Override
@@ -68,55 +58,30 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public void showOutput(String outputMsg) {
-
         System.out.println(outputMsg);
     }
 
-    private boolean checkRequestIsValid(String chosenRequest){
-        //TODO: validation - check that input is in kyes of Map of functions
-        return true;
+    private boolean checkRequestIsValid(String chosenRequest) {
+        return stringNumToRequest .containsKey(chosenRequest);
     }
 
+    private  Map<String,Pair <String, Supplier<UserRequest>>> getEnumMap(){
+
+        Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest  = new HashMap<>();
+
+        stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",LoadXMLRequest::new)));
+        stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", this::getRequestForNewTremp)));
+        stringNumToRequest .put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
+        stringNumToRequest .put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
+        stringNumToRequest .put("5",(new Pair <> ("5. Find a match ", MatchTrempToRideRequest::new)));
+        stringNumToRequest .put("6",(new Pair <> ("6. Exit", ExitRequest::new)));
+
+        return stringNumToRequest ;
+    }
 
     private UserRequest getRelevantRequest(String chosenRequest)
     {
-        Map<String,Pair <RequestType, Supplier<UserRequest>>> stringNumToRequest = new HashMap<>();
-
-        stringNumToRequest.put("1",(new Pair <> (LOAD_XML_FILE,this::getLoadXMLRequest)));
-        stringNumToRequest.put("2",(new Pair <> (NEW_TREMP, this::getRequestForNewRide)));
-        stringNumToRequest.put("3",(new Pair <> (GET_STATUS_OF_RIDES, this::getStatusOfRidesRequest)));
-        stringNumToRequest.put("4",(new Pair <> (GET_STATUS_OF_TREMPS, this::getStatusOfTrempsRequest)));
-        stringNumToRequest.put("5",(new Pair <> (MATCH_TREMP_TO_RIDE, this::getMatchTrempToRideRequest)));
-        stringNumToRequest.put("6",(new Pair <> (EXIT, this::getExitRequest)));
-
-        return stringNumToRequest.get(chosenRequest).getValue().get();
-    }
-
-    private ExitRequest getExitRequest(){
-        return new ExitRequest();
-    }
-    private UserRequest getMatchTrempToRideRequest(){
-        MatchTrempToRideRequest newRequest = new MatchTrempToRideRequest();
-        int trempID = 1;  //TODO: get from User
-        int rideID = 400; //TODO: get from User
-        newRequest.setTrempRequestID(trempID);
-        newRequest.setRideID(rideID);
-
-        return newRequest;
-    }
-    private UserRequest getStatusOfTrempsRequest(){
-        return new GetStatusOfTrempsRequest();
-    }
-    private UserRequest getStatusOfRidesRequest(){
-        return new GetStatusOfRidesRequest();
-    }
-
-    private UserRequest getLoadXMLRequest(){
-        String fileDirectory = "C://....";
-        LoadXMLRequest newRequest = new LoadXMLRequest();
-        newRequest.setFileDirectory(fileDirectory);
-
-        return newRequest;
+        return stringNumToRequest .get(chosenRequest).getValue().get();
     }
 
     private UserRequest getRequestForNewTremp() {
@@ -144,4 +109,31 @@ public class ConsoleUI implements UIHandler {
     private NewRideRequest getRequestForNewRide(){
         return new NewRideRequest();
     }
+    private ExitRequest getExitRequest(){
+        return new ExitRequest();
+    }
+    private UserRequest getMatchTrempToRideRequest(){
+        MatchTrempToRideRequest newRequest = new MatchTrempToRideRequest();
+        int trempID = 1;  //TODO: get from User
+        int rideID = 400; //TODO: get from User
+        newRequest.setTrempRequestID(trempID);
+        newRequest.setRideID(rideID);
+
+        return newRequest;
+    }
+    private UserRequest getStatusOfTrempsRequest(){
+        return new GetStatusOfTrempsRequest();
+    }
+    private UserRequest getStatusOfRidesRequest(){
+        return new GetStatusOfRidesRequest();
+    }
+
+    private UserRequest getLoadXMLRequest(){
+        String fileDirectory = "C://....";
+        LoadXMLRequest newRequest = new LoadXMLRequest();
+        newRequest.setFileDirectory(fileDirectory);
+
+        return newRequest;
+    }
+
 }

@@ -42,6 +42,10 @@ public class ConsoleUI implements UIHandler {
         return request;
     }
 
+    private void showErrorMessage(){
+        //TODO: print some error message
+    }
+
     @Override
     public void showOptions() {
         stringNumToRequest .forEach((k,v) -> System.out.println(v.getKey()));
@@ -103,7 +107,6 @@ public class ConsoleUI implements UIHandler {
     }
 
     private NewRideRequest getRequestForNewRide(){
-
         return new NewRideRequest();
     }
     private ExitRequest getExitRequest(){

@@ -8,4 +8,11 @@ public class Road {
     private int fuelCost;
     private int maxSpeed;
 
+    public Station getStartStation() {
+        return startStation;
+    }
+
+    public Station getEndStation() {
+        return endStation;
+    }
 }

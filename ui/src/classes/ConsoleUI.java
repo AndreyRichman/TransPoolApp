@@ -1,7 +1,5 @@
 package classes;
 
-import com.sun.javafx.collections.MappingChange;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import interfaces.UIHandler;
 import javafx.util.Pair;
 import requests.classes.*;

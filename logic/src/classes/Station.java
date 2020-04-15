@@ -1,10 +1,33 @@
 package classes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Station {
 
     private Coordinate coordinate;
     private String name;
 
+    private Map<Station, Road> stationsFromCurrent2Roads;
+    private Map<Station, Road> stationsToCurrent2Roads;
+
+    public Station(Coordinate coordinate, String name) {
+        this.coordinate = coordinate;
+        this.name = name;
+
+        this.stationsFromCurrent2Roads = new HashMap<>();
+        this.stationsToCurrent2Roads = new HashMap<>();
+    }
+
+    public void addRoadFromCurrentStation(Road road) {
+        // A , input:A->B :  A.roadsFrom += (B, A->B)   , B.roadTo += (A, A->B)
+        //TODO: add validation for start_station == current Station
+        //TODO: support two side road
+        Station thisStation = road.getStartStation();
+        Station targetStation = road.getEndStation();
+        this.stationsFromCurrent2Roads.put(targetStation, road);
+        targetStation.stationsToCurrent2Roads.put(thisStation, road);
+    }
 
     public String getName() {
         return name;

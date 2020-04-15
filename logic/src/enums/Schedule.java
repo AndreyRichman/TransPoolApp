@@ -1,11 +1,11 @@
 package enums;
 
 public enum Schedule {
-    NONE,
-    EVERYDAY,
-    EVERY2DAY,
-    EVERY7DAY,
-    EVERYMONTH;
+    SINGLE_TIME,
+    EVERY_DAY,
+    EVERY_2DAY,
+    EVERY_7DAY,
+    EVERY_MONTH;
 
     private int day;
     private int hour;

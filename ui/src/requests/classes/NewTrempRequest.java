@@ -9,10 +9,15 @@ public class NewTrempRequest implements UserRequest {
     private String toStation;
     private String departTime;
     private String departDay;
+    private boolean directOnly;
 
     @Override
     public RequestType getRequestType() {
         return RequestType.NEW_TREMP;
+    }
+
+    public void setDirectOnly(boolean directOnly) {
+        this.directOnly = directOnly;
     }
 
     public void setDepartDay(String departDay) {

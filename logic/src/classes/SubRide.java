@@ -4,4 +4,5 @@ public class SubRide {
 
     private Ride originalRide;
 
+
 }

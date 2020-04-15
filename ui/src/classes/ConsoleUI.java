@@ -1,6 +1,5 @@
 package classes;
 
-
 import interfaces.UIHandler;
 import javafx.util.Pair;
 import requests.classes.*;

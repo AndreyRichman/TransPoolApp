@@ -24,6 +24,18 @@ public class Ride {
         initStationsList(partsOfRide);
     }
 
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
+    public int getID(){
+        return this.id;
+    }
+
+    public User getRideOwner() {
+        return rideOwner;
+    }
+
     private void initStationsList(List<PartOfRide> partsOfRide){
         //using Set
 //        this.allStations = new LinkedHashSet<>(partsOfRide.size());
@@ -42,19 +54,5 @@ public class Ride {
         );
     }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-    }
-
-    public int getID(){
-        return this.id;
-    }
-
-    public User getRideOwner() {
-        return rideOwner;
-    }
-
-    public List<PartOfRide> getParts() {
-        return parts;
-    }
+    public List<PartOfRide> getParts() {return parts;}
 }

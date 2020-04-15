@@ -71,13 +71,12 @@ public class App {
     }
 
     private void addNewRide(UserRequest req) {
-        Ride ride = new Ride();
-
 
     }
 
     private void addNewTremp(UserRequest req) {
-
+        Tremp newTrempist = new Tremp();
+        //TODO: Need to display to user the avaible rides
     }
 
     private void exitApp(){

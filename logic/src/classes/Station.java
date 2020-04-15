@@ -9,7 +9,6 @@ public class Station {
 
     private Coordinate coordinate;
     private String name;
-
     private Map<Station, Road> stationsFromCurrent2Roads;
     private Map<Station, Road> stationsToCurrent2Roads;
 
@@ -21,6 +20,14 @@ public class Station {
 
         this.stationsFromCurrent2Roads = new HashMap<>();
         this.stationsToCurrent2Roads = new HashMap<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
     }
 
     public void addRoadFromCurrentStation(Road road) {
@@ -56,7 +63,5 @@ public class Station {
         return name;
     }
 
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
+
 }

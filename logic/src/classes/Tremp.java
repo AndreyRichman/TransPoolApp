@@ -42,10 +42,6 @@ public class Tremp {
         this.tremptistName = tremptistName;
     }
 
-    public static void setUnique_id(int unique_id) {
-        Tremp.unique_id = unique_id;
-    }
-
     public String getEndTimeOfRide() {
         return endTimeOfRide;
     }

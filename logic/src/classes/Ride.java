@@ -54,6 +54,5 @@ public class Ride {
         );
     }
 
-    public List<PartOfRide> getParts() {return parts;
-    }
+    public List<PartOfRide> getParts() {return parts;}
 }

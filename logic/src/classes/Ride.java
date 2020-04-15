@@ -17,11 +17,23 @@ public class Ride {
 
     public Ride(User rideOwner, List<PartOfRide> partsOfRide) {
         this.id = unique_id++;
-        this.rideOwner = rideOwner;
+        this.rideOwner=rideOwner;
         this.parts = partsOfRide;
         this.schedule = Schedule.SINGLE_TIME;
 
         initStationsList(partsOfRide);
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
+    public int getID(){
+        return this.id;
+    }
+
+    public User getRideOwner() {
+        return rideOwner;
     }
 
     private void initStationsList(List<PartOfRide> partsOfRide){
@@ -42,19 +54,8 @@ public class Ride {
         );
     }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-    }
 
-    public int getID(){
-        return this.id;
-    }
 
-    public User getRideOwner() {
-        return rideOwner;
-    }
-
-    public List<PartOfRide> getParts() {
-        return parts;
+    public List<PartOfRide> getParts() {return parts;
     }
 }

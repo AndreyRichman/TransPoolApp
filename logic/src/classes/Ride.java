@@ -17,7 +17,7 @@ public class Ride {
 
     public Ride(User rideOwner, List<PartOfRide> partsOfRide) {
         this.id = unique_id++;
-        this.rideOwner=rideOwner;
+        this.rideOwner = rideOwner;
         this.parts = partsOfRide;
         this.schedule = Schedule.SINGLE_TIME;
 

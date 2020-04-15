@@ -76,7 +76,6 @@ public class App {
 
     private void addNewTremp(UserRequest req) {
         Tremp newTrempist = new Tremp();
-        newTrempist.
         //TODO: Need to display to user the avaible rides
     }
 

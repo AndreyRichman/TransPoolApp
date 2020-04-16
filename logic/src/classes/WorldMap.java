@@ -31,7 +31,7 @@ public class WorldMap {
 
     private void validateStation(Station station) throws InstanceAlreadyExistsException{
 
-        if (!coordinateInBoundaries(station.getCoordinate())) {
+        if (!validateCoordinate(station.getCoordinate())) {
             throw new IndexOutOfBoundsException(station.getCoordinate().toString());
         }
 
@@ -55,7 +55,7 @@ public class WorldMap {
         }
     }
 
-    private boolean coordinateInBoundaries(Coordinate coord){
+    private boolean validateCoordinate(Coordinate coord){
         return 0 <= coord.getX() &&
                 coord.getX() < this.width &&
                 0 <= coord.getY() &&

@@ -23,6 +23,12 @@ public class WorldMap {
         validateStation(station);
         this.allStations.add(station);
     }
+
+    public void addNewRoad(Road road) throws InstanceAlreadyExistsException, InstanceNotFoundException{
+        validateRoad(road);
+        this.allRoads.add(road);
+    }
+
     private void validateStation(Station station) throws InstanceAlreadyExistsException{
 
         if (!coordinateInBoundaries(station.getCoordinate())) {
@@ -34,19 +40,7 @@ public class WorldMap {
         }
     }
 
-    private boolean coordinateInBoundaries(Coordinate coord){
-        return 0 <= coord.getX() &&
-                coord.getX() < this.width &&
-                0 <= coord.getY() &&
-                coord.getY() < this.height;
-    }
-
-    public void addNewRoad(Road road) throws InstanceAlreadyExistsException, InstanceNotFoundException{
-        validateNewRoad(road);
-        this.allRoads.add(road);
-    }
-
-    private void validateNewRoad(Road road) throws InstanceAlreadyExistsException, InstanceNotFoundException{
+    private void validateRoad(Road road) throws InstanceAlreadyExistsException, InstanceNotFoundException{
         Station start = road.getStartStation();
         Station end = road.getEndStation();
 
@@ -59,6 +53,12 @@ public class WorldMap {
         if (!this.allStations.contains(end)) {
             throw new InstanceNotFoundException(end.toString());
         }
+    }
 
+    private boolean coordinateInBoundaries(Coordinate coord){
+        return 0 <= coord.getX() &&
+                coord.getX() < this.width &&
+                0 <= coord.getY() &&
+                coord.getY() < this.height;
     }
 }

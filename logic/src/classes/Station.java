@@ -1,7 +1,9 @@
 package classes;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Station {
 
@@ -9,6 +11,8 @@ public class Station {
     private String name;
     private Map<Station, Road> stationsFromCurrent2Roads;
     private Map<Station, Road> stationsToCurrent2Roads;
+
+    private Set<Station> allStationReachableFromThisStation = null;
 
     public Station(Coordinate coordinate, String name) {
         this.coordinate = coordinate;
@@ -34,6 +38,29 @@ public class Station {
         Station targetStation = road.getEndStation();
         this.stationsFromCurrent2Roads.put(targetStation, road);
         targetStation.stationsToCurrent2Roads.put(thisStation, road);
+    }
+
+    private Set<Station> getAllReachableStations(){
+        Set<Station> allReachableStation = new HashSet<>(this.stationsFromCurrent2Roads.keySet());
+        this.stationsFromCurrent2Roads.keySet().forEach((s)-> allReachableStation.addAll(s.getAllReachableStations()));
+
+        return allReachableStation;
+    }
+
+    private void loadAllReachableStations(){
+        this.allStationReachableFromThisStation = this.getAllReachableStations();
+    }
+
+    public Boolean canReachStation(Station otherStation){
+        if (this.allStationReachableFromThisStation == null){
+            loadAllReachableStations();
+        }
+
+        return this.allStationReachableFromThisStation.contains(otherStation);
+    }
+
+    public String getName() {
+        return name;
     }
 
 

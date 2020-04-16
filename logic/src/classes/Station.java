@@ -59,9 +59,4 @@ public class Station {
         return this.allStationReachableFromThisStation.contains(otherStation);
     }
 
-    public String getName() {
-        return name;
-    }
-
-
 }

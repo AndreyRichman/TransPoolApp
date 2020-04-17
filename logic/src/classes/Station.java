@@ -23,6 +23,10 @@ public class Station {
         this.stationsToCurrent2Roads = new HashMap<>();
     }
 
+    public Road getRoadToStation(Station station){
+        return stationsFromCurrent2Roads.get(station);
+    }
+
     public void addRoadFromCurrentStation(Road road) {
         // A , input:A->B :  A.roadsFrom += (B, A->B)   , B.roadTo += (A, A->B)
         //TODO: add validation for start_station == current Station
@@ -52,9 +56,6 @@ public class Station {
         return this.allStationReachableFromThisStation.contains(otherStation);
     }
 
-    public String getName() {
-        return name;
-    }
 
     public Coordinate getCoordinate() {
         return coordinate;

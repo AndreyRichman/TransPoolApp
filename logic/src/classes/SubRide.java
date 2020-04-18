@@ -1,11 +1,22 @@
 package classes;
 
-import java.util.ArrayList;
 
-public class SubRide {
+import java.util.List;
 
-    private Ride originalRide;
-    private
-    ArrayList<PartOfRide> currSubRide;
+//public class SubRide {
+//
+//    private Ride originalRide;
+//    private final Station start;
+//    private final Station end;
+//    List<PartOfRide> relevantPartsOfRide;
+//
+//    public SubRide(Ride originalRide, Station start, Station end) {
+//        this.originalRide = originalRide;
+//        this.start = start;
+//        this.end = end;
+//        addRelevantPartsOfRide(originalRide.);
+//    }
+//
+//    private void addRelevantPartsOfRide()
+//}
 
-}

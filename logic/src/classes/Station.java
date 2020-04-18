@@ -22,12 +22,8 @@ public class Station {
         this.stationsToCurrent2Roads = new HashMap<>();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
+    public Road getRoadToStation(Station station){
+        return stationsFromCurrent2Roads.get(station);
     }
 
     public void addRoadFromCurrentStation(Road road) {
@@ -59,9 +55,6 @@ public class Station {
         return this.allStationReachableFromThisStation.contains(otherStation);
     }
 
-    public String getName() {
-        return name;
-    }
 
 
 }

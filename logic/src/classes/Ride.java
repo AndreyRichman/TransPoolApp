@@ -91,7 +91,8 @@ public class Ride {
 
     public void addTremp(Tremp tremp, Station startStation, Station endStation){
         SubRide subRide = new SubRide(startStation, endStation);
-
+      
+              initStationsList(partsOfRide);
     }
 
     public void setSchedule(Schedule schedule) {
@@ -106,7 +107,23 @@ public class Ride {
         return rideOwner;
     }
 
-    public List<PartOfRide> getParts() {
-        return parts;
+    private void initStationsList(List<PartOfRide> partsOfRide){
+        //using Set
+//        this.allStations = new LinkedHashSet<>(partsOfRide.size());
+//        partsOfRide.forEach((s) -> {
+//            allStations.add(s.getRoad().getStartStation());
+//            allStations.add(s.getRoad().getEndStation());
+//        });
+
+        //Using Array
+        allStations = new ArrayList<>();
+        allStations.add(partsOfRide.get(0).getRoad().getStartStation());
+        allStations.addAll(partsOfRide.stream()
+                .map(PartOfRide::getRoad)
+                .map(Road::getEndStation)
+                .collect(Collectors.toList())
+        );
     }
+
+    public List<PartOfRide> getParts() {return parts;}
 }

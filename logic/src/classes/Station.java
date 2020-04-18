@@ -9,7 +9,6 @@ public class Station {
 
     private Coordinate coordinate;
     private String name;
-
     private Map<Station, Road> stationsFromCurrent2Roads;
     private Map<Station, Road> stationsToCurrent2Roads;
 
@@ -57,7 +56,5 @@ public class Station {
     }
 
 
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
+
 }

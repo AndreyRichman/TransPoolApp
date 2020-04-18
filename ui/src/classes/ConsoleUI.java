@@ -82,20 +82,19 @@ public class ConsoleUI implements UIHandler {
         NewTrempRequest req = new NewTrempRequest();
 
         showOutput("What your name?");
-        String userName = getInput();
-        req.setUserName(userName);
+        req.setUserName(getInput());
 
         showOutput("what is your origen Station?");
-        String stationFrom = getInput();
-        req.setFromStation(stationFrom);
+        req.setFromStation(getInput());
 
         showOutput("What is your destanation Station?");
-        String stationTo = getInput();
-        req.setToStation(stationTo);
+        req.setToStation(getInput());
 
         showOutput("departure time?");
-        String departureTime = getInput();
-        req.setDepartTime(departureTime);
+        req.setDepartTime(getInput());
+
+        showOutput("Direct only rides? Y/N");
+        req.setDirectOnly((getInput().equalsIgnoreCase("Y")));
 
         return req;
     }

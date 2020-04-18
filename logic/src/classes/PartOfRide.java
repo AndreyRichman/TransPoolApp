@@ -27,8 +27,28 @@ public class PartOfRide {
         return trempists;
     }
 
+    public ArrayList<Tremp> getTrempists() {
+        return Trempists;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
     public Road getRoad() {
         return road;
     }
-
+  
+      public void setRoad(Road road) {
+        this.road = road;
+    }
+  
+      public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+  
+      public void setTrempists(ArrayList<Tremp> trempists) {
+        Trempists = trempists;
+    }
 }
+

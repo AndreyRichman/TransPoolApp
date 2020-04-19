@@ -1,9 +1,8 @@
 package classes;
 
 import enums.TrempPartType;
-
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class PartOfRide {
 
@@ -41,6 +40,6 @@ public class PartOfRide {
         this.capacity = capacity;
     }
   
-    }
 }
+
 

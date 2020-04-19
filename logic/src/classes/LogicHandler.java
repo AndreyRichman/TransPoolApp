@@ -12,6 +12,7 @@ public class LogicHandler {
     public LogicHandler() {
         rides = new ArrayList<>();
         tremps = new ArrayList<>();
+        map = new WorldMap();
     }
 
     public void loadXMLFile(String pathToFile){

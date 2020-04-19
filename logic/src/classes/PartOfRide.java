@@ -27,14 +27,6 @@ public class PartOfRide {
         return trempists;
     }
 
-    public ArrayList<Tremp> getTrempists() {
-        return Trempists;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
     public Road getRoad() {
         return road;
     }

@@ -56,5 +56,7 @@ public class Station {
     }
 
 
-
+    public Coordinate getCoordinate() {
+        return null;
+    }
 }

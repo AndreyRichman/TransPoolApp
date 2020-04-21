@@ -16,8 +16,8 @@ public class PartOfRide {
         this.trempists = new ArrayList<>();
     }
 
-    public void addTrempist(User user, TrempPartType partType){
-        trempists.add(new Trempist(user, partType));
+    public void addTrempist(Trempist user){
+        trempists.add(user);
     }
 
     public ArrayList<Trempist> getTrempists() {

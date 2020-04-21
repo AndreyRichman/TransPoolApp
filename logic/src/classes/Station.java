@@ -13,12 +13,12 @@ public class Station {
     private Map<Station, Road> stationsToCurrent;
     private Set<Station> allReachableStationFromThisStation;
 
-    public Station(Coordinate coordinate, String name) {
-        this.coordinate = coordinate;
-        this.name = name;
-        this.stationsFromCurrent = new HashMap<>();
-        this.stationsToCurrent = new HashMap<>();
-        this.allReachableStationFromThisStation =  new HashSet<>();
+    public Station(Coordinate sationCoordinate, String stationName) {
+        coordinate = sationCoordinate;
+        name = stationName;
+        stationsFromCurrent = new HashMap<>();
+        stationsToCurrent = new HashMap<>();
+        allReachableStationFromThisStation =  new HashSet<>();
     }
 
     public Road getRoadToStation(Station station){
@@ -32,32 +32,14 @@ public class Station {
         Station fromStation = road.getStartStation();
         Station totStation = road.getEndStation();
 
-        this.stationsFromCurrent.put(totStation, road);
-        this.allReachableStationFromThisStation.add(totStation);
+        stationsFromCurrent.put(totStation, road);
+        allReachableStationFromThisStation.add(totStation);
         totStation.stationsToCurrent.put(fromStation, road);
     }
 
     public Boolean canReachStation(Station station){
-        //if (this.allReachableStationFromThisStation == null){
-       //     loadAllReachableStations();
-       // }
-
-        return this.allReachableStationFromThisStation.contains(station);
+        return allReachableStationFromThisStation.contains(station);
     }
-
-    /*
-    private void loadAllReachableStations(){
-        this.allReachableStationFromThisStation = this.getAllReachableStations();
-    }
-
-    private Set<Station> getAllReachableStations(){
-        Set<Station> allReachableStation = new HashSet<>(this.stationsFromCurrent.keySet());
-        this.stationsFromCurrent.keySet().forEach((s)-> allReachableStation.addAll(s.getAllReachableStations()));
-
-        return allReachableStation;
-    }
-
- */
 
     public Coordinate getCoordinate() {
         return coordinate;

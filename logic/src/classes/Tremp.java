@@ -9,11 +9,11 @@ public class Tremp {
     private final int id;
     private Station startStation;
     private Station endStation;
-    private User trempistName;
+    private Trempist trempist;
     private String startTime;
     private String endTime;
     private boolean allowMultiRides;
-    private List<Ride.SubRide> subRides;
+    private List<SubRide> subRides;
 
     public Tremp(Station startStation, Station endStation) {
         this.id = unique_id++;
@@ -25,8 +25,8 @@ public class Tremp {
         return this.id;
     }
 
-    public User getTrempistName() {
-        return trempistName;
+    public Trempist getTrempistName() {
+        return trempist;
     }
 
     public Station getStartStation() {

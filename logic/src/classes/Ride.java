@@ -1,36 +1,36 @@
 package classes;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import enums.Schedule;
-
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class Ride {
 
     User rider;
-    Map<Road, PartOfRide> path;
+    LinkedList<PartOfRide> path;
     Schedule schedule;
 
     public Ride()
     {
         rider = new User();
-        path = new HashMap<Road, PartOfRide>();
+        path  = new LinkedList<PartOfRide>();
     }
 
     public void addNewPath(PartOfRide newPath)
     {
-        path.put((newPath.getRoad()),newPath);
+        path.add(newPath);
     }
 
-    public void addTrempist(Trempist trempist, Road specificRoad )
+    public void addTrempist(Trempist trempist, Road specificRoad, SubRide subRide )
     {
-        path.get(specificRoad).addTrempist(trempist);
+        for(PartOfRide partRide : path)
+            if(partRide.getRoad().equals(specificRoad))
+                 partRide.addTrempist(trempist);
     }
 
-    public ArrayList<PartOfRide> getRidePath()
+    public LinkedList<PartOfRide> getRidePath()
     {
-        return null;
+        return path;
     }
 
     public int rideCost()

@@ -25,7 +25,10 @@ public class Ride {
     {
         for(PartOfRide partRide : path)
             if(partRide.getRoad().equals(specificRoad))
-                 partRide.addTrempist(trempist);
+            {
+                partRide.addTrempist(trempist);
+                subRide.addNewparRide(partRide,rider);
+            }
     }
 
     public LinkedList<PartOfRide> getRidePath()

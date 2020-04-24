@@ -28,6 +28,19 @@ public class PartOfRide {
         return this.trempists.size();
     }
 
+    public double getPeriodInMinutes(){
+        double minutes = 60;
+        return (road.getLengthInKM() * minutes) / road.getMaxSpeed();
+    }
+
+    public int getLengthOfRoad(){
+        return road.getLengthInKM();
+    }
+
+    public double getFuelUsage(){
+        return road.getFuelUsagePerKilometer();
+    }
+
     public ArrayList<Trempist> getAllTrempists() {
         return this.trempists;
     }

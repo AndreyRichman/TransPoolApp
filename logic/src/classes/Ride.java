@@ -21,12 +21,10 @@ public class Ride {
         }
 
         private List<PartOfRide> getRelevantPartsOfRide(Station start, Station end){
-            int indexOfStart = allStations.indexOf(start);
-            int indexOfEnd = allStations.indexOf(end);
+            int indexOfPartsFrom = allStations.indexOf(start);
+            int indexOfPartsTo = allStations.indexOf(end);
 
-            List<Station> subStations = allStations.subList(indexOfStart, indexOfEnd);  //excluding last one
-
-            return subStations.stream().map((s) -> mapOfStationsReachedByPartOfRoad.get(s)).collect(Collectors.toList());
+            return partOfRides.subList(indexOfPartsFrom, indexOfPartsTo);
         }
 
         private void applyTrempistToAllPartsOfRide(User user) {
@@ -44,9 +42,11 @@ public class Ride {
     private static int unique_id = 6000;
     private final int id;
     private final User rideOwner;
+    private int pricePerKilometer = 0;
+
     private List<PartOfRide> partOfRides;
     private List<Station> allStations;
-    private LinkedHashMap<Station, PartOfRide> mapOfStationsReachedByPartOfRoad;
+    private LinkedHashMap<Station, PartOfRide> mapFromStationToRoad;
     private Schedule schedule;
     private int carCapacity;
 
@@ -62,14 +62,14 @@ public class Ride {
     private void initDataStructures(List<Road> roads, int carCapacity){
         this.allStations = new ArrayList<>();
         this.partOfRides = new ArrayList<>();
-        this.mapOfStationsReachedByPartOfRoad = new LinkedHashMap<>();
+        this.mapFromStationToRoad = new LinkedHashMap<>();
 
         this.allStations.add(roads.get(0).getStartStation());
         roads.forEach( road -> {
             this.allStations.add(road.getEndStation());
             PartOfRide partOfRide = new PartOfRide(road, carCapacity);
             this.partOfRides.add(partOfRide);
-            this.mapOfStationsReachedByPartOfRoad.put(road.getEndStation(), partOfRide);
+            this.mapFromStationToRoad.put(road.getStartStation(), partOfRide);
         });
 
     }
@@ -79,28 +79,84 @@ public class Ride {
         return new Ride(rideOwner, roads, capacity);
     }
 
+    public double getTotalTimeOfRide(){
+        return this.partOfRides
+                .stream()
+                .mapToDouble(PartOfRide::getPeriodInMinutes)
+                .sum();
+    }
+
+    public double getTotalCostOfRide(){
+        return this.partOfRides
+                .stream()
+                .mapToDouble(PartOfRide::getLengthOfRoad)
+                .map((length) -> length * this.pricePerKilometer)
+                .sum();
+    }
+
+    public double getAverageFuelUsage(){
+        return this.partOfRides.size() == 0 ? 0 : this.partOfRides
+                .stream()
+                .mapToDouble(PartOfRide::getFuelUsage)
+                .average()
+                .getAsDouble();
+
+    }
+
     public void assignTrempRequestToCurrentRide(TrempRequest trempRequest, Station joinFromStation, Station joinUntilStation) {
         SubRide subRide = new SubRide(joinFromStation, joinUntilStation);
         subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
         trempRequest.addSubRide(subRide);
     }
 
-    public boolean containsRoute(Station from, Station to){
-       List<Station> reachableStation = this.allStations.stream()
-               .filter(this::canReachStationByCapacity)
-               .collect(Collectors.toList());
+    public boolean containsValidRoute(Station from, Station to){    //valid = have empty space in all parts
+        boolean containsRoute = false;
 
-       return reachableStation.contains(from)
-                && this.allStations.contains(to)
-                && this.allStations.indexOf(to) >= this.allStations.indexOf(from);
+        if (rideContainsStations(from, to)){
+            boolean hasSpaceInRoad = true;
+
+            while(from != to && hasSpaceInRoad){
+                PartOfRide partRoad = mapFromStationToRoad.get(from);
+                hasSpaceInRoad = partRoad.canAddTrempist();
+                to = partRoad.getRoad().getEndStation();
+            }
+            if (from == to){
+                containsRoute = true;
+            }
+        }
+
+        return containsRoute;
     }
 
-    private boolean canReachStationByCapacity(Station station){
-        return this.mapOfStationsReachedByPartOfRoad.get(station).canAddTrempist();
+    public List<Station> getStationsStillRelevantForTremp(){
+        List<Station> stations = new ArrayList<>();
+
+        this.partOfRides.forEach((partOfRide -> {
+            if(partOfRide.canAddTrempist()){
+                stations.add(partOfRide.getRoad().getStartStation());
+                stations.add(partOfRide.getRoad().getEndStation());
+            }
+        }));
+
+        return stations.stream().distinct().collect(Collectors.toList());
+    }
+
+    private boolean rideContainsStations(Station a, Station b){
+        return allStations.contains(a)
+                && allStations.contains(b)
+                && allStations.indexOf(a) < allStations.indexOf(b);
+    }
+
+    private boolean hasFreeSpaceFromStation(Station station){
+        return this.mapFromStationToRoad.get(station).canAddTrempist();
     }
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+
+    public void setPricePerKilometer(int pricePerKilometer) {
+        this.pricePerKilometer = pricePerKilometer;
     }
 
     public int getID(){

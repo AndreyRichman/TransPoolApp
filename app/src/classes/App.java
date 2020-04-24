@@ -34,7 +34,7 @@ public class App {
                 logicHandler.loadXMLFile((((LoadXMLRequest)req).getFileDirectory()));
                 break;
             case NEW_TREMP:
-                addNewTremp(req);
+                addNewTrempRequest(req);
                 break;
             case NEW_RIDE:
                 addNewRide(req);
@@ -73,7 +73,7 @@ public class App {
 
     }
 
-    private void addNewTremp(UserRequest req) {
+    private void addNewTrempRequest(UserRequest req) {
         TrempRequest newTrempist = new TrempRequest();
         //TODO: Need to display to user the avaible rides
     }

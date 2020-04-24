@@ -6,12 +6,12 @@ import java.util.List;
 public class LogicHandler {
 
     List<Ride> rides;
-    List<Tremp> tremps;
+    List<TrempRequest> trempRequests;
     WorldMap map;
 
     public LogicHandler() {
         rides = new ArrayList<>();
-        tremps = new ArrayList<>();
+        trempRequests = new ArrayList<>();
     }
 
     public void loadXMLFile(String pathToFile){
@@ -24,19 +24,19 @@ public class LogicHandler {
         return newRide;
     }
 
-    public Tremp createNewEmptyTremp(){
-        Tremp newTremp = new Tremp();
-        tremps.add(newTremp);
+    public TrempRequest createNewEmptyTremp(){
+        TrempRequest newTrempRequest = new TrempRequest();
+        trempRequests.add(newTrempRequest);
 
-        return newTremp;
+        return newTrempRequest;
     }
 
     public List<Ride> getAllRides(){
         return this.rides;
     }
 
-    public List<Tremp> getAllTrempRequests(){
-        return this.tremps;
+    public List<TrempRequest> getAllTrempRequests(){
+        return this.trempRequests;
     }
 
 }

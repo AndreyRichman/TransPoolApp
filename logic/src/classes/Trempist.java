@@ -11,4 +11,8 @@ public class Trempist {
         this.user = user;
         this.partType = partType;
     }
+
+    public TrempPartType getPartType() {
+        return partType;
+    }
 }

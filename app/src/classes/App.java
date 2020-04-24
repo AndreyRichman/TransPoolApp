@@ -1,7 +1,6 @@
 package classes;
 
 import interfaces.UIHandler;
-import requests.classes.ExitRequest;
 import requests.classes.LoadXMLRequest;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
@@ -65,7 +64,7 @@ public class App {
         return null;
     }
 
-    private ArrayList<Tremp> getStatusOfTremps() {
+    private ArrayList<TrempRequest> getStatusOfTremps() {
 
         return null;
     }
@@ -75,7 +74,7 @@ public class App {
     }
 
     private void addNewTremp(UserRequest req) {
-        Tremp newTrempist = new Tremp();
+        TrempRequest newTrempist = new TrempRequest();
         //TODO: Need to display to user the avaible rides
     }
 

@@ -1,7 +1,5 @@
 package classes;
 
-import enums.TrempPartType;
-
 import java.util.ArrayList;
 
 public class PartOfRide {
@@ -13,42 +11,31 @@ public class PartOfRide {
     public PartOfRide(Road road, int capacity) {
         this.road = road;
         this.capacity = capacity;
+        this.trempists = new ArrayList<>(capacity);
     }
 
-    public void addTrempist(User user, TrempPartType partType){
-        Trempist newTrempist = new Trempist(user, partType);
-        trempists.add(newTrempist);
+    public void addTrempist(Trempist trempist) {
+        trempists.add(trempist);
     }
-    public int getCapacity() {
+
+    public boolean canAddTrempist(){
+        return getTotalCapacity() - getCurrentCapacity() > 0;
+    }
+    public int getTotalCapacity() {
         return capacity;
     }
-
-    public ArrayList<Trempist> getTrempists() {
-        return trempists;
+    public int getCurrentCapacity(){
+        return this.trempists.size();
     }
 
-    public ArrayList<Tremp> getTrempists() {
-        return Trempists;
+    public ArrayList<Trempist> getAllTrempists() {
+        return this.trempists;
     }
 
-    public int getCapacity() {
-        return capacity;
-    }
 
     public Road getRoad() {
         return road;
     }
-  
-      public void setRoad(Road road) {
-        this.road = road;
-    }
-  
-      public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-  
-      public void setTrempists(ArrayList<Tremp> trempists) {
-        Trempists = trempists;
-    }
+
 }
 

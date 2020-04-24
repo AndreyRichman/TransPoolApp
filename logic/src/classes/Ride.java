@@ -128,17 +128,25 @@ public class Ride {
         return containsRoute;
     }
 
-    public List<Station> getStationsStillRelevantForTremp(){
-        List<Station> stations = new ArrayList<>();
+    public List<List<Station>> getListsOfAllStationsStillRelevantForTremps() {
+        List<List<Station>> routesWithFreeSpace = new ArrayList<>();
+        List<Station> route = new ArrayList<>();
 
-        this.partOfRides.forEach((partOfRide -> {
-            if(partOfRide.canAddTrempist()){
-                stations.add(partOfRide.getRoad().getStartStation());
-                stations.add(partOfRide.getRoad().getEndStation());
+        for(Map.Entry<Station, PartOfRide> station2Part: this.mapFromStationToRoad.entrySet()){
+            Station station = station2Part.getKey();
+            PartOfRide partOfRide = station2Part.getValue();
+
+            if (partOfRide.canAddTrempist()){
+                route.add(station);
             }
-        }));
+            else{
+                route.add(station);
+                routesWithFreeSpace.add(route);
+                route = new ArrayList<>();
+            }
+        }
 
-        return stations.stream().distinct().collect(Collectors.toList());
+        return routesWithFreeSpace;
     }
 
     private boolean rideContainsStations(Station a, Station b){

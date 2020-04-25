@@ -6,8 +6,9 @@ public class User {
     private final int id;
     private String name;
 
-    public User() {
+    public User(String name) {
         this.id = uniqueID++;
+        this.name = name;
     }
 
     public int getID() {

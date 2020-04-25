@@ -1,29 +1,52 @@
 package classes;
 
-
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class TrempRequest {
     private static int unique_id = 4000;
     private final int id;
-    private Station startStation;
-    private Station endStation;
+    private final Station startStation;
+    private final Station endStation;
     private User user;
-    private String startTimeOfRide;
-    private String endTimeOfRide;
-    private boolean allowMultiRides;
-    private List<Ride.SubRide> subRides;
+    private LocalTime departTime;
+    private LocalTime arriveTime = null;
+    private int day;
+    private int maxNumberOfConnections = 0;
+    private List<Ride.SubRide> subRides = null;
 
     public TrempRequest(Station startStation, Station endStation) {
         this.id = unique_id++;
         this.startStation = startStation;
         this.endStation = endStation;
+
+        this.departTime = LocalTime.MIN;
     }
 
     public void addSubRide(Ride.SubRide subRide){
+        if (this.subRides == null){
+            this.subRides = new ArrayList<>();
+        }
         this.subRides.add(subRide);
     }
 
+    public void setMaxNumberOfConnections(int maxNumberOfConnections) {
+        this.maxNumberOfConnections = maxNumberOfConnections;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setDepartTime(LocalTime departTime) {
+        this.departTime = departTime;
+    }
+
+    public void setArriveTime(LocalTime arriveTime) {
+        this.arriveTime = arriveTime;
+    }
 
     public int getID(){
         return this.id;

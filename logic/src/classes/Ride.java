@@ -74,7 +74,7 @@ public class Ride {
 
     }
 
-    public Ride createRideFromRoads(User rideOwner, List<Road> roads, int capacity){
+    public static Ride createRideFromRoads(User rideOwner, List<Road> roads, int capacity){
 
         return new Ride(rideOwner, roads, capacity);
     }
@@ -129,6 +129,7 @@ public class Ride {
     }
 
     public List<List<Station>> getListsOfAllStationsStillRelevantForTremps() {
+        //TODO: implementation is not correct
         List<List<Station>> routesWithFreeSpace = new ArrayList<>();
         List<Station> route = new ArrayList<>();
 
@@ -176,4 +177,8 @@ public class Ride {
     }
 
     public List<PartOfRide> getPartOfRides() {return partOfRides;}
+
+    public List<Station> getAllStations(){
+        return this.allStations;
+    }
 }

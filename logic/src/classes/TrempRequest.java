@@ -1,24 +1,27 @@
 package classes;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Tremp {
+public class TrempRequest {
     private static int unique_id = 4000;
     private final int id;
     private Station startStation;
     private Station endStation;
-    private User trempistName;
+    private User user;
     private String startTimeOfRide;
     private String endTimeOfRide;
     private boolean allowMultiRides;
-    private List<SubRide> subRides;
+    private List<Ride.SubRide> subRides;
 
-    public Tremp(Station startStation, Station endStation) {
+    public TrempRequest(Station startStation, Station endStation) {
         this.id = unique_id++;
         this.startStation = startStation;
         this.endStation = endStation;
+    }
+
+    public void addSubRide(Ride.SubRide subRide){
+        this.subRides.add(subRide);
     }
 
 
@@ -26,8 +29,8 @@ public class Tremp {
         return this.id;
     }
 
-    public User getTrempistName() {
-        return trempistName;
+    public User getUser() {
+        return user;
     }
 
     public Station getStartStation() {

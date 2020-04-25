@@ -4,8 +4,8 @@ public class Road {
 
     private Station startStation;
     private Station endStation;
-    private int length;
-    private int fuelCost;
+    private int lengthInKM;
+    private double fuelUsagePerKilometer;
     private int maxSpeed;
 
     public Road(Station startStation, Station endStation){
@@ -17,24 +17,25 @@ public class Road {
         this.maxSpeed = maxSpeed;
     }
 
-    public void setLength(int length) {
-        this.length = length;
+    public void setLengthInKM(int lengthInKM) {
+        this.lengthInKM = lengthInKM;
     }
 
-    public void setFuelCost(int fuelCost) {
-        this.fuelCost = fuelCost;
+    public void setFuelUsagePerKilometer(double fuelUsagePerKilometer) {
+        this.fuelUsagePerKilometer = fuelUsagePerKilometer;
     }
+
 
     public int getMaxSpeed() {
         return maxSpeed;
     }
 
-    public int getLength() {
-        return length;
+    public int getLengthInKM() {
+        return lengthInKM;
     }
 
-    public int getFuelCost() {
-        return fuelCost;
+    public double getFuelUsagePerKilometer() {
+        return fuelUsagePerKilometer;
     }
 
     public Station getStartStation() {

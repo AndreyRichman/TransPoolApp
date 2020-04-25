@@ -145,7 +145,6 @@ public class App {
     }
 
     private void exitApp(){
-
         exit = true;
     }
 }

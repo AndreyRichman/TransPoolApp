@@ -74,7 +74,7 @@ public class Ride {
 
     }
 
-    public Ride createRideFromRoads(User rideOwner, List<Road> roads, int capacity){
+    public static Ride createRideFromRoads(User rideOwner, List<Road> roads, int capacity){
 
         return new Ride(rideOwner, roads, capacity);
     }
@@ -128,21 +128,58 @@ public class Ride {
         return containsRoute;
     }
 
+//    public List<List<Station>> getListsOfAllStationsStillRelevantForTremps() {
+//        //TODO: implementation is not correct
+//        List<List<Station>> routesWithFreeSpace = new ArrayList<>();
+//        List<Station> route = new ArrayList<>();
+//
+//        for(Map.Entry<Station, PartOfRide> station2Part: this.mapFromStationToRoad.entrySet()){
+//            Station station = station2Part.getKey();
+//            PartOfRide partOfRide = station2Part.getValue();
+//
+//            if (partOfRide.canAddTrempist()){
+//                route.add(station);
+//            }
+//            else{
+//                route.add(station);
+//                routesWithFreeSpace.add(route);
+//                route = new ArrayList<>();
+//            }
+//        }
+//
+//        return routesWithFreeSpace;
+//    }
+
     public List<List<Station>> getListsOfAllStationsStillRelevantForTremps() {
         List<List<Station>> routesWithFreeSpace = new ArrayList<>();
-        List<Station> route = new ArrayList<>();
+        List<Station> subRoute = new ArrayList<>();
 
-        for(Map.Entry<Station, PartOfRide> station2Part: this.mapFromStationToRoad.entrySet()){
-            Station station = station2Part.getKey();
-            PartOfRide partOfRide = station2Part.getValue();
+//        for(Map.Entry<Station, PartOfRide> station2Part: this.mapFromStationToRoad.entrySet()){
+//            subRoute.add(station2Part.getKey());
+//
+//            if (station2Part.getValue().canAddTrempist()
+//                    && station2Part.getValue() == partOfRides.get(partOfRides.size() - 1)){
+//                subRoute.add(station2Part.getValue().getRoad().getEndStation());
+//                routesWithFreeSpace.add(subRoute);
+//            }
+//            else{
+//                if(subRoute.size() > 1)
+//                    routesWithFreeSpace.add(subRoute);
+//                subRoute = new ArrayList<>();
+//            }
+//
+//        }
 
-            if (partOfRide.canAddTrempist()){
-                route.add(station);
+        for(PartOfRide part: partOfRides){
+            subRoute.add(part.getRoad().getStartStation());
+            if (part.canAddTrempist() && part == partOfRides.get(partOfRides.size() - 1)) {
+                subRoute.add(part.getRoad().getEndStation());
+                routesWithFreeSpace.add(subRoute);
             }
             else{
-                route.add(station);
-                routesWithFreeSpace.add(route);
-                route = new ArrayList<>();
+                if (subRoute.size() > 1)
+                    routesWithFreeSpace.add(subRoute);
+                subRoute = new ArrayList<>();
             }
         }
 
@@ -176,4 +213,8 @@ public class Ride {
     }
 
     public List<PartOfRide> getPartOfRides() {return partOfRides;}
+
+    public List<Station> getAllStations(){
+        return this.allStations;
+    }
 }

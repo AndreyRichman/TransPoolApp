@@ -55,6 +55,11 @@ public class Station {
         return this.allStationReachableFromThisStation.contains(otherStation);
     }
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
 
-
+    public String getName() {
+        return name;
+    }
 }

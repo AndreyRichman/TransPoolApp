@@ -21,9 +21,11 @@ public class PartOfRide {
     public boolean canAddTrempist(){
         return getTotalCapacity() - getCurrentCapacity() > 0;
     }
+
     public int getTotalCapacity() {
         return capacity;
     }
+
     public int getCurrentCapacity(){
         return this.trempists.size();
     }
@@ -44,7 +46,6 @@ public class PartOfRide {
     public ArrayList<Trempist> getAllTrempists() {
         return this.trempists;
     }
-
 
     public Road getRoad() {
         return road;

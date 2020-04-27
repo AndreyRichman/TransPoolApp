@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 
 public class ConsoleUI implements UIHandler {
 
-    Scanner inputReader;
-    Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest ;
+    private  Scanner inputReader;
+    private Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest ;
 
     public ConsoleUI() {
         this.inputReader = new Scanner(System.in);
@@ -63,7 +63,7 @@ public class ConsoleUI implements UIHandler {
 
         Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest  = new HashMap<>();
 
-        stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",LoadXMLRequest::new)));
+        stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",this::getLoadXMLRequest)));
         stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", this::getRequestForNewTremp)));
         stringNumToRequest .put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
         stringNumToRequest .put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
@@ -102,9 +102,11 @@ public class ConsoleUI implements UIHandler {
     private NewRideRequest getRequestForNewRide(){
         return new NewRideRequest();
     }
+
     private ExitRequest getExitRequest(){
         return new ExitRequest();
     }
+
     private UserRequest getMatchTrempToRideRequest(){
         MatchTrempToRideRequest newRequest = new MatchTrempToRideRequest();
         int trempID = 1;  //TODO: get from User
@@ -117,16 +119,18 @@ public class ConsoleUI implements UIHandler {
     private UserRequest getStatusOfTrempsRequest(){
         return new GetStatusOfTrempsRequest();
     }
+
     private UserRequest getStatusOfRidesRequest(){
         return new GetStatusOfRidesRequest();
     }
 
     private UserRequest getLoadXMLRequest(){
-        String fileDirectory = "C://....";
-        LoadXMLRequest newRequest = new LoadXMLRequest();
-        newRequest.setFileDirectory(fileDirectory);
+       LoadXMLRequest req = new LoadXMLRequest();
 
-        return newRequest;
+       showOutput("Full file path");
+       req.setFileDirectory(getInput());
+
+        return req;
     }
 
 }

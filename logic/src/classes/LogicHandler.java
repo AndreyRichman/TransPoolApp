@@ -73,7 +73,6 @@ public class LogicHandler {
             String routes = "...";
             List<Road> roads;
             List<String> elephantList = Arrays.asList(routes.split(","));
-
             //createRideFromRoads(ride.getOwner(),ride.getRoute(),)
         }
     }

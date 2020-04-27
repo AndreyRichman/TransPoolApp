@@ -1,6 +1,7 @@
 package classes;
 
 import exception.StationAlreadyExistInCoordinate;
+import exception.StationCoordinateoutOfBoundriesException;
 import exception.StationNameAlreadyExistsException;
 import exception.StationNotFoundException;
 
@@ -28,9 +29,12 @@ public class WorldMap {
         this.stationName2Object = new HashMap<>();
         this.coordinateStationNameMap = new HashMap<>();
     }
+    public List<Station> getAllStations(){
+        return allStations;
+    }
 
     public void addNewStation(Station station)
-            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinate {
+            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinate, StationCoordinateoutOfBoundriesException {
         validateStation(station);
         this.allStations.add(station);
         this.stationName2Object.put(station.getName(), station);

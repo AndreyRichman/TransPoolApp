@@ -9,20 +9,23 @@ import java.util.List;
 import java.util.Map;
 
 public class LogicHandler {
-
+    WorldMap map;
     List<Ride> rides;
     List<TrempRequest> trempRequests;
-    WorldMap map;
     Map<String, User> usersNameToObject;
 
     public LogicHandler() {
-        rides = new ArrayList<>();
         trempRequests = new ArrayList<>();
-        this.usersNameToObject = new HashMap<>();
+        usersNameToObject = new HashMap<>();
     }
 
     public void loadXMLFile(String pathToFile){
-        //TODO: add implementation
+        XMLHandler loadXML = new XMLHandler(pathToFile);
+        map = loadXML.initWorldMap();
+        loadXML.initStations();
+
+        //rides = loadXML.initRides();
+
     }
 
     public Ride createNewEmptyRide(User rideOwner, List<Road> roads, int capacity){

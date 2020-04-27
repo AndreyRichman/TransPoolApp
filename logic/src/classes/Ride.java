@@ -2,6 +2,8 @@ package classes;
 
 import enums.Schedule;
 import enums.TrempPartType;
+import exception.RideNotContainsRouteException;
+import exception.RideNotExistsException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -103,10 +105,19 @@ public class Ride {
 
     }
 
-    public void assignTrempRequestToCurrentRide(TrempRequest trempRequest, Station joinFromStation, Station joinUntilStation) {
+    private void assignTrempRequestToCurrentRideByStations(TrempRequest trempRequest, Station joinFromStation, Station joinUntilStation) {
         SubRide subRide = new SubRide(joinFromStation, joinUntilStation);
         subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
         trempRequest.addSubRide(subRide);
+    }
+
+    public void assignTrempRequest(TrempRequest trempRequest) throws RideNotContainsRouteException {
+        Station from = trempRequest.getStartStation();
+        Station to = trempRequest.getEndStation();
+        if(!containsValidRoute(from, to))
+            throw new RideNotContainsRouteException(from, to);
+
+        assignTrempRequestToCurrentRideByStations(trempRequest, from, to);
     }
 
     public boolean containsValidRoute(Station from, Station to){    //valid = have empty space in all parts
@@ -127,28 +138,6 @@ public class Ride {
 
         return containsRoute;
     }
-
-//    public List<List<Station>> getListsOfAllStationsStillRelevantForTremps() {
-//        //TODO: implementation is not correct
-//        List<List<Station>> routesWithFreeSpace = new ArrayList<>();
-//        List<Station> route = new ArrayList<>();
-//
-//        for(Map.Entry<Station, PartOfRide> station2Part: this.mapFromStationToRoad.entrySet()){
-//            Station station = station2Part.getKey();
-//            PartOfRide partOfRide = station2Part.getValue();
-//
-//            if (partOfRide.canAddTrempist()){
-//                route.add(station);
-//            }
-//            else{
-//                route.add(station);
-//                routesWithFreeSpace.add(route);
-//                route = new ArrayList<>();
-//            }
-//        }
-//
-//        return routesWithFreeSpace;
-//    }
 
     public List<List<Station>> getListsOfAllStationsStillRelevantForTremps() {
         List<List<Station>> routesWithFreeSpace = new ArrayList<>();

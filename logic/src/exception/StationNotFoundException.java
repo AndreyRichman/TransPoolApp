@@ -1,6 +1,6 @@
 package exception;
 
-public class StationNotFoundException extends Exception {
+public class StationNotFoundException extends RuntimeException {
     String stationName;
 
     public StationNotFoundException(String stationName) {

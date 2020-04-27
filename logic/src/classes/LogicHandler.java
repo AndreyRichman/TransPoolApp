@@ -1,12 +1,14 @@
 package classes;
 
-import exception.NoPathExistBetweenStationsException;
-import exception.StationNotFoundException;
+import exception.*;
+import jaxb.schema.generated.Path;
+import jaxb.schema.generated.Stop;
+import jaxb.schema.generated.TransPool;
+import jaxb.schema.generated.TransPoolTrip;
+import javax.management.InstanceAlreadyExistsException;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static classes.Ride.createRideFromRoads;
 
 public class LogicHandler {
     WorldMap map;
@@ -21,15 +23,73 @@ public class LogicHandler {
 
     public void loadXMLFile(String pathToFile){
         XMLHandler loadXML = new XMLHandler(pathToFile);
-        map = loadXML.initWorldMap();
-        loadXML.initStations();
+        TransPool transPool = loadXML.LoadXML();
 
-        //rides = loadXML.initRides();
+        initWorldMap(transPool);
+
 
     }
 
+    private void initRoads(TransPool transPool) {
+
+        for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
+
+            try {
+                Road road = new Road(getStationFromName(path.getFrom()), getStationFromName(path.getTo()));
+                road.setFuelUsagePerKilometer(path.getFuelConsumption());
+                road.setLengthInKM(path.getLength());
+                road.setMaxSpeed(path.getSpeedLimit());
+
+                map.addNewRoad(road);
+            } catch (InstanceAlreadyExistsException e) {
+                e.printStackTrace();
+            } catch (StationNotFoundException e) {
+                e.printStackTrace();
+            }
+            System.out.println("from: " + path.getFrom() + " to: " + path.getTo());
+        }
+    }
+
+    private void initStations(TransPool transPool) {
+
+        for (Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
+            try {
+                map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
+            } catch (InstanceAlreadyExistsException e) {
+                e.printStackTrace();
+            } catch (StationNameAlreadyExistsException e) {
+                e.printStackTrace();
+            } catch (StationAlreadyExistInCoordinate e) {
+                e.printStackTrace();
+            } catch (StationCoordinateoutOfBoundriesException e) {
+                e.printStackTrace();
+            }
+            System.out.println(stop.getName());
+        }
+    }
+
+    private void initRides(TransPool transPool) {
+        for (TransPoolTrip ride : transPool.getPlannedTrips().getTransPoolTrip()) {
+            String routes = "...";
+            List<Road> roads;
+            List<String> elephantList = Arrays.asList(routes.split(","));
+            //createRideFromRoads(ride.getOwner(),ride.getRoute(),)
+        }
+    }
+
+    private void initWorldMap(TransPool transPool) {
+        map = new WorldMap(transPool.getMapDescriptor().getMapBoundries().getWidth(),transPool.getMapDescriptor().getMapBoundries().getLength());
+
+        initStations(transPool);
+        initRoads(transPool);
+        initRides(transPool);
+
+    }
+
+
+
     public Ride createNewEmptyRide(User rideOwner, List<Road> roads, int capacity){
-        Ride newRide = Ride.createRideFromRoads(rideOwner, roads, capacity);
+        Ride newRide = createRideFromRoads(rideOwner, roads, capacity);
 
 //        this.rides.add(newRide);  moved to a seperate func
 

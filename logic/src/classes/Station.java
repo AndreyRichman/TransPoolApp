@@ -1,5 +1,7 @@
 package classes;
 
+import exception.NoRoadBetweenStationsException;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,7 +24,10 @@ public class Station {
         this.stationsToCurrent2Roads = new HashMap<>();
     }
 
-    public Road getRoadToStation(Station station){
+    public Road getRoadToStation(Station station) throws  NoRoadBetweenStationsException{
+        if (!stationsFromCurrent2Roads.containsKey(station))
+            throw new NoRoadBetweenStationsException(this, station);
+
         return stationsFromCurrent2Roads.get(station);
     }
 

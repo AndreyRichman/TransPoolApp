@@ -1,16 +1,10 @@
 package classes;
 
-import exception.StationAlreadyExistInCoordinate;
-import exception.StationCoordinateoutOfBoundriesException;
-import exception.StationNameAlreadyExistsException;
-import exception.StationNotFoundException;
+import exception.*;
 
 import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WorldMap {
 
@@ -34,7 +28,7 @@ public class WorldMap {
     }
 
     public void addNewStation(Station station)
-            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinate, StationCoordinateoutOfBoundriesException {
+            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException, StationCoordinateoutOfBoundriesException {
         validateStation(station);
         this.allStations.add(station);
         this.stationName2Object.put(station.getName(), station);
@@ -50,7 +44,7 @@ public class WorldMap {
     }
 
     private void validateStation(Station station)
-            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinate {
+            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException {
 
         if (!coordinateInBoundaries(station.getCoordinate())) {
             throw new IndexOutOfBoundsException(station.getCoordinate().toString());
@@ -64,7 +58,7 @@ public class WorldMap {
             throw new StationNameAlreadyExistsException();
 
         if (this.coordinateStationNameMap.containsKey(station.getCoordinate())) {
-            throw new StationAlreadyExistInCoordinate();
+            throw new StationAlreadyExistInCoordinateException();
         }
     }
 
@@ -75,12 +69,12 @@ public class WorldMap {
                 coord.getY() < this.height;
     }
 
-    public void addNewRoad(Road road) throws InstanceAlreadyExistsException, StationNotFoundException{
+    public void addNewRoad(Road road) throws InstanceAlreadyExistsException{
         validateNewRoad(road);
         this.allRoads.add(road);
     }
 
-    private void validateNewRoad(Road road) throws InstanceAlreadyExistsException, StationNotFoundException{
+    private void validateNewRoad(Road road) throws InstanceAlreadyExistsException{
         Station start = road.getStartStation();
         Station end = road.getEndStation();
 
@@ -95,4 +89,27 @@ public class WorldMap {
         }
 
     }
+    public List<Road> getRoadsFromStationsNames(List<String> stationsNames) throws NoRoadBetweenStationsException {
+        List<Road> roads = new ArrayList<>();
+
+        Iterator<Station> stationsIterator = getStationsFromNames(stationsNames).iterator();
+        Station currentStation = stationsIterator.next();
+
+        while(stationsIterator.hasNext()){
+            Station nextStation = stationsIterator.next();
+            Road road = currentStation.getRoadToStation(nextStation);
+            roads.add(road);
+            currentStation = nextStation;
+        }
+
+        return roads;
+    }
+
+    private List<Station> getStationsFromNames(List<String> stationsNames){
+        return stationsNames.stream()
+                .map(this::getStationByName)
+                .collect(Collectors.toList());
+    }
+
+
 }

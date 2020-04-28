@@ -7,17 +7,20 @@ import jaxb.schema.generated.TransPool;
 import jaxb.schema.generated.TransPoolTrip;
 import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static classes.Ride.createRideFromRoads;
 
 public class LogicHandler {
-    WorldMap map;
-    List<Ride> rides;
-    List<TrempRequest> trempRequests;
-    Map<String, User> usersNameToObject;
+    private WorldMap map;
+//    List<Ride> rides;
+//    List<TrempRequest> trempRequests;
+    private TrafficManager trafficManager;
+    private Map<String, User> usersNameToObject;
 
     public LogicHandler() {
-        trempRequests = new ArrayList<>();
+        trafficManager = new TrafficManager();
+//        trempRequests = new ArrayList<>();
         usersNameToObject = new HashMap<>();
     }
 
@@ -59,7 +62,7 @@ public class LogicHandler {
                 e.printStackTrace();
             } catch (StationNameAlreadyExistsException e) {
                 e.printStackTrace();
-            } catch (StationAlreadyExistInCoordinate e) {
+            } catch (StationAlreadyExistInCoordinateException e) {
                 e.printStackTrace();
             } catch (StationCoordinateoutOfBoundriesException e) {
                 e.printStackTrace();
@@ -96,7 +99,7 @@ public class LogicHandler {
         return newRide;
     }
     public void addRide(Ride rideToAdd){
-        this.rides.add(rideToAdd);
+        this.trafficManager.addRide(rideToAdd);
     }
 
     public TrempRequest createNewEmptyTrempRequest(Station start, Station end) throws NoPathExistBetweenStationsException{
@@ -110,7 +113,7 @@ public class LogicHandler {
     }
 
     public void addTrempRequest(TrempRequest trempRequest){
-        trempRequests.add(trempRequest);
+        this.trafficManager.addTrempRequest(trempRequest);
     }
 
     public Station getStationFromName(String name) throws StationNotFoundException {
@@ -125,11 +128,25 @@ public class LogicHandler {
     }
 
     public List<Ride> getAllRides(){
-        return this.rides;
+        return this.trafficManager.getRides();
     }
 
     public List<TrempRequest> getAllTrempRequests(){
-        return this.trempRequests;
+        return this.trafficManager.getTrempRequests();
     }
 
+    public List<TrempRequest> getAllNonMatchedTrempRequests(){
+        return getAllTrempRequests().stream()
+                .filter(TrempRequest::isNotAssignedToRides)
+                .collect(Collectors.toList());
+    }
+
+
+    public TrempRequest getTrempRequestById(int trempID) throws TrempRequestNotExist{
+        return this.trafficManager.getTrempRequestById(trempID);
+    }
+
+    public Ride getRideById(int rideID) throws RideNotExistsException{
+        return this.trafficManager.getRideByID(rideID);
+    }
 }

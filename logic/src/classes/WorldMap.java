@@ -99,6 +99,7 @@ public class WorldMap {
             Station nextStation = stationsIterator.next();
             Road road = currentStation.getRoadToStation(nextStation);
             roads.add(road);
+            System.out.println(road.getStartStation() + ">>>>" + road.getEndStation());
             currentStation = nextStation;
         }
 

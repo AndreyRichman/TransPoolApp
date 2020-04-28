@@ -29,6 +29,7 @@ public class LogicHandler {
         TransPool transPool = loadXML.LoadXML();
 
         initWorldMap(transPool);
+        initRides(transPool);
 
 
     }
@@ -73,9 +74,17 @@ public class LogicHandler {
 
     private void initRides(TransPool transPool) {
         for (TransPoolTrip ride : transPool.getPlannedTrips().getTransPoolTrip()) {
-            String routes = "...";
-            List<Road> roads;
-            List<String> elephantList = Arrays.asList(routes.split(","));
+            String routes = ride.getRoute().getPath();
+            List<String> roadListStringNames = Arrays.asList(routes.split(","));
+            List<Road> roads = null;
+            try {
+                roads = map.getRoadsFromStationsNames(roadListStringNames);
+            } catch (NoRoadBetweenStationsException e) {
+                e.printStackTrace();
+            }
+            Ride test = (createRideFromRoads(new User(ride.getOwner()), roads, ride.getCapacity()));
+            System.out.println(test);
+            trafficManager.addRide(createRideFromRoads(new User(ride.getOwner()), roads, ride.getCapacity()));
             //createRideFromRoads(ride.getOwner(),ride.getRoute(),)
         }
     }
@@ -85,7 +94,7 @@ public class LogicHandler {
 
         initStations(transPool);
         initRoads(transPool);
-        initRides(transPool);
+
 
     }
 

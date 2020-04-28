@@ -13,14 +13,11 @@ import static classes.Ride.createRideFromRoads;
 
 public class LogicHandler {
     private WorldMap map;
-//    List<Ride> rides;
-//    List<TrempRequest> trempRequests;
     private TrafficManager trafficManager;
     private Map<String, User> usersNameToObject;
 
     public LogicHandler() {
         trafficManager = new TrafficManager();
-//        trempRequests = new ArrayList<>();
         usersNameToObject = new HashMap<>();
     }
 
@@ -29,8 +26,6 @@ public class LogicHandler {
         TransPool transPool = loadXML.LoadXML();
 
         initWorldMap(transPool);
-
-
     }
 
     private void initRoads(TransPool transPool) {
@@ -86,16 +81,27 @@ public class LogicHandler {
         initStations(transPool);
         initRoads(transPool);
         initRides(transPool);
+    }
+
+    public List<List<Ride.SubRide>> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
+        Station start = trempRequest.getStartStation();
+        Station end = trempRequest.getEndStation();
+        int maxNumberOfConnections = trempRequest.getMaxNumberOfConnections();
+
+        //TODO:pass all possible routes from start to end(using world Map) - or make sure Start can check this
+        List<List<Ride.SubRide>> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
+        relevantByRouteOptions.sort(Comparator.comparingInt(List::size));
+
+        return relevantByRouteOptions.stream()
+                .filter(lstOfSubRides -> lstOfSubRides.get(0).selectedPartsOfRide.get(0)
+                        .getStartTime().equals(trempRequest.getDepartTime()))
+                .collect(Collectors.toList());
 
     }
 
-
-
     public Ride createNewEmptyRide(User rideOwner, List<Road> roads, int capacity){
         Ride newRide = createRideFromRoads(rideOwner, roads, capacity);
-
 //        this.rides.add(newRide);  moved to a seperate func
-
         return newRide;
     }
     public void addRide(Ride rideToAdd){
@@ -103,7 +109,7 @@ public class LogicHandler {
     }
 
     public TrempRequest createNewEmptyTrempRequest(Station start, Station end) throws NoPathExistBetweenStationsException{
-        //TODO: validate path is exist
+
         if (!start.canReachStation(end)){
             throw new NoPathExistBetweenStationsException();
         }
@@ -122,17 +128,17 @@ public class LogicHandler {
 
     public User getUserByName(String name){
         if (!usersNameToObject.containsKey(name)) {
-            User user = new User(name);
+            usersNameToObject.put(name, new User(name));
         }
         return usersNameToObject.get(name);
     }
 
     public List<Ride> getAllRides(){
-        return this.trafficManager.getRides();
+        return this.trafficManager.getAllRides();
     }
 
     public List<TrempRequest> getAllTrempRequests(){
-        return this.trafficManager.getTrempRequests();
+        return this.trafficManager.getAllTrempRequests();
     }
 
     public List<TrempRequest> getAllNonMatchedTrempRequests(){

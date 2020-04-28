@@ -1,5 +1,6 @@
 package classes;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class PartOfRide {
@@ -7,6 +8,8 @@ public class PartOfRide {
     private Road road;
     private int capacity;
     private ArrayList<Trempist> trempists;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     public PartOfRide(Road road, int capacity) {
         this.road = road;
@@ -51,5 +54,23 @@ public class PartOfRide {
         return road;
     }
 
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+        int duration = this.road.getDurationInMinutes();
+        LocalTime end = startTime.plusMinutes(duration);
+
+        int minutesAtEnd = end.getMinute();
+        int sheerit = minutesAtEnd % 5;
+        int minutesToAdd = sheerit > 2 ? 5 - sheerit: -sheerit;
+        this.endTime = end.plusMinutes(minutesToAdd);
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
 }
 

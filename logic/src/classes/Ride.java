@@ -3,10 +3,7 @@ package classes;
 import enums.Schedule;
 import enums.TrempPartType;
 import exception.RideNotContainsRouteException;
-import exception.RideNotExistsException;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Ride {
 

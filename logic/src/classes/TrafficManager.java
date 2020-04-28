@@ -4,6 +4,7 @@ import exception.RideNotExistsException;
 import exception.TrempRequestNotExist;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +17,11 @@ public class TrafficManager {
     Map<Integer, Ride> mapIdToRide;
     Map<Integer, TrempRequest> mapIdToTrempReuqest;
 
-
-//    WorldMap worldMap;
-
     public TrafficManager() {
         this.rides = new ArrayList<>();
         this.trempRequests = new ArrayList<>();
-//        this.worldMap = worldMap;
+        this.mapIdToRide = new HashMap<>();
+        this.mapIdToTrempReuqest = new HashMap<>();
     }
 
     public List<Ride> getRides() {

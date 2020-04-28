@@ -89,6 +89,7 @@ public class WorldMap {
         }
 
     }
+
     public List<Road> getRoadsFromStationsNames(List<String> stationsNames) throws NoRoadBetweenStationsException {
         List<Road> roads = new ArrayList<>();
 
@@ -99,7 +100,6 @@ public class WorldMap {
             Station nextStation = stationsIterator.next();
             Road road = currentStation.getRoadToStation(nextStation);
             roads.add(road);
-            System.out.println(road.getStartStation() + ">>>>" + road.getEndStation());
             currentStation = nextStation;
         }
 

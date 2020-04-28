@@ -13,14 +13,11 @@ import static classes.Ride.createRideFromRoads;
 
 public class LogicHandler {
     private WorldMap map;
-//    List<Ride> rides;
-//    List<TrempRequest> trempRequests;
     private TrafficManager trafficManager;
     private Map<String, User> usersNameToObject;
 
     public LogicHandler() {
         trafficManager = new TrafficManager();
-//        trempRequests = new ArrayList<>();
         usersNameToObject = new HashMap<>();
     }
 
@@ -31,7 +28,6 @@ public class LogicHandler {
         initWorldMap(transPool);
         initRides(transPool);
 
-
     }
 
     private void initRoads(TransPool transPool) {
@@ -39,18 +35,30 @@ public class LogicHandler {
         for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
 
             try {
+
                 Road road = new Road(getStationFromName(path.getFrom()), getStationFromName(path.getTo()));
                 road.setFuelUsagePerKilometer(path.getFuelConsumption());
                 road.setLengthInKM(path.getLength());
                 road.setMaxSpeed(path.getSpeedLimit());
 
+                Road road1 = new Road(getStationFromName(path.getTo()), getStationFromName(path.getFrom()));
+                road1.setFuelUsagePerKilometer(path.getFuelConsumption());
+                road1.setLengthInKM(path.getLength());
+                road1.setMaxSpeed(path.getSpeedLimit());
+
                 map.addNewRoad(road);
+                map.addNewRoad(road1);
+
+                road.getStartStation().addRoadFromCurrentStation(road);
+                road1.getStartStation().addRoadFromCurrentStation(road1);
+
+
+
             } catch (InstanceAlreadyExistsException e) {
                 e.printStackTrace();
             } catch (StationNotFoundException e) {
                 e.printStackTrace();
             }
-            System.out.println("from: " + path.getFrom() + " to: " + path.getTo());
         }
     }
 
@@ -68,24 +76,21 @@ public class LogicHandler {
             } catch (StationCoordinateoutOfBoundriesException e) {
                 e.printStackTrace();
             }
-            System.out.println(stop.getName());
         }
     }
 
     private void initRides(TransPool transPool) {
         for (TransPoolTrip ride : transPool.getPlannedTrips().getTransPoolTrip()) {
-            String routes = ride.getRoute().getPath();
-            List<String> roadListStringNames = Arrays.asList(routes.split(","));
-            List<Road> roads = null;
+
+            List<String> roadListStringNames = Arrays.asList(ride.getRoute().getPath().split(","));
+            //roadListStringNames = roadListStringNames.replaceAll();
+            //TODO: delete spaces after comma
             try {
-                roads = map.getRoadsFromStationsNames(roadListStringNames);
+                trafficManager.addRide(createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity()));
             } catch (NoRoadBetweenStationsException e) {
                 e.printStackTrace();
             }
-            Ride test = (createRideFromRoads(new User(ride.getOwner()), roads, ride.getCapacity()));
-            System.out.println(test);
-            trafficManager.addRide(createRideFromRoads(new User(ride.getOwner()), roads, ride.getCapacity()));
-            //createRideFromRoads(ride.getOwner(),ride.getRoute(),)
+
         }
     }
 

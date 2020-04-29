@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 public class TrafficManager {
 
 
@@ -16,13 +17,12 @@ public class TrafficManager {
     Map<Integer, Ride> mapIdToRide;
     Map<Integer, TrempRequest> mapIdToTrempReuqest;
 
-
-//    WorldMap worldMap;
-
     public TrafficManager() {
+
         this.allRides = new ArrayList<>();
         this.allTrempRequests = new ArrayList<>();
-//        this.worldMap = worldMap;
+        this.mapIdToRide = new HashMap<>();
+        this.mapIdToTrempReuqest = new HashMap<>();
     }
 
     public List<Ride> getAllRides() {

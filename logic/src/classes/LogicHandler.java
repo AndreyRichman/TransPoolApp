@@ -145,6 +145,7 @@ public class LogicHandler {
         return getAllTrempRequests().stream()
                 .filter(TrempRequest::isNotAssignedToRides)
                 .collect(Collectors.toList());
+
     }
 
 

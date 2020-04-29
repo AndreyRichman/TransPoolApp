@@ -35,7 +35,7 @@ public class Ride {
             return partsOfRide.subList(indexOfPartsFrom, indexOfPartsTo);
         }
 
-        private void applyTrempistToAllPartsOfRide(User user) {
+        public void applyTrempistToAllPartsOfRide(User user) {
             selectedPartsOfRide.forEach( partOfRide -> {
                 TrempPartType partType = partOfRide == selectedPartsOfRide.get(0) ?
                         TrempPartType.FIRST :
@@ -129,20 +129,23 @@ public class Ride {
         return new SubRide(this, fromStation, toStation);
     }
 
-    private void assignTrempRequestToCurrentRideByStations(TrempRequest trempRequest, Station joinFromStation, Station joinUntilStation) {
-        SubRide subRide = getSubRide(joinFromStation, joinUntilStation);
-        subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
-        trempRequest.addSubRide(subRide);
-    }
+//This was valid only for case when Single Ride was good for TrempRequest, this logic was move to App::assignTrempRequestToSpecificRide
+//
+//    private void assignTrempRequestToCurrentRideByStations(TrempRequest trempRequest, Station joinFromStation, Station joinUntilStation) {
+//        follow this and delete this
+//        SubRide subRide = getSubRide(joinFromStation, joinUntilStation);
+//        subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
+//        trempRequest.addSubRide(subRide);
+//    }
 
-    public void assignTrempRequest(TrempRequest trempRequest) throws RideNotContainsRouteException {
-        Station from = trempRequest.getStartStation();
-        Station to = trempRequest.getEndStation();
-        if(!containsValidRoute(from, to))
-            throw new RideNotContainsRouteException(from, to);
-
-        assignTrempRequestToCurrentRideByStations(trempRequest, from, to);
-    }
+//    public void assignTrempRequest(TrempRequest trempRequest) throws RideNotContainsRouteException {
+//        Station from = trempRequest.getStartStation();
+//        Station to = trempRequest.getEndStation();
+//        if(!containsValidRoute(from, to))
+//            throw new RideNotContainsRouteException(from, to);
+//
+//        assignTrempRequestToCurrentRideByStations(trempRequest, from, to);
+//    }
 
     public boolean containsValidRoute(Station from, Station to){    //valid = have empty space in all parts
         boolean containsRoute = false;

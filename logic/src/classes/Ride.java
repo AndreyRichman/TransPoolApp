@@ -53,7 +53,6 @@ public class Ride {
         this.id = unique_id++;
         this.rideOwner = rideOwner;
         this.carCapacity = carCapacity;
-
         initDataStructures(allRoads, carCapacity);
     }
 
@@ -70,6 +69,11 @@ public class Ride {
             this.mapFromStationToRoad.put(road.getStartStation(), partOfRide);
         });
 
+    }
+
+    public List<PartOfRide> getPartOfRide()
+    {
+        return this.partOfRides;
     }
 
     public static Ride createRideFromRoads(User rideOwner, List<Road> roads, int capacity){
@@ -165,8 +169,8 @@ public class Ride {
         return this.mapFromStationToRoad.get(station).canAddTrempist();
     }
 
-    public void setSchedule(int hour, int min, String rec) {
-        this.schedule = new Schedule(hour, min, rec);
+    public void setSchedule(int hour, Integer day, String rec) {
+        this.schedule = new Schedule(hour, day, rec);
     }
 
     public void setPricePerKilometer(int pricePerKilometer) {

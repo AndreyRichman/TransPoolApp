@@ -143,12 +143,12 @@ public class LogicHandler {
         return this.trafficManager.getRides();
     }
 
-    public List<String> getAllRideAsString(){
-        List<String> s = getAllRides()
-                    .stream()
-                    .flatMap(ride -> Stream.of(ride.getAllStations())).flatMap(Collection::stream).map(Station::getName).collect(Collectors.toList());
-        return s;
-    }
+    //public List<String> getAllRideAsString(){
+    //    List<String> s = getAllRides()
+    //                .stream()
+    //                .flatMap(ride -> Stream.of(ride.getAllStations())).flatMap(Collection::stream).map(Station::getName).collect(Collectors.toList());
+    //   return s;
+    //}
 
     public List<TrempRequest> getAllTrempRequests(){
         return this.trafficManager.getTrempRequests();

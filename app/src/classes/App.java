@@ -131,9 +131,9 @@ public class App {
                     String.format("Stations: %s", ride.getAllStations()
                             .stream()
                             .map(Station::getName)
-                            .collect(Collectors.joining(" -> "))
-                    ),
-                    String.format("Ride price: %d", ride.getTotalCostOfRide())
+                            .collect(Collectors.joining(" -> ")), System.lineSeparator()
+                    )
+                    //String.format("Ride price: %d", ride.getTotalCostOfRide())
                     //String.format("Ride departure time: %d", ride.getDeptTime()),
                     //String.format("Ride arrival time: %d", ride.getArrTime()),
                     //String.format("Ride trempists capacity: %d", )

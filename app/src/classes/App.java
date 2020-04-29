@@ -7,6 +7,7 @@ import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class App {
@@ -49,13 +50,8 @@ public class App {
                 showStatusOfTremps((GetStatusOfTrempsRequest) request);
                 break;
             case MATCH_TREMP_TO_RIDE:
-                MatchTrempToRIde((MatchTrempToRideRequest) request);
+                tryMatchTrempToRide((TryMatchTrempToRideRequest) request);
                 break;
-            case SHOW_UN_MATCHED_TREMP_REQUESTS:
-                showAllUnMatchedTrempRequests((ShowUnMatchedTrempReqRequest) request);
-                break;
-            case GET_POSSIBLE_RIDES_FOR_TREMP_REQUEST:
-                showPossibleRidesForTrempRequest((GetPossibleRidesForTrempRequest) request);
             case EXIT:
                 exitApp();
                 break;
@@ -100,85 +96,130 @@ public class App {
         //TODO leave for later stage
     }
 
-
-    private void MatchTrempToRIde(MatchTrempToRideRequest request) {
-        int trempRequestID = request.getTrempRequestID();
-        int rideID = request.getRideID();
-        try{
-            Ride ride = logicHandler.getRideById(rideID);
-            TrempRequest trempRequest = logicHandler.getTrempRequestById(trempRequestID);
-
-            ride.assignTrempRequest(trempRequest);
-        }
-        catch (RideNotExistsException e){}
-        catch (TrempRequestNotExist e) {}
-        catch (RideNotContainsRouteException e) {}
-
-    }
-
-
     private void showStatusOfRides(GetStatusOfRidesRequest request) {
         String summaryOfRides = createSummaryOfAllRides();
         uiHandler.showOutput(summaryOfRides);
     }
 
     private String createSummaryOfAllRides() {
-        //TODO: add all relevant information
         StringBuilder out = new StringBuilder("Summary of all Rides in the system:" + System.lineSeparator());
         for(Ride ride: logicHandler.getAllRides()){
-            String rideSummary = String.join(System.lineSeparator(),
-                    String.format("Ride ID: %d", ride.getID()),
-                    String.format("Stations: %s", ride.getAllStations()
-                            .stream()
-                            .map(Station::getName)
-                            .collect(Collectors.joining(" -> ")), System.lineSeparator()
-                    )
-                    //String.format("Ride price: %d", ride.getTotalCostOfRide())
-                    //String.format("Ride departure time: %d", ride.getDeptTime()),
-                    //String.format("Ride arrival time: %d", ride.getArrTime()),
-                    //String.format("Ride trempists capacity: %d", )
-            );
-            out.append(rideSummary);
 
+            String rideDescription = createDescriptionOfRide(ride);
+            out.append(rideDescription);
         }
         return out.toString();
+    }
+
+    private String createDescriptionOfRide(Ride ride){
+        //TODO: add all relevant information
+        return String.join(System.lineSeparator(),
+                String.format("Ride ID: %d", ride.getID()),
+                String.format("Stations: %s", ride.getAllStations()
+                        .stream()
+                        .map(Station::getName)
+                        .collect(Collectors.joining(" -> "))
+                )
+        );
     }
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {
-        String summaryOfAllTremps = getSummaryOfAllTrempRequests();
-        uiHandler.showOutput(summaryOfAllTremps);
+        List<TrempRequest> allTrempRequests = logicHandler.getAllTrempRequests();
+        List<String> summaryOfAllTremps = getSummaryOfAllTrempRequests(allTrempRequests);
+        uiHandler.showOutput(String.join(System.lineSeparator(), summaryOfAllTremps));
     }
 
-    private String getSummaryOfAllTrempRequests(){
-        //TODO: add all relevant information
-        StringBuilder out = new StringBuilder("Summary of all Tremp Requests in the system:" + System.lineSeparator());
-        for(TrempRequest tremp: logicHandler.getAllTrempRequests()){
-            String trempSummary = String.join(System.lineSeparator(),
+    private List<String> getSummaryOfAllTrempRequests(List<TrempRequest> allTrempRequests){
+        return allTrempRequests.stream().map(this::createDescriptionOfTrempRequest).collect(Collectors.toList());
+    }
 
-                    String.format("Tremp ID: %d", tremp.getID()),
-                    String.format("Stations: %s --> %s", tremp.getStartStation().getName(), tremp.getEndStation().getName())
-            );
+    private void tryMatchTrempToRide(TryMatchTrempToRideRequest request) {
+        TrempRequest chosenTrempRequest = null;
+        try {
+            chosenTrempRequest = getDesiredTrempRequestForMatching();
+            List<Ride.SubRide> chosenRides = getDesiredRidesForTrempRequest(chosenTrempRequest);
+            connectTrempRequestToSubRides(chosenTrempRequest, chosenRides);
+            uiHandler.showOutput("Tremp request was assigned to Ride succesfully!");
+        }
+        catch (NotFoundTrempRequestsWithoutMatchException e) {
+            uiHandler.showOutput("Not found any Tremp requests without a match!");
 
-            out.append(trempSummary);
+        } catch (NoRidesWereFoundForTrempRequestException e) {
+            uiHandler.showOutput("No availble Rides for the selected tremp request");
+            boolean tryAgain = uiHandler.getYesNoAnswerForQuestion("Would you like to select a different Tremp Request?");
+            if (tryAgain)
+                tryMatchTrempToRide(request);
+        }
+
+
+    }
+
+    private TrempRequest getDesiredTrempRequestForMatching() throws NotFoundTrempRequestsWithoutMatchException{
+        List<TrempRequest> trempRequests = logicHandler.getAllNonMatchedTrempRequests();
+        if (trempRequests == null || trempRequests.size() == 0)
+            throw new NotFoundTrempRequestsWithoutMatchException();
+
+        List<String> trempRequestsStrOptions = getAllUnMatchedTrempRequestStrOptions(trempRequests);
+        String title = "The following Tremp Requests are not assigned to any rides, select one to match a ride to it:";
+        int chosenTrempRequest = uiHandler.showOptionsAndGetUserSelection(title, trempRequestsStrOptions);
+
+        return trempRequests.get(chosenTrempRequest);
+    }
+
+    private List<Ride.SubRide> getDesiredRidesForTrempRequest(TrempRequest trempRequest) throws NoRidesWereFoundForTrempRequestException{
+
+        List<List<Ride.SubRide>> allTremps = logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
+        if (allTremps == null || allTremps.size() == 0)
+            throw new NoRidesWereFoundForTrempRequestException();
+
+        List<String> availableRidesOptions  = createSummaryOfAllTrempOptions(allTremps);
+        String title = "The following Rides are available for the Selected Tremp Request:";
+        int desiredRidesOption = uiHandler.showOptionsAndGetUserSelection(title, availableRidesOptions);
+
+        return allTremps.get(desiredRidesOption);
+    }
+
+    private List<String> createSummaryOfAllTrempOptions(List<List<Ride.SubRide>> trempOptions){
+        return trempOptions.stream().map(this::createDescriptionOfTrempOption).collect(Collectors.toList());
+    }
+
+    private String createDescriptionOfTrempOption(List<Ride.SubRide> trempOption){
+        StringBuilder out = new StringBuilder();
+        out.append(String.join(System.lineSeparator(),
+                String.format("Total Connections: %d", trempOption.size() - 1)
+                )
+        );
+        for (Ride.SubRide subRide : trempOption) {
+            out.append(getSubRideSummary(subRide));
+            out.append('-' * 20);
         }
         return out.toString();
     }
 
-    private void showPossibleRidesForTrempRequest(GetPossibleRidesForTrempRequest request) {
+    private String getSubRideSummary(Ride.SubRide subRide){
+        StringBuilder out = new StringBuilder();
+        subRide.selectedPartsOfRide.forEach(part ->
+           out.append(String.format("%s -> %s", part.getRoad().getStartStation().getName(), part.getRoad().getEndStation().getName()))
+        );
+
+        return out.toString();
+    }
+    private void connectTrempRequestToSubRides(TrempRequest trempRequest, List<Ride.SubRide> subRides){
+        subRides.forEach(subRide -> {
+            subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
+            trempRequest.addSubRide(subRide);
+        });
     }
 
-    private void showAllUnMatchedTrempRequests(ShowUnMatchedTrempReqRequest request) {
-        StringBuilder out = new StringBuilder("All Non-Matched Rides:" + System.lineSeparator());
+    private List<String> getAllUnMatchedTrempRequestStrOptions(List<TrempRequest> trempRequests) {
+        return trempRequests.stream().map(this::createDescriptionOfTrempRequest).collect(Collectors.toList());
+    }
 
-        for(TrempRequest tremp: logicHandler.getAllNonMatchedTrempRequests()){
-            String trempSummary = String.join(System.lineSeparator(),
-
-                    String.format("Tremp ID: %d", tremp.getID()),
-                    String.format("Stations: %s --> %s", tremp.getStartStation().getName(), tremp.getEndStation().getName())
-            );
-
-            out.append(trempSummary);
-        }
-        uiHandler.showOutput(out.toString());   //TODO: send limited options to UI
+    private String createDescriptionOfTrempRequest(TrempRequest trempRequest){
+        //TODO: add all relevant information
+        return String.join(System.lineSeparator(),
+                String.format("Tremp ID: %d", trempRequest.getID()),
+                String.format("Stations: %s --> %s", trempRequest.getStartStation().getName(), trempRequest.getEndStation().getName())
+        );
     }
 
     private void exitApp(){

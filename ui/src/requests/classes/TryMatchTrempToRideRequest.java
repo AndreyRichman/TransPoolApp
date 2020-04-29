@@ -3,7 +3,7 @@ package requests.classes;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
-public class MatchTrempToRideRequest implements UserRequest {
+public class TryMatchTrempToRideRequest implements UserRequest {
 
     int trempRequestID;
     int rideID;

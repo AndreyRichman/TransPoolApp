@@ -67,7 +67,7 @@ public class ConsoleUI implements UIHandler {
         stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", this::getRequestForNewTremp)));
         stringNumToRequest .put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
         stringNumToRequest .put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
-        stringNumToRequest .put("5",(new Pair <> ("5. Find a match ", MatchTrempToRideRequest::new)));
+        stringNumToRequest .put("5",(new Pair <> ("5. Find a match ", TryMatchTrempToRideRequest::new)));
         stringNumToRequest .put("6",(new Pair <> ("6. Exit", ExitRequest::new)));
 
         return stringNumToRequest ;
@@ -108,7 +108,7 @@ public class ConsoleUI implements UIHandler {
     }
 
     private UserRequest getMatchTrempToRideRequest(){
-        MatchTrempToRideRequest newRequest = new MatchTrempToRideRequest();
+        TryMatchTrempToRideRequest newRequest = new TryMatchTrempToRideRequest();
         int trempID = 1;  //TODO: get from User
         int rideID = 400; //TODO: get from User
         newRequest.setTrempRequestID(trempID);
@@ -131,6 +131,78 @@ public class ConsoleUI implements UIHandler {
        req.setFileDirectory(getInput());
 
         return req;
+    }
+
+    @Override
+    public int showOptionsAndGetUserSelection(String titleForOptions, List<String> options){
+        System.out.println(String.join(System.lineSeparator(),
+                String.format("%s", '-' * 30),
+                titleForOptions
+                )
+        );
+        int optionNumber = 1;
+        for (String option : options) {
+            System.out.println(optionNumber++);
+            System.out.println(option);
+        }
+
+        return getIndexFrom1To(options.size() + 1);
+    }
+
+    private int getIndexFrom1To(int maxIndex){
+        boolean inputIsValid = false;
+        int selectedIndex = 0;
+        String inputLine;
+        do {
+            System.out.println(String.format("Please select desired option index (%d - %d):", 1, maxIndex));
+            inputLine = this.inputReader.nextLine();
+            try {
+                selectedIndex = Integer.parseInt(inputLine);
+                if (selectedIndex < 1 || selectedIndex > maxIndex)
+                    throw new NumberFormatException();
+
+                inputIsValid = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number was entered.");
+            }
+
+        } while(!inputIsValid);
+
+        return selectedIndex;
+    }
+
+    @Override
+    public boolean getYesNoAnswerForQuestion(String question){
+        System.out.println(question);
+        return getYesOrNoFromUser();
+    }
+
+    public boolean getYesOrNoFromUser(){
+        String input;
+        boolean inputIsValid = false;
+
+        do {
+            System.out.print("Enter y/yes or n/no:");
+            input = this.inputReader.nextLine();
+            inputIsValid = strIsBooleanValue(input);
+
+            if (!inputIsValid){
+                System.out.println("Invalid input, please try again..");
+            }
+        }while (!inputIsValid);
+
+        return convertBoolStrToBooleanValue(input);
+    }
+
+    private boolean strIsBooleanValue(String str){
+        return str.equalsIgnoreCase("yes")
+                || str.equalsIgnoreCase("no")
+                || str.equalsIgnoreCase("y")
+                || str.equalsIgnoreCase("n");
+    }
+
+    private boolean convertBoolStrToBooleanValue(String str){
+        return str.equalsIgnoreCase("yes") || str.equalsIgnoreCase("y");
     }
 
 }

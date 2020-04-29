@@ -1,6 +1,6 @@
 package classes;
 
-import enums.Schedule;
+import enums.Recurrences;
 import enums.TrempPartType;
 import exception.RideNotContainsRouteException;
 import java.util.*;
@@ -46,14 +46,14 @@ public class Ride {
     private List<PartOfRide> partOfRides;
     private List<Station> allStations;
     private LinkedHashMap<Station, PartOfRide> mapFromStationToRoad;
-    private Schedule schedule;
+    private Recurrences schedule;
     private int carCapacity;
 
     private Ride(User rideOwner, List<Road> allRoads, int carCapacity) {
         this.id = unique_id++;
         this.rideOwner = rideOwner;
         this.carCapacity = carCapacity;
-        this.schedule = Schedule.SINGLE_TIME;
+        this.schedule = Recurrences.SINGLE_TIME;
 
         initDataStructures(allRoads, carCapacity);
     }
@@ -140,22 +140,6 @@ public class Ride {
         List<List<Station>> routesWithFreeSpace = new ArrayList<>();
         List<Station> subRoute = new ArrayList<>();
 
-//        for(Map.Entry<Station, PartOfRide> station2Part: this.mapFromStationToRoad.entrySet()){
-//            subRoute.add(station2Part.getKey());
-//
-//            if (station2Part.getValue().canAddTrempist()
-//                    && station2Part.getValue() == partOfRides.get(partOfRides.size() - 1)){
-//                subRoute.add(station2Part.getValue().getRoad().getEndStation());
-//                routesWithFreeSpace.add(subRoute);
-//            }
-//            else{
-//                if(subRoute.size() > 1)
-//                    routesWithFreeSpace.add(subRoute);
-//                subRoute = new ArrayList<>();
-//            }
-//
-//        }
-
         for(PartOfRide part: partOfRides){
             subRoute.add(part.getRoad().getStartStation());
             if (part.canAddTrempist() && part == partOfRides.get(partOfRides.size() - 1)) {
@@ -182,7 +166,7 @@ public class Ride {
         return this.mapFromStationToRoad.get(station).canAddTrempist();
     }
 
-    public void setSchedule(Schedule schedule) {
+    public void setSchedule(Recurrences schedule) {
         this.schedule = schedule;
     }
 

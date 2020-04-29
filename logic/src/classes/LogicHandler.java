@@ -1,5 +1,6 @@
 package classes;
 
+import enums.Recurrences;
 import exception.*;
 import jaxb.schema.generated.Path;
 import jaxb.schema.generated.Stop;
@@ -8,6 +9,7 @@ import jaxb.schema.generated.TransPoolTrip;
 import javax.management.InstanceAlreadyExistsException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static classes.Ride.createRideFromRoads;
 
@@ -36,23 +38,22 @@ public class LogicHandler {
 
             try {
 
-                Road road = new Road(getStationFromName(path.getFrom()), getStationFromName(path.getTo()));
-                road.setFuelUsagePerKilometer(path.getFuelConsumption());
-                road.setLengthInKM(path.getLength());
-                road.setMaxSpeed(path.getSpeedLimit());
+                Road toFromRoad = new Road(getStationFromName(path.getFrom()), getStationFromName(path.getTo()));
+                toFromRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
+                toFromRoad.setLengthInKM(path.getLength());
+                toFromRoad.setMaxSpeed(path.getSpeedLimit());
+                map.addNewRoad(toFromRoad);
+                toFromRoad.getStartStation().addRoadFromCurrentStation(toFromRoad);
 
-                Road road1 = new Road(getStationFromName(path.getTo()), getStationFromName(path.getFrom()));
-                road1.setFuelUsagePerKilometer(path.getFuelConsumption());
-                road1.setLengthInKM(path.getLength());
-                road1.setMaxSpeed(path.getSpeedLimit());
-
-                map.addNewRoad(road);
-                map.addNewRoad(road1);
-
-                road.getStartStation().addRoadFromCurrentStation(road);
-                road1.getStartStation().addRoadFromCurrentStation(road1);
-
-
+                if (!path.isOneWay())
+                {
+                    Road fromToRoad = new Road(getStationFromName(path.getTo()), getStationFromName(path.getFrom()));
+                    fromToRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
+                    fromToRoad.setLengthInKM(path.getLength());
+                    fromToRoad.setMaxSpeed(path.getSpeedLimit());
+                    map.addNewRoad(fromToRoad);
+                    fromToRoad.getStartStation().addRoadFromCurrentStation(fromToRoad);
+                }
 
             } catch (InstanceAlreadyExistsException e) {
                 e.printStackTrace();
@@ -82,11 +83,13 @@ public class LogicHandler {
     private void initRides(TransPool transPool) {
         for (TransPoolTrip ride : transPool.getPlannedTrips().getTransPoolTrip()) {
 
-            List<String> roadListStringNames = Arrays.asList(ride.getRoute().getPath().split(","));
-            //roadListStringNames = roadListStringNames.replaceAll();
-            //TODO: delete spaces after comma
+            List<String> roadListStringNames = Arrays.asList(ride.getRoute().getPath().split("\\s*(,)\\s*"));
+
             try {
-                trafficManager.addRide(createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity()));
+                Ride newRide = createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
+                newRide.setPricePerKilometer(ride.getPPK());
+                newRide.setSchedule(Recurrences.SINGLE_TIME);
+                trafficManager.addRide(newRide);
             } catch (NoRoadBetweenStationsException e) {
                 e.printStackTrace();
             }
@@ -95,20 +98,16 @@ public class LogicHandler {
     }
 
     private void initWorldMap(TransPool transPool) {
+
         map = new WorldMap(transPool.getMapDescriptor().getMapBoundries().getWidth(),transPool.getMapDescriptor().getMapBoundries().getLength());
 
         initStations(transPool);
         initRoads(transPool);
 
-
     }
-
-
 
     public Ride createNewEmptyRide(User rideOwner, List<Road> roads, int capacity){
         Ride newRide = createRideFromRoads(rideOwner, roads, capacity);
-
-//        this.rides.add(newRide);  moved to a seperate func
 
         return newRide;
     }
@@ -122,7 +121,6 @@ public class LogicHandler {
             throw new NoPathExistBetweenStationsException();
         }
         TrempRequest newTrempRequest = new TrempRequest(start, end);
-//        trempRequests.add(newTrempRequest); moved to a seperate func
         return newTrempRequest;
     }
 
@@ -143,6 +141,13 @@ public class LogicHandler {
 
     public List<Ride> getAllRides(){
         return this.trafficManager.getRides();
+    }
+
+    public List<String> getAllRideAsString(){
+        List<String> s = getAllRides()
+                    .stream()
+                    .flatMap(ride -> Stream.of(ride.getAllStations())).flatMap(Collection::stream).map(Station::getName).collect(Collectors.toList());
+        return s;
     }
 
     public List<TrempRequest> getAllTrempRequests(){

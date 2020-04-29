@@ -20,10 +20,9 @@ public class App {
 
         exit = false;
 
-        uiHandler.showOutput("App created successfully!");
     }
+
     public void run(){
-        uiHandler.showOutput("App is Running!");
         while(!exit) {
             UserRequest req = uiHandler.getRequestFromUser();
             processRequest(req);
@@ -68,6 +67,7 @@ public class App {
         //TODO: catch errors here
         String directory = request.getFileDirectory();
         logicHandler.loadXMLFile(directory);
+
     }
 
     private void addNewTrempRequest(NewTrempRequest request) {
@@ -132,7 +132,11 @@ public class App {
                             .stream()
                             .map(Station::getName)
                             .collect(Collectors.joining(" -> "))
-                    )
+                    ),
+                    String.format("Ride price: %d", ride.getTotalCostOfRide()),
+                    String.format("Ride departure time: %d", ride.getDeptTime()),
+                    String.format("Ride arrival time: %d", ride.getArrTime()),
+                    String.format("Ride trempists capacity: %d", )
             );
             out.append(rideSummary);
 

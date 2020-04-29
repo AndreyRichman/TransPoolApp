@@ -37,7 +37,7 @@ public class TrempRequest {
     }
 
     public boolean isNotAssignedToRides(){
-        return this.subRides.size() > 0;
+        return this.subRides.size() == 0;
     }
 
     public void setMaxNumberOfConnections(int maxNumberOfConnections) {
@@ -70,5 +70,13 @@ public class TrempRequest {
 
     public Station getEndStation() {
         return endStation;
+    }
+
+    public int getMaxNumberOfConnections() {
+        return maxNumberOfConnections;
+    }
+
+    public LocalTime getDepartTime() {
+        return departTime;
     }
 }

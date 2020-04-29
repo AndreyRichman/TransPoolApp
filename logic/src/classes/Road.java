@@ -45,4 +45,8 @@ public class Road {
     public Station getEndStation() {
         return endStation;
     }
+
+    public int getDurationInMinutes(){
+        return lengthInKM / maxSpeed;
+    }
 }

@@ -21,10 +21,9 @@ public class App {
 
         exit = false;
 
-        uiHandler.showOutput("App created successfully!");
     }
+
     public void run(){
-        uiHandler.showOutput("App is Running!");
         while(!exit) {
             UserRequest req = uiHandler.getRequestFromUser();
             processRequest(req);
@@ -64,6 +63,7 @@ public class App {
         //TODO: catch errors here
         String directory = request.getFileDirectory();
         logicHandler.loadXMLFile(directory);
+
     }
 
     private void addNewTrempRequest(NewTrempRequest request) {
@@ -104,6 +104,7 @@ public class App {
     private String createSummaryOfAllRides() {
         StringBuilder out = new StringBuilder("Summary of all Rides in the system:" + System.lineSeparator());
         for(Ride ride: logicHandler.getAllRides()){
+
             String rideDescription = createDescriptionOfRide(ride);
             out.append(rideDescription);
         }

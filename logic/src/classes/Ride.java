@@ -1,6 +1,6 @@
 package classes;
 
-import enums.Schedule;
+import enums.Recurrences;
 import enums.TrempPartType;
 import exception.RideNotContainsRouteException;
 
@@ -64,8 +64,6 @@ public class Ride {
         this.id = unique_id++;
         this.rideOwner = rideOwner;
         this.carCapacity = carCapacity;
-        this.schedule = Schedule.SINGLE_TIME;
-
         initDataStructures(allRoads, carCapacity);
     }
 
@@ -82,6 +80,11 @@ public class Ride {
             this.mapFromStationToRoad.put(road.getStartStation(), partOfRide);
         });
 
+    }
+
+    public List<PartOfRide> getPartOfRide()
+    {
+        return this.partOfRides;
     }
 
     public void setStartTime(LocalTime startTime) {
@@ -213,8 +216,8 @@ public class Ride {
         return this.mapFromStationToRoad.get(station).canAddTrempist();
     }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    public void setSchedule(int hour, Integer day, String rec) {
+        this.schedule = new Schedule(hour, day, rec);
     }
 
     public void setPricePerKilometer(int pricePerKilometer) {

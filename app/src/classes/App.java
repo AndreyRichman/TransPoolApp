@@ -133,10 +133,10 @@ public class App {
                             .map(Station::getName)
                             .collect(Collectors.joining(" -> "))
                     ),
-                    String.format("Ride price: %d", ride.getTotalCostOfRide()),
-                    String.format("Ride departure time: %d", ride.getDeptTime()),
-                    String.format("Ride arrival time: %d", ride.getArrTime()),
-                    String.format("Ride trempists capacity: %d", )
+                    String.format("Ride price: %d", ride.getTotalCostOfRide())
+                    //String.format("Ride departure time: %d", ride.getDeptTime()),
+                    //String.format("Ride arrival time: %d", ride.getArrTime()),
+                    //String.format("Ride trempists capacity: %d", )
             );
             out.append(rideSummary);
 

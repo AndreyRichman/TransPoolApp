@@ -46,14 +46,13 @@ public class Ride {
     private List<PartOfRide> partOfRides;
     private List<Station> allStations;
     private LinkedHashMap<Station, PartOfRide> mapFromStationToRoad;
-    private Recurrences schedule;
+    private Schedule schedule;
     private int carCapacity;
 
     private Ride(User rideOwner, List<Road> allRoads, int carCapacity) {
         this.id = unique_id++;
         this.rideOwner = rideOwner;
         this.carCapacity = carCapacity;
-        this.schedule = Recurrences.SINGLE_TIME;
 
         initDataStructures(allRoads, carCapacity);
     }
@@ -166,8 +165,8 @@ public class Ride {
         return this.mapFromStationToRoad.get(station).canAddTrempist();
     }
 
-    public void setSchedule(Recurrences schedule) {
-        this.schedule = schedule;
+    public void setSchedule(int hour, int min, String rec) {
+        this.schedule = new Schedule(hour, min, rec);
     }
 
     public void setPricePerKilometer(int pricePerKilometer) {

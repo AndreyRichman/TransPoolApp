@@ -88,7 +88,7 @@ public class LogicHandler {
             try {
                 Ride newRide = createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
                 newRide.setPricePerKilometer(ride.getPPK());
-                newRide.setSchedule(Recurrences.SINGLE_TIME);
+                newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
                 trafficManager.addRide(newRide);
             } catch (NoRoadBetweenStationsException e) {
                 e.printStackTrace();

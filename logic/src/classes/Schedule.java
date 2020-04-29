@@ -5,11 +5,12 @@ import enums.Recurrences;
 public class Schedule {
     private int hour;
     private int min;
+    private int day;
     private Recurrences recurrences;
 
-    public Schedule(int hour, int min, String rec ){
+    public Schedule(int hour, int day, String rec ){
         this.hour = hour;
-        this.min = min;
+        this.day = day;
     }
 
     public void setRecurrences(String rec) {

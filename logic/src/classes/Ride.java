@@ -84,7 +84,7 @@ public class Ride {
 
     public List<PartOfRide> getPartOfRide()
     {
-        return this.partOfRides;
+        return this.partsOfRide;
     }
 
     public void setStartTime(LocalTime startTime) {

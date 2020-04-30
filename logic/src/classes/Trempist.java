@@ -5,14 +5,20 @@ import enums.TrempPartType;
 public class Trempist {
 
     User user;
-    TrempPartType partType;
+    TrempPartType fromPartType;
+    TrempPartType toPartType;
 
-    public Trempist(User user, TrempPartType partType) {
+    public Trempist(User user, TrempPartType fromPartType, TrempPartType toPartType) {
         this.user = user;
-        this.partType = partType;
+        this.fromPartType = fromPartType;
+        this.toPartType = toPartType;
     }
 
-    public TrempPartType getPartType() {
-        return partType;
+    public TrempPartType getFromPartType() {
+        return fromPartType;
+    }
+
+    public TrempPartType getToPartType() {
+        return toPartType;
     }
 }

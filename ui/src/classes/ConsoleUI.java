@@ -205,4 +205,27 @@ public class ConsoleUI implements UIHandler {
         return str.equalsIgnoreCase("yes") || str.equalsIgnoreCase("y");
     }
 
+    @Override
+    public int getNumberForString(String question){
+        boolean inputIsValid = false;
+        int enteredNumber = -1;
+        String inputLine;
+        do {
+            System.out.println(question);
+            inputLine = this.inputReader.nextLine();
+            try {
+                enteredNumber = Integer.parseInt(inputLine);
+                if (enteredNumber < 0)
+                    throw new NumberFormatException();
+
+                inputIsValid = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number was entered.");
+            }
+
+        } while(!inputIsValid);
+
+        return enteredNumber;
+    }
+
 }

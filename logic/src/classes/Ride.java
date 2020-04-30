@@ -5,6 +5,7 @@ import enums.TrempPartType;
 import java.time.LocalTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Ride {
 
@@ -53,6 +54,32 @@ public class Ride {
 
         public Station getEndStation() {
             return endStation;
+        }
+
+        public double getTotalCost(){
+            return this.selectedPartsOfRide.stream()
+                    .mapToDouble(PartOfRide::getLengthOfRoad)
+                    .map( length -> length * originalRide.getPricePerKilometer())
+                    .sum();
+        }
+
+        public List<Station> getAllStations(){
+            LinkedHashSet<Station> allStations = new LinkedHashSet<>();
+            this.selectedPartsOfRide.forEach(partOfRide -> {
+                allStations.add(partOfRide.getRoad().getStartStation());
+                allStations.add(partOfRide.getRoad().getEndStation());
+            });
+
+            return new ArrayList<>(allStations);
+        }
+
+        public LocalTime getArrivalTime(){
+            return this.selectedPartsOfRide.get(this.selectedPartsOfRide.size() - 1).getEndTime();
+        }
+
+        public double getAverageFuelUsage(){
+            OptionalDouble average = this.selectedPartsOfRide.stream().mapToDouble(PartOfRide::getFuelUsage).average();
+            return average.isPresent() ? average.getAsDouble(): 0;
         }
     }
 
@@ -245,5 +272,9 @@ public class Ride {
 
     public List<Station> getAllStations(){
         return this.allStations;
+    }
+
+    public int getPricePerKilometer() {
+        return pricePerKilometer;
     }
 }

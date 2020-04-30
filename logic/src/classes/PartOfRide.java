@@ -2,7 +2,6 @@ package classes;
 
 import java.time.LocalTime;
 
-
 public class PartOfRide {
 
     private Road road;

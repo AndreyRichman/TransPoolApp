@@ -1,5 +1,6 @@
 package interfaces;
 
+import requests.classes.NewTrempRequest;
 import requests.interfaces.UserRequest;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface UIHandler {
     boolean getYesNoAnswerForQuestion(String question);
     int getNumberForString(String question);
     void showErrorMsg(String errorMsg);
+    public NewTrempRequest getRequestForNewTremp(NewTrempRequest req);
 }

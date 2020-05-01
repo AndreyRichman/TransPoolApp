@@ -31,9 +31,10 @@ public class App {
     public void run(){
         boolean xmlLoadedCond = false;
         boolean treampsAddedCond = false;
+
         while(!exit) {
             UserRequest req = uiHandler.getRequestFromUser();
-             processRequest(req, xmlLoadedCond, treampsAddedCond);
+            processRequest(req, xmlLoadedCond, treampsAddedCond);
         }
     }
 
@@ -53,7 +54,7 @@ public class App {
                 break;
             case NEW_TREMP:
                 if (xmlLoadedCond){
-                    addNewTrempRequest((NewTrempRequest) request);
+                    addNewTrempRequest(uiHandler.getRequestForNewTremp((NewTrempRequest) request));
                     treampsAddedCond = true;
                 }
                 else {
@@ -86,7 +87,7 @@ public class App {
                         uiHandler.showErrorMsg(errorMsg);
                     }
                     if(!treampsAddedCond){
-                        String errorMsg = "No tremps in the system yet, please add new tremp request first";
+                        String errorMsg = "No tremps in the system yet";
                         uiHandler.showErrorMsg(errorMsg);
                     }
                 }
@@ -100,7 +101,7 @@ public class App {
                         uiHandler.showErrorMsg(errorMsg);
                     }
                     if(!treampsAddedCond){
-                        String errorMsg = "No tremps in the system yet, please add new tremp request first";
+                        String errorMsg = "No tremps in the system yet";
                         uiHandler.showErrorMsg(errorMsg);
                     }
                 }

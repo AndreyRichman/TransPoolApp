@@ -1,24 +1,23 @@
 package classes;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 public class PartOfRide {
 
     private Road road;
     private int capacity;
-    private ArrayList<Trempist> trempists;
     private LocalTime startTime;
     private LocalTime endTime;
+    private TrempistsManager trempistsManager;
 
     public PartOfRide(Road road, int capacity) {
         this.road = road;
         this.capacity = capacity;
-        this.trempists = new ArrayList<>(capacity);
+        this.trempistsManager = new TrempistsManager();
     }
 
     public void addTrempist(Trempist trempist) {
-        trempists.add(trempist);
+        trempistsManager.addTrempist(trempist);
     }
 
     public boolean canAddTrempist(){
@@ -30,7 +29,7 @@ public class PartOfRide {
     }
 
     public int getCurrentCapacity(){
-        return this.trempists.size();
+        return this.trempistsManager.getAllTrempists().size();
     }
 
     public double getPeriodInMinutes(){
@@ -46,8 +45,8 @@ public class PartOfRide {
         return road.getFuelUsagePerKilometer();
     }
 
-    public ArrayList<Trempist> getAllTrempists() {
-        return this.trempists;
+    public TrempistsManager getTrempistsManager() {
+        return trempistsManager;
     }
 
     public Road getRoad() {

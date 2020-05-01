@@ -12,4 +12,5 @@ public interface UIHandler {
     UserRequest getRequestFromUser();
     public int showOptionsAndGetUserSelection(String titleForOptions, List<String> options);
     boolean getYesNoAnswerForQuestion(String question);
+    int getNumberForString(String question);
 }

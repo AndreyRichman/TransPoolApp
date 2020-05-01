@@ -1,28 +1,26 @@
 package classes;
 
-import enums.Recurrences;
 import enums.TrempPartType;
-import exception.RideNotContainsRouteException;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Ride {
 
     public class SubRide {
 
         private final Ride originalRide;
-        private final Station start;
-        private final Station end;
+        private final Station startStation;
+        private final Station endStation;
         List<PartOfRide> selectedPartsOfRide;
 
-        public SubRide(Ride originalRide, Station start, Station end) {
+        public SubRide(Ride originalRide, Station startStation, Station endStation) {
             this.originalRide = originalRide;
-            this.start = start;
-            this.end = end;
-            this.selectedPartsOfRide = getRelevantPartsOfRide(start, end);
+            this.startStation = startStation;
+            this.endStation = endStation;
+            this.selectedPartsOfRide = getRelevantPartsOfRide(startStation, endStation);
         }
 
         public Ride getOriginalRide() {
@@ -38,13 +36,50 @@ public class Ride {
 
         public void applyTrempistToAllPartsOfRide(User user) {
             selectedPartsOfRide.forEach( partOfRide -> {
-                TrempPartType partType = partOfRide == selectedPartsOfRide.get(0) ?
-                        TrempPartType.FIRST :
-                        partOfRide == selectedPartsOfRide.get(selectedPartsOfRide.size() - 1) ?
-                                TrempPartType.LAST : TrempPartType.MIDDLE;
+                TrempPartType fromStation = TrempPartType.MIDDLE, toStation = TrempPartType.MIDDLE;
 
-                partOfRide.addTrempist(new Trempist(user, partType));
+                if (partOfRide == selectedPartsOfRide.get(0))
+                    fromStation = TrempPartType.FIRST;
+
+                if (partOfRide == selectedPartsOfRide.get(selectedPartsOfRide.size() - 1))
+                    toStation = TrempPartType.LAST;
+
+                partOfRide.addTrempist(new Trempist(user, fromStation, toStation));
             });
+        }
+
+        public Station getStartStation() {
+            return startStation;
+        }
+
+        public Station getEndStation() {
+            return endStation;
+        }
+
+        public double getTotalCost(){
+            return this.selectedPartsOfRide.stream()
+                    .mapToDouble(PartOfRide::getLengthOfRoad)
+                    .map( length -> length * originalRide.getPricePerKilometer())
+                    .sum();
+        }
+
+        public List<Station> getAllStations(){
+            LinkedHashSet<Station> allStations = new LinkedHashSet<>();
+            this.selectedPartsOfRide.forEach(partOfRide -> {
+                allStations.add(partOfRide.getRoad().getStartStation());
+                allStations.add(partOfRide.getRoad().getEndStation());
+            });
+
+            return new ArrayList<>(allStations);
+        }
+
+        public LocalTime getArrivalTime(){
+            return this.selectedPartsOfRide.get(this.selectedPartsOfRide.size() - 1).getEndTime();
+        }
+
+        public double getAverageFuelUsage(){
+            OptionalDouble average = this.selectedPartsOfRide.stream().mapToDouble(PartOfRide::getFuelUsage).average();
+            return average.isPresent() ? average.getAsDouble(): 0;
         }
     }
 
@@ -84,7 +119,7 @@ public class Ride {
 
     public List<PartOfRide> getPartOfRide()
     {
-        return this.partOfRides;
+        return this.partsOfRide;
     }
 
     public void setStartTime(LocalTime startTime) {
@@ -218,6 +253,7 @@ public class Ride {
 
     public void setSchedule(int hour, Integer day, String rec) {
         this.schedule = new Schedule(hour, day, rec);
+        this.setStartTime(LocalTime.MIN.plusHours(hour));
     }
 
     public void setPricePerKilometer(int pricePerKilometer) {
@@ -236,5 +272,9 @@ public class Ride {
 
     public List<Station> getAllStations(){
         return this.allStations;
+    }
+
+    public int getPricePerKilometer() {
+        return pricePerKilometer;
     }
 }

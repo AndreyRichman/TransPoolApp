@@ -76,7 +76,7 @@ public class TrafficManager {
         List<Ride> relevantRides = this.allRides.stream()
                 .filter((ride)-> !ride.containsValidRoute(from, to)).collect(Collectors.toList());
 
-        //TODO: write algorithm to groups of rides
+        //TODO: write algorithm to groups of rides and filter by max connections
 
         return rideOptions;
     }

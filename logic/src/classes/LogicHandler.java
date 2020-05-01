@@ -7,6 +7,8 @@ import jaxb.schema.generated.Stop;
 import jaxb.schema.generated.TransPool;
 import jaxb.schema.generated.TransPoolTrip;
 import javax.management.InstanceAlreadyExistsException;
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +25,7 @@ public class LogicHandler {
         usersNameToObject = new HashMap<>();
     }
 
-    public void loadXMLFile(String pathToFile){
+    public void loadXMLFile(String pathToFile) throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException{
         XMLHandler loadXML = new XMLHandler(pathToFile);
         TransPool transPool = loadXML.LoadXML();
 

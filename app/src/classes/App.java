@@ -6,6 +6,8 @@ import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -61,9 +63,20 @@ public class App {
     }
 
     private void loadContentFromXMLFile(LoadXMLRequest request){
-        //TODO: catch errors here
-        String directory = request.getFileDirectory();
-        logicHandler.loadXMLFile(directory);
+
+        try {
+            logicHandler.loadXMLFile(request.getFileDirectory());
+        } catch (JAXBException e) {
+            String errorMsg = "Failed to read XML file";
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (InvalidFileTypeException e) {
+            String errorMsg = "File type is not XML type";
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (NoFileFoundInPathException e) {
+            String errorMsg = "Cant file type in path";
+            uiHandler.showErrorMsg(errorMsg);
+        }
+
 
     }
 
@@ -85,10 +98,10 @@ public class App {
 
         } catch (StationNotFoundException e) {
             String errorMsg = "Station not found: " + e.getStationName();
-            uiHandler.showOutput(errorMsg);
+            uiHandler.showErrorMsg(errorMsg);
         } catch (NoPathExistBetweenStationsException e){
           String errorMsg = "No path found between " + request.getFromStation() + " and " + request.getToStation();
-            uiHandler.showOutput(errorMsg);
+            uiHandler.showErrorMsg(errorMsg);
         }
 
     }

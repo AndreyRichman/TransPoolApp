@@ -55,6 +55,10 @@ public class ConsoleUI implements UIHandler {
         System.out.println(outputMsg);
     }
 
+    public void showErrorMsg(String outputMsg) {
+        System.err.println(outputMsg);
+    }
+
     private boolean checkRequestIsValid(String chosenRequest) {
         return stringNumToRequest .containsKey(chosenRequest);
     }

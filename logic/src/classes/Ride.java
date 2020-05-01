@@ -168,24 +168,6 @@ public class Ride {
         return new SubRide(this, fromStation, toStation);
     }
 
-//This was valid only for case when Single Ride was good for TrempRequest, this logic was move to App::assignTrempRequestToSpecificRide
-//
-//    private void assignTrempRequestToCurrentRideByStations(TrempRequest trempRequest, Station joinFromStation, Station joinUntilStation) {
-//        follow this and delete this
-//        SubRide subRide = getSubRide(joinFromStation, joinUntilStation);
-//        subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
-//        trempRequest.addSubRide(subRide);
-//    }
-
-//    public void assignTrempRequest(TrempRequest trempRequest) throws RideNotContainsRouteException {
-//        Station from = trempRequest.getStartStation();
-//        Station to = trempRequest.getEndStation();
-//        if(!containsValidRoute(from, to))
-//            throw new RideNotContainsRouteException(from, to);
-//
-//        assignTrempRequestToCurrentRideByStations(trempRequest, from, to);
-//    }
-
     public boolean containsValidRoute(Station from, Station to){    //valid = have empty space in all parts
         boolean containsRoute = false;
 

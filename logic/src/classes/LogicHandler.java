@@ -22,7 +22,9 @@ public class LogicHandler {
         usersNameToObject = new HashMap<>();
     }
 
-    public void loadXMLFile(String pathToFile) throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException, InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException, StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException {
+    public void loadXMLFile(String pathToFile) throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException,
+            InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
+            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, NoRoadBetweenStationsException {
         XMLHandler loadXML = new XMLHandler(pathToFile);
         TransPool transPool = loadXML.LoadXML();
 
@@ -57,26 +59,24 @@ public class LogicHandler {
         }
     }
 
-    private void initStations(TransPool transPool) throws StationNameAlreadyExistsException, InstanceAlreadyExistsException, StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException {
+    private void initStations(TransPool transPool) throws StationNameAlreadyExistsException, InstanceAlreadyExistsException,
+            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException {
 
         for (Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
             map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
         }
     }
 
-    private void initRides(TransPool transPool) {
+    private void initRides(TransPool transPool) throws NoRoadBetweenStationsException {
         for (TransPoolTrip ride : transPool.getPlannedTrips().getTransPoolTrip()) {
 
             List<String> roadListStringNames = Arrays.asList(ride.getRoute().getPath().split("\\s*(,)\\s*"));
 
-            try {
                 Ride newRide = createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
                 newRide.setPricePerKilometer(ride.getPPK());
                 newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
                 trafficManager.addRide(newRide);
-            } catch (NoRoadBetweenStationsException e) {
-                e.printStackTrace();
-            }
+
 
         }
     }

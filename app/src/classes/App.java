@@ -93,6 +93,9 @@ public class App {
         } catch (StationNotFoundException e) {
             String errorMsg = "Cant create new road, station not found ";
             uiHandler.showErrorMsg(errorMsg);
+        } catch (NoRoadBetweenStationsException e) {
+            String errorMsg = "No Road Between " + e.getFromStation() + "to " + e.getToStation();
+            uiHandler.showErrorMsg(errorMsg);
         }
 
 

@@ -13,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static requests.enums.RequestType.LOAD_XML_FILE;
+
 public class App {
     UIHandler uiHandler;
     LogicHandler logicHandler;
@@ -27,33 +29,81 @@ public class App {
     }
 
     public void run(){
+        boolean xmlLoadedCond = false;
+        boolean treampsAddedCond = false;
         while(!exit) {
             UserRequest req = uiHandler.getRequestFromUser();
-            processRequest(req);
+             processRequest(req, xmlLoadedCond, treampsAddedCond);
         }
     }
 
-    private void processRequest(UserRequest request){
+    private void processRequest(UserRequest request, boolean xmlLoadedCond, boolean treampsAddedCond){
         RequestType requestType = request.getRequestType();
 
         switch (requestType){
             case LOAD_XML_FILE:
-                loadContentFromXMLFile((LoadXMLRequest)request);
+                if(!xmlLoadedCond){
+                    loadContentFromXMLFile((LoadXMLRequest)request);
+                    xmlLoadedCond = true;
+                }
+                else {
+                    String errorMsg = "XML has already loaded to system";
+                    uiHandler.showErrorMsg(errorMsg);
+                }
                 break;
             case NEW_TREMP:
-                addNewTrempRequest((NewTrempRequest) request);
+                if (xmlLoadedCond){
+                    addNewTrempRequest((NewTrempRequest) request);
+                    treampsAddedCond = true;
+                }
+                else {
+                    String errorMsg = "XML is NOT loaded to system yet";
+                    uiHandler.showErrorMsg(errorMsg);
+                }
                 break;
             case NEW_RIDE:
-                addNewRide((NewRideRequest) request);
+                if(xmlLoadedCond)
+                    addNewRide((NewRideRequest) request);
+                else {
+                    String errorMsg = "XML is NOT loaded to system yet";
+                    uiHandler.showErrorMsg(errorMsg);
+                }
                 break;
             case GET_STATUS_OF_RIDES:
-                showStatusOfRides((GetStatusOfRidesRequest) request);
+                if(xmlLoadedCond)
+                    showStatusOfRides((GetStatusOfRidesRequest) request);
+                else {
+                    String errorMsg = "XML is NOT loaded to system yet";
+                    uiHandler.showErrorMsg(errorMsg);
+                }
                 break;
             case GET_STATUS_OF_TREMPS:
-                showStatusOfTremps((GetStatusOfTrempsRequest) request);
+                if (xmlLoadedCond && treampsAddedCond)
+                    showStatusOfTremps((GetStatusOfTrempsRequest) request);
+                else{
+                    if(!xmlLoadedCond){
+                        String errorMsg = "XML is NOT loaded to system yet";
+                        uiHandler.showErrorMsg(errorMsg);
+                    }
+                    if(!treampsAddedCond){
+                        String errorMsg = "No tremps in the system yet, please add new tremp request first";
+                        uiHandler.showErrorMsg(errorMsg);
+                    }
+                }
                 break;
             case MATCH_TREMP_TO_RIDE:
-                tryMatchTrempToRide((TryMatchTrempToRideRequest) request);
+                if (xmlLoadedCond && treampsAddedCond)
+                    tryMatchTrempToRide((TryMatchTrempToRideRequest) request);
+                else{
+                    if(!xmlLoadedCond){
+                        String errorMsg = "XML is NOT loaded to system yet";
+                        uiHandler.showErrorMsg(errorMsg);
+                    }
+                    if(!treampsAddedCond){
+                        String errorMsg = "No tremps in the system yet, please add new tremp request first";
+                        uiHandler.showErrorMsg(errorMsg);
+                    }
+                }
                 break;
             case EXIT:
                 exitApp();

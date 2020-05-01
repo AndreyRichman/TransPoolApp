@@ -22,7 +22,6 @@ public class ConsoleUI implements UIHandler {
     public UserRequest getRequestFromUser(){
         UserRequest request = null;
         boolean requestIsValid = false;
-
         do {
             showOptions();
             String chosenAction = getInput();

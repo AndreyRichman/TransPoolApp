@@ -25,8 +25,8 @@ public class LogicHandler {
     public void loadXMLFile(String pathToFile) throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException,
             InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
             StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, NoRoadBetweenStationsException {
-        XMLHandler loadXML = new XMLHandler(pathToFile);
-        TransPool transPool = loadXML.LoadXML();
+
+        TransPool transPool = (new XMLHandler(pathToFile)).LoadXML();
 
         initWorldMap(transPool);
         initRides(transPool);
@@ -36,26 +36,22 @@ public class LogicHandler {
 
         for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
 
+            Road toFromRoad = new Road(getStationFromName(path.getFrom()), getStationFromName(path.getTo()));
+            toFromRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
+            toFromRoad.setLengthInKM(path.getLength());
+            toFromRoad.setMaxSpeed(path.getSpeedLimit());
+            map.addNewRoad(toFromRoad);
+            toFromRoad.getStartStation().addRoadFromCurrentStation(toFromRoad);
 
-
-                Road toFromRoad = new Road(getStationFromName(path.getFrom()), getStationFromName(path.getTo()));
-                toFromRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
-                toFromRoad.setLengthInKM(path.getLength());
-                toFromRoad.setMaxSpeed(path.getSpeedLimit());
-                map.addNewRoad(toFromRoad);
-                toFromRoad.getStartStation().addRoadFromCurrentStation(toFromRoad);
-
-                if (!path.isOneWay())
-                {
-                    Road fromToRoad = new Road(getStationFromName(path.getTo()), getStationFromName(path.getFrom()));
-                    fromToRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
-                    fromToRoad.setLengthInKM(path.getLength());
-                    fromToRoad.setMaxSpeed(path.getSpeedLimit());
-                    map.addNewRoad(fromToRoad);
-                    fromToRoad.getStartStation().addRoadFromCurrentStation(fromToRoad);
-                }
-
-
+            if (!path.isOneWay())
+            {
+                Road fromToRoad = new Road(getStationFromName(path.getTo()), getStationFromName(path.getFrom()));
+                fromToRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
+                fromToRoad.setLengthInKM(path.getLength());
+                fromToRoad.setMaxSpeed(path.getSpeedLimit());
+                map.addNewRoad(fromToRoad);
+                fromToRoad.getStartStation().addRoadFromCurrentStation(fromToRoad);
+            }
         }
     }
 

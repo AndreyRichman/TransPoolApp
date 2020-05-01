@@ -37,7 +37,7 @@ public class TrempRequest {
     }
 
     public boolean isNotAssignedToRides(){
-        return this.subRides.size() == 0;
+        return  this.subRides == null || this.subRides.size() == 0;
     }
 
     public void setMaxNumberOfConnections(int maxNumberOfConnections) {

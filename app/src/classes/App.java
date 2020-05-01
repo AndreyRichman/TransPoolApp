@@ -6,8 +6,8 @@ import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
 
+import javax.management.InstanceAlreadyExistsException;
 import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -70,10 +70,28 @@ public class App {
             String errorMsg = "Failed to read XML file";
             uiHandler.showErrorMsg(errorMsg);
         } catch (InvalidFileTypeException e) {
-            String errorMsg = "File type is not XML type";
+            String errorMsg = "File type is " + e.getFileType() + " and not .xml type" ;
             uiHandler.showErrorMsg(errorMsg);
         } catch (NoFileFoundInPathException e) {
             String errorMsg = "Cant file type in path";
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (InvalidMapBoundariesException e) {
+            String errorMsg = "Invalid map boundaries: " + e.getWidth() + "," + e.getLength();
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (StationNameAlreadyExistsException e) {
+            String errorMsg = "Two stations with the same name";
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (InstanceAlreadyExistsException e) {
+            String errorMsg = "?";
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (StationCoordinateoutOfBoundriesException e) {
+            String errorMsg = "Station Coordinate out Of Boundaries";
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (StationAlreadyExistInCoordinateException e) {
+            String errorMsg = "Station Already Exist In Coordinate ";
+            uiHandler.showErrorMsg(errorMsg);
+        } catch (StationNotFoundException e) {
+            String errorMsg = "Cant create new road, station not found ";
             uiHandler.showErrorMsg(errorMsg);
         }
 
@@ -111,16 +129,14 @@ public class App {
     }
 
     private void showStatusOfRides(GetStatusOfRidesRequest request) {
-        String summaryOfRides = createSummaryOfAllRides();
-        uiHandler.showOutput(summaryOfRides);
+        uiHandler.showOutput(createSummaryOfAllRides());
     }
 
     private String createSummaryOfAllRides() {
         StringBuilder out = new StringBuilder("Summary of all Rides in the system:" + System.lineSeparator());
-        for(Ride ride: logicHandler.getAllRides()){
 
-            String rideDescription = createDescriptionOfRide(ride);
-            out.append(rideDescription);
+        for(Ride ride: logicHandler.getAllRides()){
+            out.append(createDescriptionOfRide(ride));
         }
         return out.toString();
     }

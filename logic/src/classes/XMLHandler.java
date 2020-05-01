@@ -26,7 +26,7 @@ public class XMLHandler {
             throw new NoFileFoundInPathException();
 
         if (!getFileType(path).equalsIgnoreCase(".xml"))
-            throw new InvalidFileTypeException();
+            throw new InvalidFileTypeException(getFileType(path));
 
 
 

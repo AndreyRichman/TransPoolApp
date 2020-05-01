@@ -16,6 +16,7 @@ public class WorldMap {
     Map<Coordinate, String> coordinateStationNameMap;
 
     public WorldMap(int width, int height) {
+
         this.width = width;
         this.height = height;
         this.allStations = new ArrayList<>();
@@ -23,6 +24,7 @@ public class WorldMap {
         this.stationName2Object = new HashMap<>();
         this.coordinateStationNameMap = new HashMap<>();
     }
+
     public List<Station> getAllStations(){
         return allStations;
     }

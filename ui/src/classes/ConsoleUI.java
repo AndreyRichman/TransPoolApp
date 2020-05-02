@@ -47,14 +47,26 @@ public class ConsoleUI implements UIHandler {
                 delimiter,
                 "Select Desired Option:",
                 delimiter);
-        String title = String.join(System.lineSeparator(),
-                String.join("", Collections.nCopies(question.length(), "-")),
-                question,
-                String.join("", Collections.nCopies(question.length(), "-"))
+
+        showTitle(question);
+        stringNumToRequest .forEach((k,v) -> System.out.println(v.getKey()));
+    }
+
+    @Override
+    public void showTitle(String title){
+        int lengthOfRow = Math.max(title.length() + 2, 46);
+        int numOfSpaces = (lengthOfRow - title.length()) / 2; //lengthOfRow == title.length() + 2? 1: lengthOfRow / 3;
+
+        String spacesBeforeAndAfterTitle = String.join("", Collections.nCopies(numOfSpaces, " "));
+        String signesAroundTitle = " " +  String.join("", Collections.nCopies(lengthOfRow, "-"));
+
+        String titleToShow = String.join(System.lineSeparator(),
+                signesAroundTitle,
+                "|" + spacesBeforeAndAfterTitle + title + spacesBeforeAndAfterTitle + "|",
+                signesAroundTitle
         );
 
-        showOutput(title);
-        stringNumToRequest .forEach((k,v) -> System.out.println(v.getKey()));
+        showOutput(titleToShow);
     }
 
     @Override

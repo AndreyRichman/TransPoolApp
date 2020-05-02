@@ -56,9 +56,12 @@ public class SubRide {
     }
 
     public double getTotalCost(){
+        return getTotalDistance() * originalRide.getPricePerKilometer();
+    }
+
+    public double getTotalDistance(){
         return this.selectedPartsOfRide.stream()
                 .mapToDouble(PartOfRide::getLengthOfRoad)
-                .map( length -> length * originalRide.getPricePerKilometer())
                 .sum();
     }
 

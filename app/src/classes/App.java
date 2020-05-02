@@ -13,8 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static requests.enums.RequestType.LOAD_XML_FILE;
-
 public class App {
     UIHandler uiHandler;
     LogicHandler logicHandler;
@@ -137,8 +135,15 @@ public class App {
     }
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {
         List<TrempRequest> allTrempRequests = logicHandler.getAllTrempRequests();
-        List<String> summaryOfAllTremps = getSummaryOfAllTrempRequests(allTrempRequests);
-        uiHandler.showOutput(String.join(System.lineSeparator(), summaryOfAllTremps));
+        String title = "All Tremp Requests";
+        uiHandler.showTitle(title);
+
+        if (allTrempRequests.size() > 0){
+            List<String> summaryOfAllTremps = getSummaryOfAllTrempRequests(allTrempRequests);
+            uiHandler.showOutput(String.join(System.lineSeparator(), summaryOfAllTremps));
+        } else
+            uiHandler.showOutput( String.join("", Collections.nCopies(10, " "))+ "No Rides found in the System");
+
     }
 
     private List<String> getSummaryOfAllTrempRequests(List<TrempRequest> allTrempRequests){
@@ -211,10 +216,13 @@ public class App {
 
     private String createDescriptionOfTrempOption(List<SubRide> trempOption){
         StringBuilder out = new StringBuilder();
+        String trempOptionDelimiter = String.join("", Collections.nCopies(5, " "));
         String trempPartsDelimiter = String.join("", Collections.nCopies(10, " "));
-        out.append(String.join(System.lineSeparator(),
+        out.append(String.join(System.lineSeparator() + trempOptionDelimiter,
+                "",
                 String.format("Estimated arrival time: %s", trempOption.get(trempOption.size() - 1).getArrivalTime()),
                 String.format("Average Fuel usage: %.2f", trempOption.stream().mapToDouble(SubRide::getAverageFuelUsage).average().getAsDouble()),
+                String.format("Total Distance: %.1f km", trempOption.stream().mapToDouble(SubRide::getTotalDistance).sum()),
                 String.format("Total Cost: %.2f", trempOption.stream().mapToDouble(SubRide::getTotalCost).sum()),
                 String.format("Total Connections: %d", trempOption.size() - 1),
                 String.format("Tremp parts: %s", System.lineSeparator())
@@ -262,11 +270,23 @@ public class App {
     }
 
     private String createDescriptionOfTrempRequest(TrempRequest trempRequest){
-        return String.join(System.lineSeparator(),
+        String trempRequestDescription = String.join(System.lineSeparator(),
+                String.format("Request ID: %d", trempRequest.getID()),
                 String.format("Request User: %s", trempRequest.getUser().getName()),
-                String.format("Stations: %s --> %s", trempRequest.getStartStation().getName(), trempRequest.getEndStation().getName()),
-                String.format("Depart Time: %s", trempRequest.getDepartTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                String.format("Stations: [ %s ] --> [ %s ]", trempRequest.getStartStation().getName(), trempRequest.getEndStation().getName()),
+                String.format("Desired departure Time: %s", trempRequest.getDepartTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
+                String.format("Status: %s",
+                        trempRequest.isNotAssignedToRides()? "Not Assigned to any Ride" : "Assigned to Ride")
         );
+        if (!trempRequest.isNotAssignedToRides()){
+            String assignedTrempsDescriptions = this.createDescriptionOfTrempOption(trempRequest.getSubRides());
+            trempRequestDescription = String.join(System.lineSeparator() + "Assigned Tremp:" + System.lineSeparator(),
+                    trempRequestDescription,
+                    assignedTrempsDescriptions
+                    );
+        }
+
+        return trempRequestDescription;
     }
 
     private void addNewTrempRequest(NewTrempRequest request) {

@@ -19,6 +19,8 @@ public class App {
     UIHandler uiHandler;
     LogicHandler logicHandler;
     Boolean exit;
+    boolean xmlLoadedCond = false;
+    boolean treampsAddedCond = false;
 
     public App() {
         uiHandler = new ConsoleUI();
@@ -29,17 +31,18 @@ public class App {
     }
 
     public void run(){
-        boolean xmlLoadedCond = false;
-        boolean treampsAddedCond = false;
+
 
         while(!exit) {
             UserRequest req = uiHandler.getRequestFromUser();
-            processRequest(req, xmlLoadedCond, treampsAddedCond);
+            processRequest(req);
         }
     }
 
-    private void processRequest(UserRequest request, boolean xmlLoadedCond, boolean treampsAddedCond){
+    private void processRequest(UserRequest request){
         RequestType requestType = request.getRequestType();
+
+        System.out.println(requestType);
 
         switch (requestType){
             case LOAD_XML_FILE:
@@ -54,7 +57,7 @@ public class App {
                 break;
             case NEW_TREMP:
                 if (xmlLoadedCond){
-                    addNewTrempRequest(uiHandler.getRequestForNewTremp((NewTrempRequest) request));
+                    addNewTrempRequest(uiHandler.getRequestForNewTremp((NewTrempRequest)request));
                     treampsAddedCond = true;
                 }
                 else {
@@ -192,20 +195,43 @@ public class App {
         for(Ride ride: logicHandler.getAllRides()){
             out.append(createDescriptionOfRide(ride));
         }
+
         return out.toString();
     }
 
     private String createDescriptionOfRide(Ride ride){
         //TODO: add all relevant information
-        return String.join(System.lineSeparator(),
+        return  String.join(System.lineSeparator(),
                 String.format("Ride ID: %d", ride.getID()),
-                String.format("Stations: %s", ride.getAllStations()
+                String.format("Ride path: %s", ride.getAllStations()
                         .stream()
                         .map(Station::getName)
                         .collect(Collectors.joining(" -> "))
-                )
+                ),
+                createDescriptionOfPartOfRide(ride.getPartOfRide())
         );
     }
+
+    private String createDescriptionOfPartOfRide(List<PartOfRide> lpRide){
+        StringBuilder out = new StringBuilder();
+
+        for(PartOfRide pRide: lpRide){
+
+            out.append(
+                    String.join(System.lineSeparator(),
+                    String.format("Station: %s ", pRide.getRoad().getStartStation().getName(),
+                    String.format("The capacity is: %d", pRide.getTotalCapacity()),
+                    String.format("Terptits names: %s ", pRide.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining("->"))),
+                    String.format("The capacity is: %d", pRide.getTotalCapacity())
+                    )
+            )
+            );
+        }
+        return out.toString();
+
+    }
+
+
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {
         List<TrempRequest> allTrempRequests = logicHandler.getAllTrempRequests();
         List<String> summaryOfAllTremps = getSummaryOfAllTrempRequests(allTrempRequests);

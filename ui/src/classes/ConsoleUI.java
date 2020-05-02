@@ -67,7 +67,7 @@ public class ConsoleUI implements UIHandler {
         Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest  = new HashMap<>();
 
         stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",this::getLoadXMLRequest)));
-        stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", NewRideRequest::new)));
+        stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", NewTrempRequest::new)));
         stringNumToRequest .put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
         stringNumToRequest .put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
         stringNumToRequest .put("5",(new Pair <> ("5. Find a match ", TryMatchTrempToRideRequest::new)));

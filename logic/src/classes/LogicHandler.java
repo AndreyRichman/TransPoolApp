@@ -104,18 +104,17 @@ public class LogicHandler {
         return newRide;
     }
 
-    public List<List<Ride.SubRide>> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
+    public List<List<SubRide>> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
         Station start = trempRequest.getStartStation();
         Station end = trempRequest.getEndStation();
         int maxNumberOfConnections = trempRequest.getMaxNumberOfConnections();
 
         //TODO:pass all possible routes from start to end(using world Map) - or make sure Start can check this
-        List<List<Ride.SubRide>> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
+        List<List<SubRide>> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
         relevantByRouteOptions.sort(Comparator.comparingInt(List::size));
 
         return relevantByRouteOptions.stream()
-                .filter(lstOfSubRides -> lstOfSubRides.get(0).selectedPartsOfRide.get(0)
-                        .getStartTime().equals(trempRequest.getDepartTime()))
+                .filter(lstOfSubRides -> lstOfSubRides.get(0).getDepartTime().equals(trempRequest.getDepartTime()))
                 .collect(Collectors.toList());
 
     }

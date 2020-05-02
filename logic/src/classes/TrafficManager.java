@@ -58,21 +58,21 @@ public class TrafficManager {
         return this.mapIdToTrempReuqest.get(idOfTrempRequest);
     }
 
-    private List<List<Ride.SubRide>> getRideOptionsWithNoConnections(Station from, Station to){
-        List<List<Ride.SubRide>> noConnectionOptions = new LinkedList<>();
+    private List<List<SubRide>> getRideOptionsWithNoConnections(Station from, Station to){
+        List<List<SubRide>> noConnectionOptions = new LinkedList<>();
         this.allRides.stream()
                 .filter((ride -> ride.containsValidRoute(from, to)))
                 .forEach(ride -> {
-                    noConnectionOptions.add(new ArrayList<Ride.SubRide>(1){{
-                        add(ride.getSubRide(from, to));
-                    }});
+                    ArrayList<SubRide> subRidesOption = new ArrayList<>();
+                    subRidesOption.add(ride.getSubRide(from, to));
+                    noConnectionOptions.add(subRidesOption);
                 });
 
         return noConnectionOptions;
     }
 
-    private List<List<Ride.SubRide>> getRideOptionsWithConnections(int maxConnections, Station from, Station to){
-        List<List<Ride.SubRide>> rideOptions = new LinkedList<>();
+    private List<List<SubRide>> getRideOptionsWithConnections(int maxConnections, Station from, Station to){
+        List<List<SubRide>> rideOptions = new LinkedList<>();
         List<Ride> relevantRides = this.allRides.stream()
                 .filter((ride)-> !ride.containsValidRoute(from, to)).collect(Collectors.toList());
 
@@ -80,8 +80,8 @@ public class TrafficManager {
 
         return rideOptions;
     }
-    public List<List<Ride.SubRide>> getRideOptions(int maxConnections, Station from, Station to){
-        List<List<Ride.SubRide>> allRideOptions = new ArrayList<>();
+    public List<List<SubRide>> getRideOptions(int maxConnections, Station from, Station to){
+        List<List<SubRide>> allRideOptions = new ArrayList<>();
 
         allRideOptions.addAll(getRideOptionsWithNoConnections(from, to));
         allRideOptions.addAll(getRideOptionsWithConnections(maxConnections, from, to));

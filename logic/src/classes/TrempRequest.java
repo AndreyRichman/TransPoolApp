@@ -15,7 +15,7 @@ public class TrempRequest {
     private LocalTime arriveTime = null;
     private int day;
     private int maxNumberOfConnections = 0;
-    private List<Ride.SubRide> subRides = null;
+    private List<SubRide> subRides = null;
 
     public TrempRequest(Station startStation, Station endStation) {
         this.id = unique_id++;
@@ -25,19 +25,19 @@ public class TrempRequest {
         this.departTime = LocalTime.MIN;
     }
 
-    public void addSubRide(Ride.SubRide subRide){
+    public void addSubRide(SubRide subRide){
         if (this.subRides == null){
             this.subRides = new ArrayList<>();
         }
         this.subRides.add(subRide);
     }
 
-    public List<Ride.SubRide> getSubRides() {
+    public List<SubRide> getSubRides() {
         return subRides;
     }
 
     public boolean isNotAssignedToRides(){
-        return this.subRides.size() == 0;
+        return  this.subRides == null || this.subRides.size() == 0;
     }
 
     public void setMaxNumberOfConnections(int maxNumberOfConnections) {

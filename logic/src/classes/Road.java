@@ -4,7 +4,7 @@ public class Road {
 
     private Station startStation;
     private Station endStation;
-    private int lengthInKM;
+    private double lengthInKM;
     private double fuelUsagePerKilometer;
     private int maxSpeed;
 
@@ -30,7 +30,7 @@ public class Road {
         return maxSpeed;
     }
 
-    public int getLengthInKM() {
+    public double getLengthInKM() {
         return lengthInKM;
     }
 
@@ -47,6 +47,6 @@ public class Road {
     }
 
     public int getDurationInMinutes(){
-        return lengthInKM / maxSpeed;
+        return (int) (lengthInKM * 60) / maxSpeed;
     }
 }

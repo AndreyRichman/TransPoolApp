@@ -113,6 +113,11 @@ public class LogicHandler {
         List<List<SubRide>> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
         relevantByRouteOptions.sort(Comparator.comparingInt(List::size));
 
+        relevantByRouteOptions.forEach(lstOfSubrides -> {
+            System.out.println(String.format("Available time: %s", lstOfSubrides.get(0).getDepartTime()));
+        }
+        );
+
         return relevantByRouteOptions.stream()
                 .filter(lstOfSubRides -> lstOfSubRides.get(0).getDepartTime().equals(trempRequest.getDepartTime()))
                 .collect(Collectors.toList());

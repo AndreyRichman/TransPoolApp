@@ -42,6 +42,18 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public void showOptions() {
+        String delimiter = String.join("", Collections.nCopies(10, " "));
+        String question = String.format("%s%s%s",
+                delimiter,
+                "Select Desired Option:",
+                delimiter);
+        String title = String.join(System.lineSeparator(),
+                String.join("", Collections.nCopies(question.length(), "-")),
+                question,
+                String.join("", Collections.nCopies(question.length(), "-"))
+        );
+
+        showOutput(title);
         stringNumToRequest .forEach((k,v) -> System.out.println(v.getKey()));
     }
 
@@ -173,7 +185,7 @@ public class ConsoleUI implements UIHandler {
         System.out.println(String.join("", Collections.nCopies(titleForOptions.length(), delim)));
         int selectedNumber = getIndexFrom1To(options.size());
 
-        return selectedNumber - 1;
+        return selectedNumber != - 1? selectedNumber - 1 : selectedNumber;
     }
 
     private int getIndexFrom1To(int maxIndex){
@@ -181,8 +193,10 @@ public class ConsoleUI implements UIHandler {
         int selectedIndex = 0;
         String inputLine;
         do {
-            System.out.println(String.format("Please select desired option index (%d - %d):", 1, maxIndex));
+            System.out.println(String.format("Please select desired option index (%d - %d), q for quit:", 1, maxIndex));
             inputLine = this.inputReader.nextLine();
+            if(inputLine.equalsIgnoreCase("q"))
+                return -1;
             try {
                 selectedIndex = Integer.parseInt(inputLine);
                 if (selectedIndex < 1 || selectedIndex > maxIndex)

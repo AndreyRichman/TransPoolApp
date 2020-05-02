@@ -10,6 +10,7 @@ import javax.management.InstanceAlreadyExistsException;
 import javax.xml.bind.JAXBException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,9 @@ public class App {
     LogicHandler logicHandler;
     Boolean exit;
 
+    boolean xmlLoadedCond = false;
+    boolean treampsAddedCond = false;
+
     public App() {
         uiHandler = new ConsoleUI();
         logicHandler = new LogicHandler();
@@ -29,82 +33,33 @@ public class App {
     }
 
     public void run(){
-        boolean xmlLoadedCond = false;
-        boolean treampsAddedCond = false;
-
         while(!exit) {
             UserRequest req = uiHandler.getRequestFromUser();
-            processRequest(req, xmlLoadedCond, treampsAddedCond);
+            processRequest(req);
         }
     }
 
-    private void processRequest(UserRequest request, boolean xmlLoadedCond, boolean treampsAddedCond){
+    private void processRequest(UserRequest request){
         RequestType requestType = request.getRequestType();
 
         switch (requestType){
             case LOAD_XML_FILE:
-                if(!xmlLoadedCond){
-                    loadContentFromXMLFile((LoadXMLRequest)request);
-                    xmlLoadedCond = true;
-                }
-                else {
-                    String errorMsg = "XML has already loaded to system";
-                    uiHandler.showErrorMsg(errorMsg);
-                }
+                loadContentFromXMLFile((LoadXMLRequest)request);
                 break;
             case NEW_TREMP:
-                if (xmlLoadedCond){
-                    addNewTrempRequest(uiHandler.getRequestForNewTremp((NewTrempRequest) request));
-                    treampsAddedCond = true;
-                }
-                else {
-                    String errorMsg = "XML is NOT loaded to system yet";
-                    uiHandler.showErrorMsg(errorMsg);
-                }
+                addNewTrempRequest((NewTrempRequest) request);
                 break;
             case NEW_RIDE:
-                if(xmlLoadedCond)
-                    addNewRide((NewRideRequest) request);
-                else {
-                    String errorMsg = "XML is NOT loaded to system yet";
-                    uiHandler.showErrorMsg(errorMsg);
-                }
+                addNewRide((NewRideRequest) request);
                 break;
             case GET_STATUS_OF_RIDES:
-                if(xmlLoadedCond)
-                    showStatusOfRides((GetStatusOfRidesRequest) request);
-                else {
-                    String errorMsg = "XML is NOT loaded to system yet";
-                    uiHandler.showErrorMsg(errorMsg);
-                }
+                showStatusOfRides((GetStatusOfRidesRequest) request);
                 break;
             case GET_STATUS_OF_TREMPS:
-                if (xmlLoadedCond && treampsAddedCond)
-                    showStatusOfTremps((GetStatusOfTrempsRequest) request);
-                else{
-                    if(!xmlLoadedCond){
-                        String errorMsg = "XML is NOT loaded to system yet";
-                        uiHandler.showErrorMsg(errorMsg);
-                    }
-                    if(!treampsAddedCond){
-                        String errorMsg = "No tremps in the system yet";
-                        uiHandler.showErrorMsg(errorMsg);
-                    }
-                }
+                showStatusOfTremps((GetStatusOfTrempsRequest) request);
                 break;
             case MATCH_TREMP_TO_RIDE:
-                if (xmlLoadedCond && treampsAddedCond)
-                    tryMatchTrempToRide((TryMatchTrempToRideRequest) request);
-                else{
-                    if(!xmlLoadedCond){
-                        String errorMsg = "XML is NOT loaded to system yet";
-                        uiHandler.showErrorMsg(errorMsg);
-                    }
-                    if(!treampsAddedCond){
-                        String errorMsg = "No tremps in the system yet";
-                        uiHandler.showErrorMsg(errorMsg);
-                    }
-                }
+                tryMatchTrempToRide((TryMatchTrempToRideRequest) request);
                 break;
             case EXIT:
                 exitApp();
@@ -152,31 +107,6 @@ public class App {
 
     }
 
-    private void addNewTrempRequest(NewTrempRequest request) {
-        //TODO: add any other fields from user
-        //TODO: Need to display to user the statoins in UI?
-        try {
-            Station from = logicHandler.getStationFromName(request.getFromStation());
-            Station to = logicHandler.getStationFromName(request.getToStation());
-            TrempRequest newTrempRequest = logicHandler.createNewEmptyTrempRequest(from, to);
-
-            LocalTime departTime = LocalTime.parse(request.getDepartTime());
-            newTrempRequest.setDepartTime(departTime);
-
-            User user = logicHandler.getUserByName(request.getUserName());
-            newTrempRequest.setUser(user);
-
-            logicHandler.addTrempRequest(newTrempRequest);
-
-        } catch (StationNotFoundException e) {
-            String errorMsg = "Station not found: " + e.getStationName();
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (NoPathExistBetweenStationsException e){
-          String errorMsg = "No path found between " + request.getFromStation() + " and " + request.getToStation();
-            uiHandler.showErrorMsg(errorMsg);
-        }
-
-    }
 
     private void addNewRide(NewRideRequest request) {
         //TODO leave for later stage
@@ -323,6 +253,48 @@ public class App {
                 String.format("Depart Time: %s", trempRequest.getDepartTime().format(DateTimeFormatter.ISO_TIME))
         );
     }
+
+    private void addNewTrempRequest(NewTrempRequest request) {
+        try {
+            TrempRequest newTrempRequest = createNewTrempRequest();
+            logicHandler.addTrempRequest(newTrempRequest);
+            uiHandler.showOutput("Your Tremp request was submitted successfully.");
+        } catch (NoPathExistBetweenStationsException e) {
+            uiHandler.showErrorMsg("No path found between selected stations.");
+        }
+
+    }
+    private TrempRequest createNewTrempRequest() throws NoPathExistBetweenStationsException {
+        Station fromStation = getStartStationFromUser();
+        Station toStation = getEndStationFromUserBasedOnFromStation(fromStation);
+        TrempRequest newTrempRequest = logicHandler.createNewEmptyTrempRequest(fromStation, toStation);
+
+        String userName = uiHandler.getStringForQuestion("Enter You Name:");
+        newTrempRequest.setUser(logicHandler.getUserByName(userName));
+
+        LocalTime departTime = uiHandler.getTimeFromUser("Enter Depart time in HH:MM format: ");
+        newTrempRequest.setDepartTime(departTime);
+
+        return newTrempRequest;
+    }
+
+    private Station getStartStationFromUser(){
+        String title = "Select Depart Station:";
+        return getSelectionOfStationFromUser(title, logicHandler.getAllStations());
+    }
+
+    private Station getEndStationFromUserBasedOnFromStation(Station fromStation){
+        String title = "Select Arrive Station:";
+        return getSelectionOfStationFromUser(title, new ArrayList<>(fromStation.getAllReachableStations()));
+    }
+
+    private Station getSelectionOfStationFromUser(String title, List<Station> stationOptions){
+        List<String> stationsNames = stationOptions.stream().map(Station::getName).collect(Collectors.toList());
+        int desiredStationIndex = uiHandler.showOptionsAndGetUserSelection(title, stationsNames);
+
+        return stationOptions.get(desiredStationIndex);
+    }
+
 
     private void exitApp(){
         exit = true;

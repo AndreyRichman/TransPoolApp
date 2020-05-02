@@ -177,7 +177,7 @@ public class Ride {
             while(from != to && hasSpaceInRoad){
                 PartOfRide partRoad = mapFromStationToRoad.get(from);
                 hasSpaceInRoad = partRoad.canAddTrempist();
-                to = partRoad.getRoad().getEndStation();
+                from = partRoad.getRoad().getEndStation();
             }
             if (from == to){
                 containsRoute = true;

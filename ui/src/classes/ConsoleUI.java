@@ -4,6 +4,11 @@ import interfaces.UIHandler;
 import javafx.util.Pair;
 import requests.classes.*;
 import requests.interfaces.UserRequest;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -35,10 +40,6 @@ public class ConsoleUI implements UIHandler {
         return request;
     }
 
-    private void showErrorMessage(){
-        //TODO: print some error message
-    }
-
     @Override
     public void showOptions() {
         stringNumToRequest .forEach((k,v) -> System.out.println(v.getKey()));
@@ -47,6 +48,35 @@ public class ConsoleUI implements UIHandler {
     @Override
     public String getInput() {
         return this.inputReader.nextLine();
+    }
+
+    @Override
+    public String getStringForQuestion(String question) {
+        showQuestion(question);
+        return getInput();
+    }
+
+    private void showQuestion(String question){
+        System.out.print(question);
+    }
+
+    @Override
+    public LocalTime getTimeFromUser(String question) {
+        boolean inputIsValid = false;
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withResolverStyle(ResolverStyle.STRICT);
+        LocalTime inputTime = LocalTime.MIN;
+
+        while (!inputIsValid){
+            try {
+                showQuestion(question);
+                String input = getInput();
+                inputTime = LocalTime.parse(input, timeFormatter);
+                inputIsValid = true;
+            } catch (DateTimeParseException ignore){
+                showOutput("Invalid time, use the following format: HH:mm (for example 17:00)");
+            }
+        }
+        return inputTime;
     }
 
     @Override
@@ -67,7 +97,7 @@ public class ConsoleUI implements UIHandler {
         Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest  = new HashMap<>();
 
         stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",this::getLoadXMLRequest)));
-        stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", NewRideRequest::new)));
+        stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", NewTrempRequest::new)));
         stringNumToRequest .put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
         stringNumToRequest .put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
         stringNumToRequest .put("5",(new Pair <> ("5. Find a match ", TryMatchTrempToRideRequest::new)));
@@ -81,26 +111,26 @@ public class ConsoleUI implements UIHandler {
         return stringNumToRequest .get(chosenRequest).getValue().get();
     }
 
-    public NewTrempRequest getRequestForNewTremp(NewTrempRequest req) {
-        //NewTrempRequest req = new NewTrempRequest();
-
-        showOutput("What your name?");
-        req.setUserName(getInput());
-
-        showOutput("what is your origen Station?");
-        req.setFromStation(getInput());
-
-        showOutput("What is your destanation Station?");
-        req.setToStation(getInput());
-
-        showOutput("departure time?");
-        req.setDepartTime(getInput());
-
-        showOutput("Direct only rides? Y/N");
-        req.setDirectOnly((getInput().equalsIgnoreCase("Y")));
-
-        return req;
-    }
+//    public NewTrempRequest getRequestForNewTremp(NewTrempRequest req) {
+//        //NewTrempRequest req = new NewTrempRequest();
+//
+//        showOutput("What your name?");
+//        req.setUserName(getInput());
+//
+//        showOutput("what is your origen Station?");
+//        req.setFromStation(getInput());
+//
+//        showOutput("What is your destanation Station?");
+//        req.setToStation(getInput());
+//
+//        showOutput("departure time?");
+//        req.setDepartTime(getInput());
+//
+//        showOutput("Direct only rides? Y/N");
+//        req.setDirectOnly((getInput().equalsIgnoreCase("Y")));
+//
+//        return req;
+//    }
 
     private NewRideRequest getRequestForNewRide(){
         return new NewRideRequest();
@@ -110,15 +140,6 @@ public class ConsoleUI implements UIHandler {
         return new ExitRequest();
     }
 
-    private UserRequest getMatchTrempToRideRequest(){
-        TryMatchTrempToRideRequest newRequest = new TryMatchTrempToRideRequest();
-        int trempID = 1;  //TODO: get from User
-        int rideID = 400; //TODO: get from User
-        newRequest.setTrempRequestID(trempID);
-        newRequest.setRideID(rideID);
-
-        return newRequest;
-    }
     private UserRequest getStatusOfTrempsRequest(){
         return new GetStatusOfTrempsRequest();
     }
@@ -138,18 +159,21 @@ public class ConsoleUI implements UIHandler {
 
     @Override
     public int showOptionsAndGetUserSelection(String titleForOptions, List<String> options){
+        String delim = "-";
         System.out.println(String.join(System.lineSeparator(),
-                String.format("%s", '-' * 30),
-                titleForOptions
+                String.join("", Collections.nCopies(titleForOptions.length(), delim)),
+                titleForOptions,
+                String.join("", Collections.nCopies(titleForOptions.length(), delim))
                 )
         );
         int optionNumber = 1;
         for (String option : options) {
-            System.out.println(optionNumber++);
-            System.out.println(option);
+            showOutput(String.format("%d)  %s", optionNumber++, option));
         }
+        System.out.println(String.join("", Collections.nCopies(titleForOptions.length(), delim)));
+        int selectedNumber = getIndexFrom1To(options.size());
 
-        return getIndexFrom1To(options.size() + 1);
+        return selectedNumber - 1;
     }
 
     private int getIndexFrom1To(int maxIndex){

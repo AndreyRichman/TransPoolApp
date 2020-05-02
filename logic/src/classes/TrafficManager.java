@@ -63,9 +63,9 @@ public class TrafficManager {
         this.allRides.stream()
                 .filter((ride -> ride.containsValidRoute(from, to)))
                 .forEach(ride -> {
-                    noConnectionOptions.add(new ArrayList<Ride.SubRide>(1){{
-                        add(ride.getSubRide(from, to));
-                    }});
+                    ArrayList<Ride.SubRide> subRidesOption = new ArrayList<Ride.SubRide>();
+                    subRidesOption.add(ride.getSubRide(from, to));
+                    noConnectionOptions.add(subRidesOption);
                 });
 
         return noConnectionOptions;

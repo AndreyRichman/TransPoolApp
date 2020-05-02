@@ -41,11 +41,21 @@ public class Station {
         targetStation.stationsToCurrent2Roads.put(thisStation, road);
     }
 
-    private Set<Station> getAllReachableStations(){
-        Set<Station> allReachableStation = new HashSet<>(this.stationsFromCurrent2Roads.keySet());
-        this.stationsFromCurrent2Roads.keySet().forEach((s)-> allReachableStation.addAll(s.getAllReachableStations()));
+    public Set<Station> getAllReachableStations(){
+        Set<Station> allReachableStation = new HashSet<>();
 
+        if (this.stationsFromCurrent2Roads.size() > 0) {
+            insertAllReachableStationsRecurions(allReachableStation);
+        }
         return allReachableStation;
+    }
+
+    private void insertAllReachableStationsRecurions(Set<Station> reachableStations){
+        if ( !reachableStations.containsAll(this.stationsFromCurrent2Roads.keySet()) && this.stationsFromCurrent2Roads.size() > 0){
+            reachableStations.addAll(this.stationsFromCurrent2Roads.keySet());
+
+            this.stationsFromCurrent2Roads.keySet().forEach(station -> station.insertAllReachableStationsRecurions(reachableStations));
+        }
     }
 
     private void loadAllReachableStations(){

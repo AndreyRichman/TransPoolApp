@@ -178,4 +178,8 @@ public class LogicHandler {
     public Ride getRideById(int rideID) throws RideNotExistsException{
         return this.trafficManager.getRideByID(rideID);
     }
+
+    public List<Station> getAllStations(){
+        return this.map.getAllStations();
+    }
 }

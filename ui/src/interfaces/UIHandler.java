@@ -18,4 +18,5 @@ public interface UIHandler {
     String getStringForQuestion(String question);
     void showErrorMsg(String errorMsg);
     LocalTime getTimeFromUser(String question);
+    public void showTitle(String title);
 }

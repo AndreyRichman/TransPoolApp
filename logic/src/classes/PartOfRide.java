@@ -37,7 +37,7 @@ public class PartOfRide {
         return (road.getLengthInKM() * minutes) / road.getMaxSpeed();
     }
 
-    public int getLengthOfRoad(){
+    public double getLengthOfRoad(){
         return road.getLengthInKM();
     }
 

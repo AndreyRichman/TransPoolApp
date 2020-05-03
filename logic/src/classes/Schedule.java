@@ -23,7 +23,17 @@ public class Schedule {
             case "Monthly " : {this.recurrences = Recurrences.MONTHLY; break;}
 
         }
+    }
 
+    public int getMin() {
+        return min;
+    }
 
+    public int getHour() {
+        return hour;
+    }
+
+    public Integer getDay() {
+        return day;
     }
 }

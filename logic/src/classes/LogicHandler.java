@@ -22,7 +22,7 @@ public class LogicHandler {
         usersNameToObject = new HashMap<>();
     }
 
-    public void loadXMLFile(String pathToFile) throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException,
+    public void loadXMLFile(String pathToFile) throws FaildLoadingXMLFileException,
             InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
             StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, NoRoadBetweenStationsException {
 

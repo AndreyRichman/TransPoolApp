@@ -120,7 +120,7 @@ public class ConsoleUI implements UIHandler {
 
         Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest  = new HashMap<>();
 
-        stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",this::getLoadXMLRequest)));
+        stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",this::LoadXMLRequest)));
         stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", NewTrempRequest::new)));
         stringNumToRequest .put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
         stringNumToRequest .put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
@@ -134,27 +134,6 @@ public class ConsoleUI implements UIHandler {
     {
         return stringNumToRequest .get(chosenRequest).getValue().get();
     }
-
-//    public NewTrempRequest getRequestForNewTremp(NewTrempRequest req) {
-//        //NewTrempRequest req = new NewTrempRequest();
-//
-//        showOutput("What your name?");
-//        req.setUserName(getInput());
-//
-//        showOutput("what is your origen Station?");
-//        req.setFromStation(getInput());
-//
-//        showOutput("What is your destanation Station?");
-//        req.setToStation(getInput());
-//
-//        showOutput("departure time?");
-//        req.setDepartTime(getInput());
-//
-//        showOutput("Direct only rides? Y/N");
-//        req.setDirectOnly((getInput().equalsIgnoreCase("Y")));
-//
-//        return req;
-//    }
 
     private NewRideRequest getRequestForNewRide(){
         return new NewRideRequest();
@@ -172,14 +151,18 @@ public class ConsoleUI implements UIHandler {
         return new GetStatusOfRidesRequest();
     }
 
-    private UserRequest getLoadXMLRequest(){
+    private UserRequest LoadXMLRequest(){
        LoadXMLRequest req = new LoadXMLRequest();
-
-       showOutput("Please enter full path of XML file:");
-       req.setFileDirectory(getInput());
 
         return req;
     }
+
+    public void getXMLpath(LoadXMLRequest req){
+
+        showOutput("Please enter full path of XML file:");
+        req.setFileDirectory(getInput());
+    }
+
 
     @Override
     public int showOptionsAndGetUserSelection(String titleForOptions, List<String> options){

@@ -1,5 +1,6 @@
 package classes;
 
+import enums.DesiredTimeType;
 import exception.*;
 import interfaces.UIHandler;
 import requests.classes.*;
@@ -226,7 +227,8 @@ public class App {
 
         out.append(String.join(System.lineSeparator() + TREMP_OPTION_DELIMITER,
                 "",
-                String.format("Estimated arrival time: %s", trempOption.get(trempOption.size() - 1).getArrivalTime()),
+                String.format("Depart time: %s", trempOption.get(0).getDepartTime()),
+                String.format("Estimated Arrive time: %s", trempOption.get(trempOption.size() - 1).getArrivalTime()),
                 String.format("Average Fuel usage: %.2f", trempOption.stream().mapToDouble(SubRide::getAverageFuelUsage).average().getAsDouble()),
                 String.format("Total Distance: %.1f km", trempOption.stream().mapToDouble(SubRide::getTotalDistance).sum()),
                 String.format("Total Cost: %.2f", trempOption.stream().mapToDouble(SubRide::getTotalCost).sum()),
@@ -280,7 +282,7 @@ public class App {
                 String.format("Request ID: %d", trempRequest.getID()),
                 String.format("Request User: %s", trempRequest.getUser().getName()),
                 String.format("Stations: [ %s ] --> [ %s ]", trempRequest.getStartStation().getName(), trempRequest.getEndStation().getName()),
-                String.format("Desired departure Time: %s", trempRequest.getDepartTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
+                String.format("Desired %s Time: %s", trempRequest.getDesiredTimeType().name(), trempRequest.getDesiredTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
                 String.format("Status: %s",
                         trempRequest.isNotAssignedToRides()? "Not Assigned to any Ride" : "Assigned to Ride")
         );
@@ -314,10 +316,22 @@ public class App {
         String userName = uiHandler.getStringForQuestion("Enter Your Name:");
         newTrempRequest.setUser(logicHandler.getUserByName(userName));
 
-        LocalTime departTime = uiHandler.getTimeFromUser("Enter Depart time in HH:MM format: ");
-        newTrempRequest.setDepartTime(departTime);
+        DesiredTimeType desiredTimeType = getDesiredTypeOfTimeFromUser();
+        newTrempRequest.setDesiredTimeType(desiredTimeType);
+
+        LocalTime desiredTime = uiHandler.getTimeFromUser(String.format("Enter %s time in HH:MM format: ", desiredTimeType.name()));
+        newTrempRequest.setDesiredTime(desiredTime);
 
         return newTrempRequest;
+    }
+
+    private DesiredTimeType getDesiredTypeOfTimeFromUser(){
+        String title = "Do you wish to Depart or Arrive at specific Time?";
+        List<DesiredTimeType> options = Arrays.asList(DesiredTimeType.values());
+        List<String> optionsNames = options.stream().map(Enum::name).collect(Collectors.toList());
+        int selectedIndex = uiHandler.showOptionsAndGetUserSelection(title, optionsNames);
+
+        return options.get(selectedIndex);
     }
 
     private Station getStartStationFromUser() throws ActionAbortedException {

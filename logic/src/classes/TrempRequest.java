@@ -1,8 +1,9 @@
 package classes;
 
+import enums.DesiredTimeType;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class TrempRequest {
@@ -11,18 +12,19 @@ public class TrempRequest {
     private final Station startStation;
     private final Station endStation;
     private User user;
-    private LocalTime departTime;
-    private LocalTime arriveTime = null;
+    private LocalTime desiredTime;
     private int day;
     private int maxNumberOfConnections = 0;
     private List<SubRide> subRides = null;
+    DesiredTimeType desiredTimeType;
 
     public TrempRequest(Station startStation, Station endStation) {
         this.id = unique_id++;
         this.startStation = startStation;
         this.endStation = endStation;
 
-        this.departTime = LocalTime.MIN;
+        this.desiredTime = LocalTime.MIN;
+        this.desiredTimeType = DesiredTimeType.DEPART;
     }
 
     public void addSubRide(SubRide subRide){
@@ -48,16 +50,16 @@ public class TrempRequest {
         this.user = user;
     }
 
-    public void setDepartTime(LocalTime departTime) {
-        this.departTime = departTime;
-    }
-
-    public void setArriveTime(LocalTime arriveTime) {
-        this.arriveTime = arriveTime;
+    public void setDesiredTime(LocalTime departTime) {
+        this.desiredTime = departTime;
     }
 
     public int getID(){
         return this.id;
+    }
+
+    public void setDesiredTimeType(DesiredTimeType desiredTimeType) {
+        this.desiredTimeType = desiredTimeType;
     }
 
     public User getUser() {
@@ -76,7 +78,11 @@ public class TrempRequest {
         return maxNumberOfConnections;
     }
 
-    public LocalTime getDepartTime() {
-        return departTime;
+    public LocalTime getDesiredTime() {
+        return desiredTime;
+    }
+
+    public DesiredTimeType getDesiredTimeType() {
+        return desiredTimeType;
     }
 }

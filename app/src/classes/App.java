@@ -14,6 +14,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class App {
+
+    public static final int ABORT_INDEX = -1;
+    public static final String LIST_ITEMS_SEPERATOR = System.lineSeparator()
+            + String.join("", Collections.nCopies(40, "="))
+            + System.lineSeparator();
+    public static final String TREMP_OPTION_DELIMITER = String.join("", Collections.nCopies(5, " "));
+    public static final String TREMP_PARTS_DELIMITER = String.join("", Collections.nCopies(10, " "));
+
+
     UIHandler uiHandler;
     LogicHandler logicHandler;
     Boolean exit;
@@ -24,9 +33,7 @@ public class App {
     public App() {
         uiHandler = new ConsoleUI();
         logicHandler = new LogicHandler();
-
         exit = false;
-
     }
 
     public void run(){
@@ -62,7 +69,6 @@ public class App {
                 exitApp();
                 break;
         }
-
     }
 
     private void loadContentFromXMLFile(LoadXMLRequest request){
@@ -100,10 +106,7 @@ public class App {
             String errorMsg = "No Road Between " + e.getFromStation() + "to " + e.getToStation();
             uiHandler.showErrorMsg(errorMsg);
         }
-
-
     }
-
 
     private void addNewRide(NewRideRequest request) {
         //TODO leave for later stage
@@ -140,7 +143,7 @@ public class App {
 
         if (allTrempRequests.size() > 0){
             List<String> summaryOfAllTremps = getSummaryOfAllTrempRequests(allTrempRequests);
-            uiHandler.showOutput(String.join(System.lineSeparator(), summaryOfAllTremps));
+            uiHandler.showOutput(String.join(LIST_ITEMS_SEPERATOR, summaryOfAllTremps));
         } else
             uiHandler.showOutput( String.join("", Collections.nCopies(10, " "))+ "No Rides found in the System");
 
@@ -174,15 +177,16 @@ public class App {
     private TrempRequest getDesiredTrempRequestForMatching()
             throws NotFoundTrempRequestsWithoutMatchException, ActionAbortedException{
         List<TrempRequest> trempRequests = logicHandler.getAllNonMatchedTrempRequests();
-        if (trempRequests == null || trempRequests.size() == 0)
+        if (listIsEmpty(trempRequests))
             throw new NotFoundTrempRequestsWithoutMatchException();
 
         List<String> trempRequestsStrOptions = getAllUnMatchedTrempRequestStrOptions(trempRequests);
         String title = "The following Tremp Requests are not assigned to any rides, select one to match a ride to it:";
         int chosenTrempRequest = uiHandler.showOptionsAndGetUserSelection(title, trempRequestsStrOptions);
 
-        if(chosenTrempRequest == -1)
+        if(chosenTrempRequest == ABORT_INDEX)
             throw new ActionAbortedException();
+
         return trempRequests.get(chosenTrempRequest);
     }
 
@@ -190,7 +194,7 @@ public class App {
             throws NoRidesWereFoundForTrempRequestException, ActionAbortedException {
 
         List<List<SubRide>> allTremps = logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
-        if (allTremps == null || allTremps.size() == 0)
+        if (listIsEmpty(allTremps))
             throw new NoRidesWereFoundForTrempRequestException();
 
         allTremps = allTremps.stream().limit(optionsLimit).collect(Collectors.toList());
@@ -199,12 +203,15 @@ public class App {
         List<String> availableRidesOptions  = createSummaryOfAllTrempOptions(allTremps);
         int desiredRidesOption = uiHandler.showOptionsAndGetUserSelection(title, availableRidesOptions);
 
-        if (desiredRidesOption == -1)
+        if (desiredRidesOption == ABORT_INDEX)
             throw new ActionAbortedException();
 
         return allTremps.get(desiredRidesOption);
     }
 
+    private boolean listIsEmpty(List list){
+        return list == null || list.size() == 0;
+    }
     private int getMaxNumberOfTrempChanges(){
         return uiHandler.getNumberForString("Enter Max number of Ride options:");
     }
@@ -216,9 +223,8 @@ public class App {
 
     private String createDescriptionOfTrempOption(List<SubRide> trempOption){
         StringBuilder out = new StringBuilder();
-        String trempOptionDelimiter = String.join("", Collections.nCopies(5, " "));
-        String trempPartsDelimiter = String.join("", Collections.nCopies(10, " "));
-        out.append(String.join(System.lineSeparator() + trempOptionDelimiter,
+
+        out.append(String.join(System.lineSeparator() + TREMP_OPTION_DELIMITER,
                 "",
                 String.format("Estimated arrival time: %s", trempOption.get(trempOption.size() - 1).getArrivalTime()),
                 String.format("Average Fuel usage: %.2f", trempOption.stream().mapToDouble(SubRide::getAverageFuelUsage).average().getAsDouble()),
@@ -229,21 +235,21 @@ public class App {
                 )
         );
 
-        List<String> summaryOfAllTrempOptionParts = createSummaryOfAllTrempOptionParts(trempOption, trempPartsDelimiter);
+        List<String> summaryOfAllTrempOptionParts = createSummaryOfAllTrempOptionParts(trempOption);
         out.append(
-                String.join(trempPartsDelimiter + trempPartsDelimiter + "+",
+                String.join(TREMP_PARTS_DELIMITER + TREMP_PARTS_DELIMITER + "+",
                         summaryOfAllTrempOptionParts)
         );
 
         return out.toString();
     }
 
-    private List<String> createSummaryOfAllTrempOptionParts(List<SubRide> trempOptionParts, String trempPartsDelimiter){
+    private List<String> createSummaryOfAllTrempOptionParts(List<SubRide> trempOptionParts){
         List<String> summary = new ArrayList<>(trempOptionParts.size());
 
         for (SubRide subRide : trempOptionParts) {
-            summary.add(String.format("%s%s", trempPartsDelimiter,
-                    String.join(System.lineSeparator() + trempPartsDelimiter,getSubRideSummary(subRide))));
+            summary.add(String.format("%s%s", TREMP_PARTS_DELIMITER,
+                    String.join(System.lineSeparator() + TREMP_PARTS_DELIMITER,getSubRideSummary(subRide))));
         }
 
         return summary;
@@ -294,12 +300,13 @@ public class App {
             TrempRequest newTrempRequest = createNewTrempRequest();
             logicHandler.addTrempRequest(newTrempRequest);
             uiHandler.showOutput("Your Tremp request was submitted successfully.");
+
         } catch (NoPathExistBetweenStationsException e) {
             uiHandler.showErrorMsg("No path found between selected stations.");
-        }
+        } catch (ActionAbortedException ignore){}
 
     }
-    private TrempRequest createNewTrempRequest() throws NoPathExistBetweenStationsException {
+    private TrempRequest createNewTrempRequest() throws NoPathExistBetweenStationsException, ActionAbortedException {
         Station fromStation = getStartStationFromUser();
         Station toStation = getEndStationFromUserBasedOnFromStation(fromStation);
         TrempRequest newTrempRequest = logicHandler.createNewEmptyTrempRequest(fromStation, toStation);
@@ -313,19 +320,25 @@ public class App {
         return newTrempRequest;
     }
 
-    private Station getStartStationFromUser(){
+    private Station getStartStationFromUser() throws ActionAbortedException {
         String title = "Select Depart Station:";
         return getSelectionOfStationFromUser(title, logicHandler.getAllStations());
     }
 
-    private Station getEndStationFromUserBasedOnFromStation(Station fromStation){
+    private Station getEndStationFromUserBasedOnFromStation(Station fromStation) throws ActionAbortedException {
         String title = "Select Arrive Station:";
-        return getSelectionOfStationFromUser(title, new ArrayList<>(fromStation.getAllReachableStations()));
+        Set<Station> allReachableStation = fromStation.getAllReachableStations();
+        allReachableStation.remove(fromStation);
+
+        return getSelectionOfStationFromUser(title, new ArrayList<>(allReachableStation));
     }
 
-    private Station getSelectionOfStationFromUser(String title, List<Station> stationOptions){
+    private Station getSelectionOfStationFromUser(String title, List<Station> stationOptions) throws ActionAbortedException {
         List<String> stationsNames = stationOptions.stream().map(Station::getName).collect(Collectors.toList());
         int desiredStationIndex = uiHandler.showOptionsAndGetUserSelection(title, stationsNames);
+
+        if (desiredStationIndex == ABORT_INDEX)
+            throw new ActionAbortedException();
 
         return stationOptions.get(desiredStationIndex);
     }

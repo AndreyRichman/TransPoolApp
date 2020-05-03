@@ -26,7 +26,7 @@ public class ConsoleUI implements UIHandler {
     @Override
     public UserRequest getRequestFromUser(){
         UserRequest request = null;
-        boolean requestIsValid = false;
+        boolean requestIsValid;
         do {
             showOptions();
             String chosenAction = getInput();
@@ -95,7 +95,11 @@ public class ConsoleUI implements UIHandler {
                 showQuestion(question);
                 String input = getInput();
                 inputTime = LocalTime.parse(input, timeFormatter);
-                inputIsValid = true;
+                if (inputTime.getMinute() % 5 != 0)
+                    showOutput("Invalid Minutes - must be multiply of 5(00, 05, 10...55)");
+                else
+                    inputIsValid = true;
+
             } catch (DateTimeParseException ignore){
                 showOutput("Invalid time, use the following format: HH:mm (for example 17:00)");
             }
@@ -121,10 +125,10 @@ public class ConsoleUI implements UIHandler {
         Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest  = new HashMap<>();
 
         stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",this::getLoadXMLRequest)));
-        stringNumToRequest .put("2",(new Pair <> ("2. Ask for new tremp ", NewTrempRequest::new)));
-        stringNumToRequest .put("3",(new Pair <> ("3. Show status of all avaible riders ", GetStatusOfRidesRequest::new)));
-        stringNumToRequest .put("4",(new Pair <> ("4. Show status of all avaible temp requsts", GetStatusOfTrempsRequest::new)));
-        stringNumToRequest .put("5",(new Pair <> ("5. Find a match ", TryMatchTrempToRideRequest::new)));
+        stringNumToRequest .put("2",(new Pair <> ("2. Create a new Tremp Request ", NewTrempRequest::new)));
+        stringNumToRequest .put("3",(new Pair <> ("3. Show All Rides ", GetStatusOfRidesRequest::new)));
+        stringNumToRequest .put("4",(new Pair <> ("4. Show All Tremp Requests ", GetStatusOfTrempsRequest::new)));
+        stringNumToRequest .put("5",(new Pair <> ("5. Find a Match For Tremp Request ", TryMatchTrempToRideRequest::new)));
         stringNumToRequest .put("6",(new Pair <> ("6. Exit", ExitRequest::new)));
 
         return stringNumToRequest ;
@@ -133,43 +137,6 @@ public class ConsoleUI implements UIHandler {
     private UserRequest getRelevantRequest(String chosenRequest)
     {
         return stringNumToRequest .get(chosenRequest).getValue().get();
-    }
-
-//    public NewTrempRequest getRequestForNewTremp(NewTrempRequest req) {
-//        //NewTrempRequest req = new NewTrempRequest();
-//
-//        showOutput("What your name?");
-//        req.setUserName(getInput());
-//
-//        showOutput("what is your origen Station?");
-//        req.setFromStation(getInput());
-//
-//        showOutput("What is your destanation Station?");
-//        req.setToStation(getInput());
-//
-//        showOutput("departure time?");
-//        req.setDepartTime(getInput());
-//
-//        showOutput("Direct only rides? Y/N");
-//        req.setDirectOnly((getInput().equalsIgnoreCase("Y")));
-//
-//        return req;
-//    }
-
-    private NewRideRequest getRequestForNewRide(){
-        return new NewRideRequest();
-    }
-
-    private ExitRequest getExitRequest(){
-        return new ExitRequest();
-    }
-
-    private UserRequest getStatusOfTrempsRequest(){
-        return new GetStatusOfTrempsRequest();
-    }
-
-    private UserRequest getStatusOfRidesRequest(){
-        return new GetStatusOfRidesRequest();
     }
 
     private UserRequest getLoadXMLRequest(){

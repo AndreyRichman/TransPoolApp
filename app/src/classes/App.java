@@ -70,8 +70,8 @@ public class App {
         String title = "Load XML file";
         uiHandler.showTitle(title);
         uiHandler.getXMLpath((LoadXMLRequest)request);
-        try {
 
+        try {
             logicHandler.loadXMLFile(request.getFileDirectory());
             uiHandler.showOutput("Xml file loaded successfully!");
         }  catch (InvalidMapBoundariesException e) {
@@ -126,10 +126,8 @@ public class App {
 
     private String createDescriptionOfRide(Ride ride){
 
-        return String.join(System.lineSeparator(),
+        return String.join(",",
                 String.format("Ride ID: %d", ride.getID()),
-                String.format("Dept time: %d:%d ", ride.getSchedule().getHour(), ride.getSchedule().getMin() ),
-                //String.format("Arr time: %.2f ", ride.getTotalTimeOfRide() + ride.getSchedule().getHour() + ride.getSchedule().getMin() ), //TODO: adds minuts to ride total cost of time
                 String.format("Stations: %s", ride.getAllStations()
                         .stream()
                         .map(Station::getName)
@@ -149,11 +147,14 @@ public class App {
     }
 
     private String createDescriptionOfPartOfRide(PartOfRide pride){
-        return String.join(System.lineSeparator(),
-                String.format("Stop: [ %s ]", pride.getRoad().getStartStation().getName()),
-                String.format("Trempists ID: [ %s ]", String.join(pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
-                String.format("Add trempists names: [ %s ]", String.join(pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
-                String.format("Remove trempists names: [ %s ] ", String.join(pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))));
+        return String.join(",",
+                String.format("Stop: [ %s ] ", pride.getRoad().getStartStation().getName()),
+                String.format("Dept time: %s ", pride.getStartTime().toString()),
+                String.format("Arr time: %s ", pride.getEndTime().toString()),
+                String.format("Open tremp spots: [ %s ] ", pride.getTotalCapacity()),
+                String.format("Trempists ID: [ %s ] ", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(" , ")))),
+                String.format("Add trempists names: [ %s ] ", (pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
+                String.format("Remove trempists names: [ %s ] ", (pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))));
     }
 
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {

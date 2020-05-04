@@ -1,5 +1,6 @@
 package classes;
 
+import enums.DesiredTimeType;
 import exception.*;
 import jaxb.schema.generated.Path;
 import jaxb.schema.generated.Stop;
@@ -7,7 +8,9 @@ import jaxb.schema.generated.TransPool;
 import jaxb.schema.generated.TransPoolTrip;
 import javax.management.InstanceAlreadyExistsException;
 import javax.xml.bind.JAXBException;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static classes.Ride.createRideFromRoads;
@@ -118,8 +121,11 @@ public class LogicHandler {
         }
         );
 
+        Function<List<SubRide>, LocalTime> rideCorrectTimeGetter = trempRequest.getDesiredTimeType() == DesiredTimeType.DEPART ?
+                subRideList -> subRideList.get(0).getDepartTime() :  subRideList -> subRideList.get(subRideList.size() - 1).getArrivalTime();
+
         return relevantByRouteOptions.stream()
-                .filter(lstOfSubRides -> lstOfSubRides.get(0).getDepartTime().equals(trempRequest.getDepartTime()))
+                .filter(lstOfSubRides -> rideCorrectTimeGetter.apply(lstOfSubRides).equals(trempRequest.getDesiredTime()))
                 .collect(Collectors.toList());
 
     }
@@ -156,12 +162,6 @@ public class LogicHandler {
         return this.trafficManager.getAllRides();
     }
 
-    //public List<String> getAllRideAsString(){
-    //    List<String> s = getAllRides()
-    //                .stream()
-    //                .flatMap(ride -> Stream.of(ride.getAllStations())).flatMap(Collection::stream).map(Station::getName).collect(Collectors.toList());
-    //   return s;
-    //}
 
     public List<TrempRequest> getAllTrempRequests(){
         return this.trafficManager.getAllTrempRequests();
@@ -185,5 +185,9 @@ public class LogicHandler {
 
     public List<Station> getAllStations(){
         return this.map.getAllStations();
+    }
+
+    public List<Road> getRoadsFromStationsNames(List<String> stationNames) throws NoRoadBetweenStationsException {
+        return this.map.getRoadsFromStationsNames(stationNames);
     }
 }

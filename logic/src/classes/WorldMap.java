@@ -12,7 +12,7 @@ public class WorldMap {
     private final int height;
     List<Station> allStations;
     List<Road> allRoads;
-    Map<String, Station> stationName2Object;
+    Map<String, Station> stationName2Station;
     Map<Coordinate, String> coordinateStationNameMap;
 
     public WorldMap(int width, int height) {
@@ -21,7 +21,7 @@ public class WorldMap {
         this.height = height;
         this.allStations = new ArrayList<>();
         this.allRoads = new ArrayList<>();
-        this.stationName2Object = new HashMap<>();
+        this.stationName2Station = new HashMap<>();
         this.coordinateStationNameMap = new HashMap<>();
     }
 
@@ -33,12 +33,12 @@ public class WorldMap {
             throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException, StationCoordinateoutOfBoundriesException {
         validateStation(station);
         this.allStations.add(station);
-        this.stationName2Object.put(station.getName(), station);
+        this.stationName2Station.put(station.getName(), station);
         this.coordinateStationNameMap.put(station.getCoordinate(), station.getName());
     }
 
     public Station getStationByName(String name) throws StationNotFoundException{
-        Station station = this.stationName2Object.get(name);
+        Station station = this.stationName2Station.get(name);
         if (station == null)
             throw new StationNotFoundException(name);
 
@@ -56,7 +56,7 @@ public class WorldMap {
             throw new InstanceAlreadyExistsException(station.toString());
         }
 
-        if (this.stationName2Object.containsKey(station.getName()))
+        if (this.stationName2Station.containsKey(station.getName()))
             throw new StationNameAlreadyExistsException();
 
         if (this.coordinateStationNameMap.containsKey(station.getCoordinate())) {
@@ -113,6 +113,5 @@ public class WorldMap {
                 .map(this::getStationByName)
                 .collect(Collectors.toList());
     }
-
 
 }

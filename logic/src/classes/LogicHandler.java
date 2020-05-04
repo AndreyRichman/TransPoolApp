@@ -186,4 +186,8 @@ public class LogicHandler {
     public List<Station> getAllStations(){
         return this.map.getAllStations();
     }
+
+    public List<Road> getRoadsFromStationsNames(List<String> stationNames) throws NoRoadBetweenStationsException {
+        return this.map.getRoadsFromStationsNames(stationNames);
+    }
 }

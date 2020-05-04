@@ -1,6 +1,6 @@
 package exception;
 
-import classes.Station;
+import main.java.com.TransPool.logic.map.structure.Station;
 
 public class StationCoordinateoutOfBoundriesException extends Exception {
 

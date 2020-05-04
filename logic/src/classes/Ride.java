@@ -45,6 +45,13 @@ public class Ride {
 
     }
 
+    public boolean isTrempsAssignToRide() {
+        for(PartOfRide pride: this.getPartOfRide())
+            if(!pride.getTrempistsManager().getAllTrempists().isEmpty())
+                return true;
+        return false;
+    }
+
     public List<PartOfRide> getPartOfRide()
     {
         return this.partsOfRide;

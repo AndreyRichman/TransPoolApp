@@ -6,13 +6,13 @@ import interfaces.UIHandler;
 import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
-
-import javax.management.InstanceAlreadyExistsException;
-import javax.xml.bind.JAXBException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static requests.enums.RequestType.EXIT;
+import static requests.enums.RequestType.LOAD_XML_FILE;
 
 public class App {
     public static final int ABORT_INDEX = -1;
@@ -23,12 +23,10 @@ public class App {
     public static final String TREMP_PARTS_DELIMITER = String.join("", Collections.nCopies(10, " "));
 
 
-    UIHandler uiHandler;
-    LogicHandler logicHandler;
-    Boolean exit;
-
-    boolean xmlLoadedCond = false;
-    boolean treampsAddedCond = false;
+    private UIHandler uiHandler;
+    private LogicHandler logicHandler;
+    private boolean exit;
+    private boolean xmlLoadedCond = false;
 
     public App() {
         uiHandler = new ConsoleUI();
@@ -43,7 +41,24 @@ public class App {
         }
     }
 
-    private void processRequest(UserRequest request){
+    private void processRequest(UserRequest request) {
+        if(request.getRequestType().equals(LOAD_XML_FILE)){
+            loadContentFromXMLFile((LoadXMLRequest)request);
+            xmlLoadedCond = true;
+        }
+        else if(request.getRequestType().equals(EXIT)) {
+            exitApp();
+        }
+        else {
+            if (xmlLoadedCond)
+                processLogicRequest(request);
+            else
+                uiHandler.showOutput("Xml file must be load to system first!");
+        }
+    }
+
+
+    private void processLogicRequest(UserRequest request){
         RequestType requestType = request.getRequestType();
 
         switch (requestType){
@@ -73,38 +88,15 @@ public class App {
 
     private void loadContentFromXMLFile(LoadXMLRequest request){
 
+        String title = "Load XML file";
+        uiHandler.showTitle(title);
+        uiHandler.getXMLpath(request);
+
         try {
             logicHandler.loadXMLFile(request.getFileDirectory());
-        } catch (JAXBException e) {
-            String errorMsg = "Failed to read XML file";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (InvalidFileTypeException e) {
-            String errorMsg = "File type is " + e.getFileType() + " and not .xml type" ;
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (NoFileFoundInPathException e) {
-            String errorMsg = "Cant file type in path";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (InvalidMapBoundariesException e) {
-            String errorMsg = "Invalid map boundaries: " + e.getWidth() + "," + e.getLength();
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationNameAlreadyExistsException e) {
-            String errorMsg = "Two stations with the same name";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (InstanceAlreadyExistsException e) {
-            String errorMsg = "?";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationCoordinateoutOfBoundriesException e) {
-            String errorMsg = "Station Coordinate out Of Boundaries";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationAlreadyExistInCoordinateException e) {
-            String errorMsg = "Station Already Exist In Coordinate ";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationNotFoundException e) {
-            String errorMsg = "Cant create new road, station not found ";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (NoRoadBetweenStationsException e) {
-            String errorMsg = "No Road Between " + e.getFromStation() + "to " + e.getToStation();
-            uiHandler.showErrorMsg(errorMsg);
+            uiHandler.showOutput("Xml file loaded successfully!");
+        }  catch (FaildLoadingXMLFileException e) {
+            uiHandler.showErrorMsg(e.getReason());
         }
     }
 
@@ -113,7 +105,11 @@ public class App {
     }
 
     private String createSummaryOfAllRides() {
-        StringBuilder out = new StringBuilder("Summary of all Rides in the system:" + System.lineSeparator());
+
+        StringBuilder out = new StringBuilder(System.lineSeparator());
+
+        String title = "All Ride in the system";
+        uiHandler.showTitle(title);
 
         for(Ride ride: logicHandler.getAllRides()){
             out.append(createDescriptionOfRide(ride));
@@ -122,16 +118,37 @@ public class App {
     }
 
     private String createDescriptionOfRide(Ride ride){
-        //TODO: add all relevant information
-        return String.join(System.lineSeparator(),
+        return String.join(",",
                 String.format("Ride ID: %d", ride.getID()),
                 String.format("Stations: %s", ride.getAllStations()
                         .stream()
                         .map(Station::getName)
-                        .collect(Collectors.joining(" -> "))
-                )
+                        .collect(Collectors.joining(" -> "))),
+                String.format("%s", ride.isTrempsAssignToRide()? getDescriptionOfPartOfRide(ride.getPartOfRide()) : "No tremps assigned to this ride"),
+                System.lineSeparator()
         );
     }
+
+    private List<String> getTrempistsId(List<Trempist> trempists) {
+        return trempists.stream().map(Trempist::getUser).map(User::getName).collect(Collectors.toList());
+    }
+
+    private List<String> getDescriptionOfPartOfRide(List<PartOfRide> lpride)
+    {
+        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists().isEmpty()).map(this::createDescriptionOfPartOfRide).collect(Collectors.toList());
+    }
+
+    private String createDescriptionOfPartOfRide(PartOfRide pride){
+        return String.join(",",
+                String.format("Stop: [ %s ] ", pride.getRoad().getStartStation().getName()),
+                String.format("Dept time: %s ", pride.getStartTime().toString()),
+                String.format("Arr time: %s ", pride.getEndTime().toString()),
+                String.format("Open tremp spots: [ %s ] ", pride.getTotalCapacity()),
+                String.format("Trempists ID: [ %s ] ", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(" , ")))),
+                String.format("Add trempists names: [ %s ] ", (pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
+                String.format("Remove trempists names: [ %s ] ", (pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))));
+    }
+
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {
         List<TrempRequest> allTrempRequests = logicHandler.getAllTrempRequests();
         String title = "All Tremp Requests";
@@ -420,6 +437,8 @@ public class App {
     }
 
     private void exitApp(){
+        uiHandler.showOutput("Exiting the System. Hope you had a great ride and to see you again");
+
         exit = true;
     }
 }

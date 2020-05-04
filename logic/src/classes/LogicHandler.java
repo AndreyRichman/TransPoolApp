@@ -25,17 +25,20 @@ public class LogicHandler {
         usersNameToObject = new HashMap<>();
     }
 
-    public void loadXMLFile(String pathToFile) throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException,
-            InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
-            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, NoRoadBetweenStationsException {
+    public void loadXMLFile(String pathToFile) throws FaildLoadingXMLFileException {
 
         TransPool transPool = (new XMLHandler(pathToFile)).LoadXML();
 
-        initWorldMap(transPool);
+        try {
+            initWorldMap(transPool);
+        } catch (InvalidMapBoundariesException e) {
+            throw new FaildLoadingXMLFileException("Map out of Boundaries" + e.getWidth() + "," + e.getLength());
+        }
+
         initRides(transPool);
     }
 
-    private void initRoads(TransPool transPool) throws StationNotFoundException, InstanceAlreadyExistsException {
+    private void initRoads(TransPool transPool) throws FaildLoadingXMLFileException  {
 
         for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
 
@@ -43,7 +46,12 @@ public class LogicHandler {
             toFromRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
             toFromRoad.setLengthInKM(path.getLength());
             toFromRoad.setMaxSpeed(path.getSpeedLimit());
-            map.addNewRoad(toFromRoad);
+            try {
+                map.addNewRoad(toFromRoad);
+            } catch (InstanceAlreadyExistsException e) {
+                throw new FaildLoadingXMLFileException("Road from" + path.getFrom() + " to " +path.getTo() + " Already Exists ");
+            }
+
             toFromRoad.getStartStation().addRoadFromCurrentStation(toFromRoad);
 
             if (!path.isOneWay())
@@ -52,42 +60,58 @@ public class LogicHandler {
                 fromToRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
                 fromToRoad.setLengthInKM(path.getLength());
                 fromToRoad.setMaxSpeed(path.getSpeedLimit());
-                map.addNewRoad(fromToRoad);
+                try {
+                    map.addNewRoad(fromToRoad);
+                } catch (InstanceAlreadyExistsException e) {
+                    throw new FaildLoadingXMLFileException("Road from" + path.getTo() + " to " +path.getFrom() + " Already Exists ");
+                }
+
                 fromToRoad.getStartStation().addRoadFromCurrentStation(fromToRoad);
             }
         }
     }
 
-    private void initStations(TransPool transPool) throws StationNameAlreadyExistsException, InstanceAlreadyExistsException,
-            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException {
+    private void initStations(TransPool transPool) throws FaildLoadingXMLFileException {
 
         for (Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
-            map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
+            try {
+                map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
+            } catch (InstanceAlreadyExistsException e) {
+                throw new FaildLoadingXMLFileException("Station:" + stop.getName() + "already exists");
+            } catch (StationNameAlreadyExistsException e) {
+                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "already exists");
+            } catch (StationAlreadyExistInCoordinateException e) {
+                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "already exists in coords" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
+            } catch (StationCoordinateoutOfBoundriesException e) {
+                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "coords out of Boundries" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
+            }
         }
     }
 
-    private void initRides(TransPool transPool) throws NoRoadBetweenStationsException {
+    private void initRides(TransPool transPool) throws FaildLoadingXMLFileException {
+
         for (TransPoolTrip ride : transPool.getPlannedTrips().getTransPoolTrip()) {
 
             List<String> roadListStringNames = Arrays.asList(ride.getRoute().getPath().split("\\s*(,)\\s*"));
 
-                Ride newRide = createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
-                newRide.setPricePerKilometer(ride.getPPK());
+            Ride newRide = null;
+            try {
+                newRide = createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
+            } catch (NoRoadBetweenStationsException e) {
+                throw new FaildLoadingXMLFileException("No road between:" + e.getFromStation() + "to" + e.getToStation());
+            }
+            newRide.setPricePerKilometer(ride.getPPK());
                 newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
                 trafficManager.addRide(newRide);
-
-
         }
     }
 
-    private void initWorldMap(TransPool transPool) throws InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
-            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, StationNotFoundException {
+    private void initWorldMap(TransPool transPool) throws InvalidMapBoundariesException, FaildLoadingXMLFileException {
 
         int width = transPool.getMapDescriptor().getMapBoundries().getWidth();
         int Length = transPool.getMapDescriptor().getMapBoundries().getLength();
 
-        if(!mapOutOfBoundaries(width,Length))
-            throw new InvalidMapBoundariesException(width,Length);
+        checkMapBoundaries(width,Length);
 
         map = new WorldMap(width,Length);
 
@@ -95,10 +119,9 @@ public class LogicHandler {
         initRoads(transPool);
     }
 
-    private boolean mapOutOfBoundaries(int width, int height) throws InvalidMapBoundariesException {
-        if((width < 6 || width > 100) || (height < 6 || height > 100))
-            return false;
-        return true;
+    private void checkMapBoundaries(int width, int Length) throws InvalidMapBoundariesException {
+        if((width < 6 || width > 100) || (Length < 6 || Length > 100))
+            throw new InvalidMapBoundariesException(width,Length);
     }
 
     public Ride createNewEmptyRide(User rideOwner, List<Road> roads, int capacity){

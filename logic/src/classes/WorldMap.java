@@ -46,10 +46,10 @@ public class WorldMap {
     }
 
     private void validateStation(Station station)
-            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException {
+            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException, StationCoordinateoutOfBoundriesException {
 
         if (!coordinateInBoundaries(station.getCoordinate())) {
-            throw new IndexOutOfBoundsException(station.getCoordinate().toString());
+            throw new StationCoordinateoutOfBoundriesException(station);
         }
 
         if (this.allStations.contains(station)) {
@@ -57,10 +57,10 @@ public class WorldMap {
         }
 
         if (this.stationName2Station.containsKey(station.getName()))
-            throw new StationNameAlreadyExistsException();
+            throw new StationNameAlreadyExistsException(station);
 
         if (this.coordinateStationNameMap.containsKey(station.getCoordinate())) {
-            throw new StationAlreadyExistInCoordinateException();
+            throw new StationAlreadyExistInCoordinateException(station);
         }
     }
 
@@ -76,7 +76,7 @@ public class WorldMap {
         this.allRoads.add(road);
     }
 
-    private void validateNewRoad(Road road) throws InstanceAlreadyExistsException{
+    private void validateNewRoad(Road road) throws InstanceAlreadyExistsException, StationNotFoundException{
         Station start = road.getStartStation();
         Station end = road.getEndStation();
 

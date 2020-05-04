@@ -140,20 +140,14 @@ public class ConsoleUI implements UIHandler {
         return stringNumToRequest .get(chosenRequest).getValue().get();
     }
 
-
     private UserRequest getLoadXMLRequest(){
-
        LoadXMLRequest req = new LoadXMLRequest();
+
+       showOutput("Please enter full path of XML file:");
+       req.setFileDirectory(getInput());
 
         return req;
     }
-
-    public void getXMLpath(LoadXMLRequest req){
-
-        showOutput("Please enter full path of XML file:");
-        req.setFileDirectory(getInput());
-    }
-
 
     @Override
     public int showOptionsAndGetUserSelection(String titleForOptions, List<String> options){

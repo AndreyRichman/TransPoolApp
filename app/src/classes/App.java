@@ -80,28 +80,7 @@ public class App {
         try {
             logicHandler.loadXMLFile(request.getFileDirectory());
             uiHandler.showOutput("Xml file loaded successfully!");
-        } catch (InvalidMapBoundariesException e) {
-            String errorMsg = "Invalid map boundaries: " + e.getWidth() + "," + e.getLength();
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationNameAlreadyExistsException e) {
-            String errorMsg = "Two stations with the same name";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (InstanceAlreadyExistsException e) {
-            String errorMsg = "?";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationCoordinateoutOfBoundriesException e) {
-            String errorMsg = "Station Coordinate out Of Boundaries";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationAlreadyExistInCoordinateException e) {
-            String errorMsg = "Station Already Exist In Coordinate ";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (StationNotFoundException e) {
-            String errorMsg = "Cant create new road, station not found ";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (NoRoadBetweenStationsException e) {
-            String errorMsg = "No Road Between " + e.getFromStation() + "to " + e.getToStation();
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (FaildLoadingXMLFileException e) {
+        }  catch (FaildLoadingXMLFileException e) {
             uiHandler.showErrorMsg(e.getReason());
         }
     }

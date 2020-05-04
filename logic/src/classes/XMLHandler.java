@@ -1,5 +1,6 @@
 package classes;
 
+import exception.FaildLoadingXMLFileException;
 import exception.InvalidFileTypeException;
 import exception.NoFileFoundInPathException;
 import jaxb.schema.generated.TransPool;
@@ -18,19 +19,24 @@ public class XMLHandler {
         path = XMLpath;
     }
 
-    public TransPool LoadXML() throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException {
+    public TransPool LoadXML() throws FaildLoadingXMLFileException {
 
         File file = new File((path));
 
         if(!file.exists())
-            throw new NoFileFoundInPathException();
+            throw new FaildLoadingXMLFileException("No File Found In Path ");
 
         if (!getFileType(path).equalsIgnoreCase(".xml"))
-            throw new InvalidFileTypeException(getFileType(path));
+            throw new FaildLoadingXMLFileException("File type is" +  getFileType(path) + " and not .xml type");
 
+        TransPool transPool = null;
+        try {
+            transPool = deserializeFrom(file);
+        } catch (JAXBException e) {
+            throw new FaildLoadingXMLFileException("Unmarshaller Failed");
+        }
 
-
-        return deserializeFrom(file);
+        return transPool;
     }
 
 
@@ -42,7 +48,6 @@ public class XMLHandler {
 
     public String getFileType(String path) {
         String type;
-        // Basic check on the type using the filename
         if (path.lastIndexOf('.') != -1) {
             type = path.substring(path.lastIndexOf('.'));
         } else {

@@ -21,4 +21,8 @@ public class Trempist {
     public TrempPartType getToPartType() {
         return toPartType;
     }
+
+    public User getUser() {
+        return user;
+    }
 }

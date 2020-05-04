@@ -76,7 +76,7 @@ public class LogicHandler {
             } catch (InstanceAlreadyExistsException e) {
                 throw new FaildLoadingXMLFileException("Station:" + stop.getName() + "already exists");
             } catch (StationNameAlreadyExistsException e) {
-                throw new FaildLoadingXMLFileException("Station name:" + stop.getName() + "already exists");
+                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "already exists");
             } catch (StationAlreadyExistInCoordinateException e) {
                 throw new FaildLoadingXMLFileException("Station name:" + stop.getName() + "already exists in coords" + "(" +stop.getX() +"," +stop.getY() + ")");
             } catch (StationCoordinateoutOfBoundriesException e) {
@@ -85,13 +85,19 @@ public class LogicHandler {
         }
     }
 
-    private void initRides(TransPool transPool) throws NoRoadBetweenStationsException {
+    private void initRides(TransPool transPool) throws FaildLoadingXMLFileException {
+
         for (TransPoolTrip ride : transPool.getPlannedTrips().getTransPoolTrip()) {
 
             List<String> roadListStringNames = Arrays.asList(ride.getRoute().getPath().split("\\s*(,)\\s*"));
 
-                Ride newRide = createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
-                newRide.setPricePerKilometer(ride.getPPK());
+            Ride newRide = null;
+            try {
+                newRide = createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
+            } catch (NoRoadBetweenStationsException e) {
+                throw new FaildLoadingXMLFileException("No road between:" + e.getFromStation() + "to" + e.getToStation());
+            }
+            newRide.setPricePerKilometer(ride.getPPK());
                 newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
                 trafficManager.addRide(newRide);
 

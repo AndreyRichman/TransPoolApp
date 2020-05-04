@@ -1,12 +1,15 @@
 package classes;
 
-
+import enums.TrempPartType;
 
 import java.time.LocalTime;
-import java.util.*;
 
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Ride {
+
+
 
     private static int unique_id = 6000;
     private final int id;
@@ -40,10 +43,6 @@ public class Ride {
             this.mapFromStationToRoad.put(road.getStartStation(), partOfRide);
         });
 
-    }
-
-    public Schedule getSchedule() {
-        return schedule;
     }
 
     public List<PartOfRide> getPartOfRide()
@@ -187,12 +186,5 @@ public class Ride {
 
     public int getPricePerKilometer() {
         return pricePerKilometer;
-    }
-
-    public boolean isTrempsAssignToRide() {
-        for(PartOfRide pride: this.getPartOfRide())
-            if(!pride.getTrempistsManager().getAllTrempists().isEmpty())
-                return true;
-        return false;
     }
 }

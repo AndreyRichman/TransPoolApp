@@ -1,11 +1,8 @@
 package classes;
 
-import exception.FaildLoadingXMLFileException;
 import exception.InvalidFileTypeException;
 import exception.NoFileFoundInPathException;
 import jaxb.schema.generated.TransPool;
-
-import javax.security.auth.login.FailedLoginException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -21,25 +18,19 @@ public class XMLHandler {
         path = XMLpath;
     }
 
-    public TransPool LoadXML() throws FaildLoadingXMLFileException {
+    public TransPool LoadXML() throws JAXBException, InvalidFileTypeException, NoFileFoundInPathException {
 
         File file = new File((path));
 
         if(!file.exists())
-            throw new FaildLoadingXMLFileException("No File Found In Path ");
+            throw new NoFileFoundInPathException();
 
         if (!getFileType(path).equalsIgnoreCase(".xml"))
-            throw new FaildLoadingXMLFileException("File type is not .xml type");
-
-        TransPool transPool = null;
-        try {
-            transPool = deserializeFrom(file);
-        } catch (JAXBException e) {
-            throw new FaildLoadingXMLFileException("Unmarshaller Failed");
-        }
+            throw new InvalidFileTypeException(getFileType(path));
 
 
-        return transPool;
+
+        return deserializeFrom(file);
     }
 
 

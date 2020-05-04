@@ -1,6 +1,5 @@
 package interfaces;
 
-import requests.classes.LoadXMLRequest;
 import requests.classes.NewTrempRequest;
 import requests.interfaces.UserRequest;
 
@@ -20,5 +19,4 @@ public interface UIHandler {
     void showErrorMsg(String errorMsg);
     LocalTime getTimeFromUser(String question);
     public void showTitle(String title);
-    void getXMLpath(LoadXMLRequest request);
 }

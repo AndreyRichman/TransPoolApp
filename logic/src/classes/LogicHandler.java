@@ -78,9 +78,9 @@ public class LogicHandler {
             } catch (StationNameAlreadyExistsException e) {
                 throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "already exists");
             } catch (StationAlreadyExistInCoordinateException e) {
-                throw new FaildLoadingXMLFileException("Station name:" + stop.getName() + "already exists in coords" + "(" +stop.getX() +"," +stop.getY() + ")");
+                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "already exists in coords" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
             } catch (StationCoordinateoutOfBoundriesException e) {
-                throw new FaildLoadingXMLFileException("Station name:" + stop.getName() + "coords out of Boundries" + "(" +stop.getX() +"," +stop.getY() + ")");
+                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "coords out of Boundries" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
             }
         }
     }
@@ -100,13 +100,10 @@ public class LogicHandler {
             newRide.setPricePerKilometer(ride.getPPK());
                 newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
                 trafficManager.addRide(newRide);
-
-
         }
     }
 
-    private void initWorldMap(TransPool transPool) throws InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
-            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, StationNotFoundException, FaildLoadingXMLFileException {
+    private void initWorldMap(TransPool transPool) throws InvalidMapBoundariesException, FaildLoadingXMLFileException {
 
         int width = transPool.getMapDescriptor().getMapBoundries().getWidth();
         int Length = transPool.getMapDescriptor().getMapBoundries().getLength();

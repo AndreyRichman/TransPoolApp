@@ -35,7 +35,7 @@ public class LogicHandler {
         initRides(transPool);
     }
 
-    private void initRoads(TransPool transPool) throws StationNotFoundException, InstanceAlreadyExistsException {
+    private void initRoads(TransPool transPool) throws FaildLoadingXMLFileException  {
 
         for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
 
@@ -43,7 +43,12 @@ public class LogicHandler {
             toFromRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
             toFromRoad.setLengthInKM(path.getLength());
             toFromRoad.setMaxSpeed(path.getSpeedLimit());
-            map.addNewRoad(toFromRoad);
+            try {
+                map.addNewRoad(toFromRoad);
+            } catch (InstanceAlreadyExistsException e) {
+                throw new FaildLoadingXMLFileException("Road from" + path.getFrom() + " to " +path.getTo() + " Already Exists ");
+            }
+
             toFromRoad.getStartStation().addRoadFromCurrentStation(toFromRoad);
 
             if (!path.isOneWay())
@@ -52,7 +57,12 @@ public class LogicHandler {
                 fromToRoad.setFuelUsagePerKilometer(path.getFuelConsumption());
                 fromToRoad.setLengthInKM(path.getLength());
                 fromToRoad.setMaxSpeed(path.getSpeedLimit());
-                map.addNewRoad(fromToRoad);
+                try {
+                    map.addNewRoad(fromToRoad);
+                } catch (InstanceAlreadyExistsException e) {
+                    throw new FaildLoadingXMLFileException("Road from" + path.getTo() + " to " +path.getFrom() + " Already Exists ");
+                }
+
                 fromToRoad.getStartStation().addRoadFromCurrentStation(fromToRoad);
             }
         }
@@ -81,7 +91,7 @@ public class LogicHandler {
     }
 
     private void initWorldMap(TransPool transPool) throws InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
-            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, StationNotFoundException {
+            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, StationNotFoundException, FaildLoadingXMLFileException {
 
         int width = transPool.getMapDescriptor().getMapBoundries().getWidth();
         int Length = transPool.getMapDescriptor().getMapBoundries().getLength();

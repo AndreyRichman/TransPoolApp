@@ -73,18 +73,14 @@ public class App {
 
     private void loadContentFromXMLFile(LoadXMLRequest request){
 
+        String title = "Load XML file";
+        uiHandler.showTitle(title);
+        uiHandler.getXMLpath((LoadXMLRequest)request);
+
         try {
             logicHandler.loadXMLFile(request.getFileDirectory());
-        } catch (JAXBException e) {
-            String errorMsg = "Failed to read XML file";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (InvalidFileTypeException e) {
-            String errorMsg = "File type is " + e.getFileType() + " and not .xml type" ;
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (NoFileFoundInPathException e) {
-            String errorMsg = "Cant file type in path";
-            uiHandler.showErrorMsg(errorMsg);
-        } catch (InvalidMapBoundariesException e) {
+            uiHandler.showOutput("Xml file loaded successfully!");
+        }  catch (InvalidMapBoundariesException e) {
             String errorMsg = "Invalid map boundaries: " + e.getWidth() + "," + e.getLength();
             uiHandler.showErrorMsg(errorMsg);
         } catch (StationNameAlreadyExistsException e) {
@@ -105,6 +101,8 @@ public class App {
         } catch (NoRoadBetweenStationsException e) {
             String errorMsg = "No Road Between " + e.getFromStation() + "to " + e.getToStation();
             uiHandler.showErrorMsg(errorMsg);
+        } catch (FaildLoadingXMLFileException e) {
+            uiHandler.showErrorMsg(e.getReason());
         }
     }
 
@@ -113,7 +111,11 @@ public class App {
     }
 
     private String createSummaryOfAllRides() {
-        StringBuilder out = new StringBuilder("Summary of all Rides in the system:" + System.lineSeparator());
+
+        StringBuilder out = new StringBuilder(System.lineSeparator());
+
+        String title = "All Ride in the system";
+        uiHandler.showTitle(title);
 
         for(Ride ride: logicHandler.getAllRides()){
             out.append(createDescriptionOfRide(ride));
@@ -122,16 +124,38 @@ public class App {
     }
 
     private String createDescriptionOfRide(Ride ride){
-        //TODO: add all relevant information
-        return String.join(System.lineSeparator(),
+
+        return String.join(",",
                 String.format("Ride ID: %d", ride.getID()),
                 String.format("Stations: %s", ride.getAllStations()
                         .stream()
                         .map(Station::getName)
-                        .collect(Collectors.joining(" -> "))
-                )
+                        .collect(Collectors.joining(" -> "))),
+                String.format("%s", ride.isTrempsAssignToRide()? getDescriptionOfPartOfRide(ride.getPartOfRide()) : "No tremps assigned to this ride"),
+                System.lineSeparator()
         );
     }
+
+    private List<String> getTrempistsId(List<Trempist> trempists) {
+        return trempists.stream().map(Trempist::getUser).map(User::getName).collect(Collectors.toList());
+    }
+
+    private List<String> getDescriptionOfPartOfRide(List<PartOfRide> lpride)
+    {
+        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists().isEmpty()).map(this::createDescriptionOfPartOfRide).collect(Collectors.toList());
+    }
+
+    private String createDescriptionOfPartOfRide(PartOfRide pride){
+        return String.join(",",
+                String.format("Stop: [ %s ] ", pride.getRoad().getStartStation().getName()),
+                String.format("Dept time: %s ", pride.getStartTime().toString()),
+                String.format("Arr time: %s ", pride.getEndTime().toString()),
+                String.format("Open tremp spots: [ %s ] ", pride.getTotalCapacity()),
+                String.format("Trempists ID: [ %s ] ", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(" , ")))),
+                String.format("Add trempists names: [ %s ] ", (pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
+                String.format("Remove trempists names: [ %s ] ", (pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))));
+    }
+
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {
         List<TrempRequest> allTrempRequests = logicHandler.getAllTrempRequests();
         String title = "All Tremp Requests";
@@ -142,11 +166,30 @@ public class App {
             uiHandler.showOutput(String.join(LIST_ITEMS_SEPARATOR, summaryOfAllTremps));
         } else
             uiHandler.showOutput( String.join("", Collections.nCopies(10, " "))+ "No Rides found in the System");
-
     }
 
     private List<String> getSummaryOfAllTrempRequests(List<TrempRequest> allTrempRequests){
         return allTrempRequests.stream().map(this::createDescriptionOfTrempRequest).collect(Collectors.toList());
+    }
+
+    private String createDescriptionOfTrempRequest(TrempRequest trempRequest){
+        String trempRequestDescription = String.join(System.lineSeparator(),
+                String.format("Request ID: %d", trempRequest.getID()),
+                String.format("Request User: %s", trempRequest.getUser().getName()),
+                String.format("Stations: [ %s ] --> [ %s ]", trempRequest.getStartStation().getName(), trempRequest.getEndStation().getName()),
+                String.format("Desired departure Time: %s", trempRequest.getDepartTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
+                String.format("Status: %s",
+                        trempRequest.isNotAssignedToRides()? "Not Assigned to any Ride" : "Assigned to Ride")
+        );
+        if (!trempRequest.isNotAssignedToRides()){
+            String assignedTrempsDescriptions = this.createDescriptionOfTrempOption(trempRequest.getSubRides());
+            trempRequestDescription = String.join(System.lineSeparator() + "Assigned Tremp:" + System.lineSeparator(),
+                    trempRequestDescription,
+                    assignedTrempsDescriptions
+            );
+        }
+
+        return trempRequestDescription;
     }
 
     private void tryMatchTrempToRide(TryMatchTrempToRideRequest request) {
@@ -251,6 +294,7 @@ public class App {
 
         return summary;
     }
+
     private List<String> getSubRideSummary(SubRide subRide){
         return new ArrayList<>(
                 Arrays.asList(
@@ -261,6 +305,7 @@ public class App {
                 )
         );
     }
+
     private void connectTrempRequestToSubRides(TrempRequest trempRequest, List<SubRide> subRides){
         subRides.forEach(subRide -> {
             subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
@@ -271,6 +316,7 @@ public class App {
     private List<String> getAllUnMatchedTrempRequestStrOptions(List<TrempRequest> trempRequests) {
         return trempRequests.stream().map(this::createDescriptionOfTrempRequest).collect(Collectors.toList());
     }
+
 
     private String createDescriptionOfTrempRequest(TrempRequest trempRequest){
         String trempRequestDescription = String.join(System.lineSeparator(),

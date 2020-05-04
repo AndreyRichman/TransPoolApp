@@ -5,7 +5,7 @@ import requests.interfaces.UserRequest;
 
 public class LoadXMLRequest implements UserRequest {
 
-    private String fileDirectory = "C://Documents.....";
+    private String fileDirectory = "...";
 
     @Override
     public RequestType getRequestType() {
@@ -22,8 +22,4 @@ public class LoadXMLRequest implements UserRequest {
         return fileDirectory;
     }
 
-    public LoadXMLRequest()
-    {
-        System.out.println("im in XML constractor");
-    }
 }

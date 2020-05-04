@@ -68,11 +68,20 @@ public class LogicHandler {
         }
     }
 
-    private void initStations(TransPool transPool) throws StationNameAlreadyExistsException, InstanceAlreadyExistsException,
-            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException {
+    private void initStations(TransPool transPool) throws FaildLoadingXMLFileException {
 
         for (Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
-            map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
+            try {
+                map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
+            } catch (InstanceAlreadyExistsException e) {
+                throw new FaildLoadingXMLFileException("Station:" + stop.getName() + "already exists");
+            } catch (StationNameAlreadyExistsException e) {
+                throw new FaildLoadingXMLFileException("Station name:" + stop.getName() + "already exists");
+            } catch (StationAlreadyExistInCoordinateException e) {
+                throw new FaildLoadingXMLFileException("Station name:" + stop.getName() + "already exists in coords" + "(" +stop.getX() +"," +stop.getY() + ")");
+            } catch (StationCoordinateoutOfBoundriesException e) {
+                throw new FaildLoadingXMLFileException("Station name:" + stop.getName() + "coords out of Boundries" + "(" +stop.getX() +"," +stop.getY() + ")");
+            }
         }
     }
 

@@ -108,8 +108,7 @@ public class LogicHandler {
         int width = transPool.getMapDescriptor().getMapBoundries().getWidth();
         int Length = transPool.getMapDescriptor().getMapBoundries().getLength();
 
-        if(!mapOutOfBoundaries(width,Length))
-            throw new InvalidMapBoundariesException(width,Length);
+        checkMapBoundaries(width,Length);
 
         map = new WorldMap(width,Length);
 
@@ -117,10 +116,9 @@ public class LogicHandler {
         initRoads(transPool);
     }
 
-    private boolean mapOutOfBoundaries(int width, int height) throws InvalidMapBoundariesException {
-        if((width < 6 || width > 100) || (height < 6 || height > 100))
-            return false;
-        return true;
+    private void checkMapBoundaries(int width, int Length) throws InvalidMapBoundariesException {
+        if((width < 6 || width > 100) || (Length < 6 || Length > 100))
+            throw new InvalidMapBoundariesException(width,Length);
     }
 
     public Ride createNewEmptyRide(User rideOwner, List<Road> roads, int capacity){

@@ -57,10 +57,10 @@ public class WorldMap {
         }
 
         if (this.stationName2Station.containsKey(station.getName()))
-            throw new StationNameAlreadyExistsException();
+            throw new StationNameAlreadyExistsException(station);
 
         if (this.coordinateStationNameMap.containsKey(station.getCoordinate())) {
-            throw new StationAlreadyExistInCoordinateException();
+            throw new StationAlreadyExistInCoordinateException(station);
         }
     }
 

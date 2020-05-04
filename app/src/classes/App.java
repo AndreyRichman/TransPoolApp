@@ -6,13 +6,13 @@ import interfaces.UIHandler;
 import requests.classes.*;
 import requests.enums.RequestType;
 import requests.interfaces.UserRequest;
-
-import javax.management.InstanceAlreadyExistsException;
-import javax.xml.bind.JAXBException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static requests.enums.RequestType.EXIT;
+import static requests.enums.RequestType.LOAD_XML_FILE;
 
 public class App {
     public static final int ABORT_INDEX = -1;
@@ -23,12 +23,10 @@ public class App {
     public static final String TREMP_PARTS_DELIMITER = String.join("", Collections.nCopies(10, " "));
 
 
-    UIHandler uiHandler;
-    LogicHandler logicHandler;
-    Boolean exit;
-
-    boolean xmlLoadedCond = false;
-    boolean treampsAddedCond = false;
+    private UIHandler uiHandler;
+    private LogicHandler logicHandler;
+    private boolean exit;
+    private boolean xmlLoadedCond = false;
 
     public App() {
         uiHandler = new ConsoleUI();
@@ -43,7 +41,24 @@ public class App {
         }
     }
 
-    private void processRequest(UserRequest request){
+    private void processRequest(UserRequest request) {
+        if(request.getRequestType().equals(LOAD_XML_FILE)){
+            loadContentFromXMLFile((LoadXMLRequest)request);
+            xmlLoadedCond = true;
+        }
+        else if(request.getRequestType().equals(EXIT)) {
+            exitApp();
+        }
+        else {
+            if (xmlLoadedCond)
+                processLogicRequest(request);
+            else
+                uiHandler.showOutput("Xml file must be load to system first!");
+        }
+    }
+
+
+    private void processLogicRequest(UserRequest request){
         RequestType requestType = request.getRequestType();
 
         switch (requestType){
@@ -422,6 +437,8 @@ public class App {
     }
 
     private void exitApp(){
+        uiHandler.showOutput("Exiting the System. Hope you had a great ride and to see you again");
+
         exit = true;
     }
 }

@@ -30,7 +30,7 @@ public class WorldMap {
     }
 
     public void addNewStation(Station station)
-            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException {
+            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException, StationCoordinateoutOfBoundriesException {
         validateStation(station);
         this.allStations.add(station);
         this.stationName2Station.put(station.getName(), station);
@@ -46,10 +46,10 @@ public class WorldMap {
     }
 
     private void validateStation(Station station)
-            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException {
+            throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException, StationCoordinateoutOfBoundriesException {
 
         if (!coordinateInBoundaries(station.getCoordinate())) {
-            throw new IndexOutOfBoundsException(station.getCoordinate().toString());
+            throw new StationCoordinateoutOfBoundriesException(station);
         }
 
         if (this.allStations.contains(station)) {

@@ -1,5 +1,6 @@
 package classes;
 
+import enums.DesiredTimeType;
 import exception.*;
 import interfaces.UIHandler;
 import requests.classes.*;
@@ -14,9 +15,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class App {
-
     public static final int ABORT_INDEX = -1;
-    public static final String LIST_ITEMS_SEPERATOR = System.lineSeparator()
+    public static final String LIST_ITEMS_SEPARATOR = System.lineSeparator()
             + String.join("", Collections.nCopies(40, "="))
             + System.lineSeparator();
     public static final String TREMP_OPTION_DELIMITER = String.join("", Collections.nCopies(5, " "));
@@ -108,10 +108,6 @@ public class App {
         }
     }
 
-    private void addNewRide(NewRideRequest request) {
-        //TODO leave for later stage
-    }
-
     private void showStatusOfRides(GetStatusOfRidesRequest request) {
         uiHandler.showOutput(createSummaryOfAllRides());
     }
@@ -143,7 +139,7 @@ public class App {
 
         if (allTrempRequests.size() > 0){
             List<String> summaryOfAllTremps = getSummaryOfAllTrempRequests(allTrempRequests);
-            uiHandler.showOutput(String.join(LIST_ITEMS_SEPERATOR, summaryOfAllTremps));
+            uiHandler.showOutput(String.join(LIST_ITEMS_SEPARATOR, summaryOfAllTremps));
         } else
             uiHandler.showOutput( String.join("", Collections.nCopies(10, " "))+ "No Rides found in the System");
 
@@ -226,7 +222,8 @@ public class App {
 
         out.append(String.join(System.lineSeparator() + TREMP_OPTION_DELIMITER,
                 "",
-                String.format("Estimated arrival time: %s", trempOption.get(trempOption.size() - 1).getArrivalTime()),
+                String.format("Depart time: %s", trempOption.get(0).getDepartTime()),
+                String.format("Estimated Arrive time: %s", trempOption.get(trempOption.size() - 1).getArrivalTime()),
                 String.format("Average Fuel usage: %.2f", trempOption.stream().mapToDouble(SubRide::getAverageFuelUsage).average().getAsDouble()),
                 String.format("Total Distance: %.1f km", trempOption.stream().mapToDouble(SubRide::getTotalDistance).sum()),
                 String.format("Total Cost: %.2f", trempOption.stream().mapToDouble(SubRide::getTotalCost).sum()),
@@ -280,7 +277,7 @@ public class App {
                 String.format("Request ID: %d", trempRequest.getID()),
                 String.format("Request User: %s", trempRequest.getUser().getName()),
                 String.format("Stations: [ %s ] --> [ %s ]", trempRequest.getStartStation().getName(), trempRequest.getEndStation().getName()),
-                String.format("Desired departure Time: %s", trempRequest.getDepartTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
+                String.format("Desired %s Time: %s", trempRequest.getDesiredTimeType().name(), trempRequest.getDesiredTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
                 String.format("Status: %s",
                         trempRequest.isNotAssignedToRides()? "Not Assigned to any Ride" : "Assigned to Ride")
         );
@@ -314,10 +311,22 @@ public class App {
         String userName = uiHandler.getStringForQuestion("Enter Your Name:");
         newTrempRequest.setUser(logicHandler.getUserByName(userName));
 
-        LocalTime departTime = uiHandler.getTimeFromUser("Enter Depart time in HH:MM format: ");
-        newTrempRequest.setDepartTime(departTime);
+        DesiredTimeType desiredTimeType = getDesiredTypeOfTimeFromUser();
+        newTrempRequest.setDesiredTimeType(desiredTimeType);
+
+        LocalTime desiredTime = uiHandler.getTimeFromUser(String.format("Enter %s time in HH:MM format: ", desiredTimeType.name()));
+        newTrempRequest.setDesiredTime(desiredTime);
 
         return newTrempRequest;
+    }
+
+    private DesiredTimeType getDesiredTypeOfTimeFromUser(){
+        String title = "Do you wish to Depart or Arrive at specific Time?";
+        List<DesiredTimeType> options = Arrays.asList(DesiredTimeType.values());
+        List<String> optionsNames = options.stream().map(Enum::name).collect(Collectors.toList());
+        int selectedIndex = uiHandler.showOptionsAndGetUserSelection(title, optionsNames);
+
+        return options.get(selectedIndex);
     }
 
     private Station getStartStationFromUser() throws ActionAbortedException {
@@ -343,6 +352,72 @@ public class App {
         return stationOptions.get(desiredStationIndex);
     }
 
+    private void addNewRide(NewRideRequest request) {
+        try {
+            request.setStations(getRouteStationsForNewRide());
+            request.setUserName(uiHandler.getStringForQuestion("Enter Your Name:"));
+            request.setCarCapacity(uiHandler.getNumberForString("Enter Car Capacity:"));
+            request.setPricePerKilometer(uiHandler.getNumberForString("Enter Price per Kilometer:"));
+            request.setStartTime(uiHandler.getTimeFromUser("Enter Depart time in HH:MM format: "));
+
+            Ride newRide = createNewRideFromRequest(request);
+            logicHandler.addRide(newRide);
+        } catch (ActionAbortedException | NoRoadBetweenStationsException ignore) {}
+    }
+
+    private List<String> getRouteStationsForNewRide() throws ActionAbortedException {
+        List<String> selectedStationsNames;
+        List<String> stationsMenu = logicHandler.getAllStations().stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+
+        uiHandler.showOutput("Please Select Your Route Stations, enter 'q' to end the route.");
+        selectedStationsNames = getStationsNamesForNewRide(stationsMenu);
+
+        if (selectedStationsNames.size() < 2){
+            boolean tryAgain = uiHandler.getYesNoAnswerForQuestion("Incorrect Number Of Station (minimum 2), would you like to try again?");
+            if (tryAgain)
+                return getRouteStationsForNewRide();
+            else
+                throw new ActionAbortedException();
+        }
+
+        return selectedStationsNames;
+    }
+
+    private List<String> getStationsNamesForNewRide(List<String> stationsMenu){
+        List<String> selectedStationsNames = new LinkedList<>();
+        boolean routeEnded = false;
+
+        while(!routeEnded){
+
+            int selectedIndex = uiHandler.showOptionsAndGetUserSelection("Select Station:", stationsMenu);
+            if (selectedIndex == ABORT_INDEX)
+                routeEnded = true;
+            else{
+                String selectedStationName = stationsMenu.get(selectedIndex);
+                selectedStationsNames.add(selectedStationName);
+                stationsMenu = logicHandler.getStationFromName(selectedStationName)
+                        .getStationsAccessedFromCurrentStation().stream()
+                        .map(Station::getName)
+                        .collect(Collectors.toList());
+                stationsMenu.removeAll(selectedStationsNames);
+            }
+        }
+
+        return selectedStationsNames;
+    }
+
+    private Ride createNewRideFromRequest(NewRideRequest request) throws NoRoadBetweenStationsException {
+        List<Road> roads = logicHandler.getRoadsFromStationsNames(request.getStations());
+        User user = logicHandler.getUserByName(request.getUserName());
+        Ride newRide = logicHandler.createNewEmptyRide(user, roads, request.getCarCapacity());
+
+        newRide.setStartTime(request.getStartTime());
+        newRide.setPricePerKilometer(request.getPricePerKilometer());
+
+        return newRide;
+    }
 
     private void exitApp(){
         exit = true;

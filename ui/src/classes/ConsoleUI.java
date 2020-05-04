@@ -125,11 +125,12 @@ public class ConsoleUI implements UIHandler {
         Map<String,Pair <String, Supplier<UserRequest>>> stringNumToRequest  = new HashMap<>();
 
         stringNumToRequest .put("1",(new Pair <> ("1. Load XML File ",this::getLoadXMLRequest)));
-        stringNumToRequest .put("2",(new Pair <> ("2. Create a new Tremp Request ", NewTrempRequest::new)));
-        stringNumToRequest .put("3",(new Pair <> ("3. Show All Rides ", GetStatusOfRidesRequest::new)));
-        stringNumToRequest .put("4",(new Pair <> ("4. Show All Tremp Requests ", GetStatusOfTrempsRequest::new)));
-        stringNumToRequest .put("5",(new Pair <> ("5. Find a Match For Tremp Request ", TryMatchTrempToRideRequest::new)));
-        stringNumToRequest .put("6",(new Pair <> ("6. Exit", ExitRequest::new)));
+        stringNumToRequest .put("2",(new Pair <> ("2. Create a new Ride ", NewRideRequest::new)));
+        stringNumToRequest .put("3",(new Pair <> ("3. Create a new Tremp Request ", NewTrempRequest::new)));
+        stringNumToRequest .put("4",(new Pair <> ("4. Show All Rides ", GetStatusOfRidesRequest::new)));
+        stringNumToRequest .put("5",(new Pair <> ("5. Show All Tremp Requests ", GetStatusOfTrempsRequest::new)));
+        stringNumToRequest .put("6",(new Pair <> ("6. Find a Match For Tremp Request ", TryMatchTrempToRideRequest::new)));
+        stringNumToRequest .put("7",(new Pair <> ("7. Exit", ExitRequest::new)));
 
         return stringNumToRequest ;
     }

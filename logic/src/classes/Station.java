@@ -2,10 +2,8 @@ package classes;
 
 import exception.NoRoadBetweenStationsException;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Station {
 
@@ -68,6 +66,10 @@ public class Station {
         }
 
         return this.allStationReachableFromThisStation.contains(otherStation);
+    }
+
+    public List<Station> getStationsAccessedFromCurrentStation(){
+        return new ArrayList<>(this.stationsFromCurrent2Roads.keySet());
     }
 
     public Coordinate getCoordinate() {

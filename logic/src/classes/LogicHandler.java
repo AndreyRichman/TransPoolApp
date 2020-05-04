@@ -25,13 +25,16 @@ public class LogicHandler {
         usersNameToObject = new HashMap<>();
     }
 
-    public void loadXMLFile(String pathToFile) throws FaildLoadingXMLFileException,
-            InvalidMapBoundariesException, StationNameAlreadyExistsException, InstanceAlreadyExistsException,
-            StationCoordinateoutOfBoundriesException, StationAlreadyExistInCoordinateException, NoRoadBetweenStationsException {
+    public void loadXMLFile(String pathToFile) throws FaildLoadingXMLFileException {
 
         TransPool transPool = (new XMLHandler(pathToFile)).LoadXML();
 
-        initWorldMap(transPool);
+        try {
+            initWorldMap(transPool);
+        } catch (InvalidMapBoundariesException e) {
+            throw new FaildLoadingXMLFileException("Map out of Boundaries" + e.getWidth() + "," + e.getLength());
+        }
+
         initRides(transPool);
     }
 

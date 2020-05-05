@@ -51,19 +51,22 @@ public class WorldMap {
     private void validateStation(Station station)
             throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException, StationCoordinateoutOfBoundriesException {
 
+       for(Station s: allStations){
+
+           if(s.getName().equals(station.getName())){
+               throw new StationNameAlreadyExistsException(station);
+           }
+           if(s.getCoordinate().equals(station.getCoordinate())){
+               throw new StationAlreadyExistInCoordinateException(station);
+           }
+       }
+
         if (!coordinateInBoundaries(station.getCoordinate())) {
             throw new StationCoordinateoutOfBoundriesException(station);
         }
 
         if (this.allStations.contains(station)) {
             throw new InstanceAlreadyExistsException(station.toString());
-        }
-
-        if (this.stationName2Station.containsKey(station.getName()))
-            throw new StationNameAlreadyExistsException(station);
-
-        if (this.coordinateStationNameMap.containsKey(station.getCoordinate())) {
-            throw new StationAlreadyExistInCoordinateException(station);
         }
     }
 

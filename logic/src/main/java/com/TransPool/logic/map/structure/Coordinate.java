@@ -17,4 +17,8 @@ public class Coordinate {
     public int getY() {
         return y;
     }
+
+    public boolean equals(Coordinate cord) {
+        return ((this.getX() == cord.getX()) && this.getY() == cord.getY());
+    }
 }

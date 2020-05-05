@@ -39,7 +39,7 @@ public class LogicHandler {
         try {
             initWorldMap(transPool);
         } catch (InvalidMapBoundariesException e) {
-            throw new FaildLoadingXMLFileException("Map out of Boundaries" + e.getWidth() + "," + e.getLength());
+            throw new FaildLoadingXMLFileException("Map out of Boundaries" + " ( " + e.getWidth() + "," + e.getLength() + " ) ");
         }
 
         initRides(transPool);

@@ -107,7 +107,7 @@ public class App {
             logicHandler.loadXMLFile(request.getFileDirectory());
             uiHandler.showOutput("Xml file loaded successfully!");
         }  catch (FaildLoadingXMLFileException e) {
-            uiHandler.showErrorMsg(e.getReason());
+            uiHandler.showOutput(e.getReason());
         }
     }
 
@@ -327,7 +327,7 @@ public class App {
             uiHandler.showOutput("Your Tremp request was submitted successfully.");
 
         } catch (NoPathExistBetweenStationsException e) {
-            uiHandler.showErrorMsg("No path found between selected stations.");
+            uiHandler.showOutput("No path found between selected stations.");
         } catch (ActionAbortedException ignore){}
 
     }

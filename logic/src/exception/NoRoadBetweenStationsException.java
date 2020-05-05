@@ -1,6 +1,6 @@
 package exception;
 
-import classes.Station;
+import main.java.com.TransPool.logic.map.structure.Station;
 
 public class NoRoadBetweenStationsException extends Exception {
     private Station fromStation;

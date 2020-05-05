@@ -431,6 +431,9 @@ public class App {
                         .collect(Collectors.toList());
                 stationsMenu.removeAll(selectedStationsNames);
             }
+
+            if(stationsMenu.size() == 0)
+                routeEnded = true;
         }
 
         return selectedStationsNames;

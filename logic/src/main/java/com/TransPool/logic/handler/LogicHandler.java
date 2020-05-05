@@ -39,7 +39,7 @@ public class LogicHandler {
         try {
             initWorldMap(transPool);
         } catch (InvalidMapBoundariesException e) {
-            throw new FaildLoadingXMLFileException("Failed load XML due to invalid map out of Boundaries" + " (" + e.getWidth() + "," + e.getLength() + ") ");
+            throw new FaildLoadingXMLFileException("Failed load XML due to invalid map Boundaries" + " (" + e.getWidth() + "," + e.getLength() + ") ");
         }
 
         initRides(transPool);
@@ -57,6 +57,8 @@ public class LogicHandler {
                 map.addNewRoad(toFromRoad);
             } catch (InstanceAlreadyExistsException e) {
                 throw new FaildLoadingXMLFileException("Failed load XML due to duplicated roads. Road from" + path.getFrom() + " to " +path.getTo() + " Already Exists ");
+            } catch (StationNotFoundException e) {
+                throw new FaildLoadingXMLFileException("Failed load XML due to invalid station. Station " + e.getStationName() + " not found ");
             }
 
             toFromRoad.getStartStation().addRoadFromCurrentStation(toFromRoad);
@@ -71,6 +73,8 @@ public class LogicHandler {
                     map.addNewRoad(fromToRoad);
                 } catch (InstanceAlreadyExistsException e) {
                     throw new FaildLoadingXMLFileException("Failed load XML due to duplicated roads. Road from" + path.getTo() + " to " +path.getFrom() + " Already Exists ");
+                } catch (StationNotFoundException e) {
+                    throw new FaildLoadingXMLFileException("Failed load XML due to invalid station. Station " + e.getStationName() + " not found ");
                 }
 
                 fromToRoad.getStartStation().addRoadFromCurrentStation(fromToRoad);
@@ -106,6 +110,8 @@ public class LogicHandler {
                 newRide = Ride.createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
             } catch (NoRoadBetweenStationsException e) {
                 throw new FaildLoadingXMLFileException("Failed load XML due to invalid road. No road between:" + e.getFromStation() + "to" + e.getToStation());
+            } catch (StationNotFoundException e) {
+                throw new FaildLoadingXMLFileException("Failed load XML due to invalid station. Station " + e.getStationName() + " not found ");
             }
             newRide.setPricePerKilometer(ride.getPPK());
                 newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());

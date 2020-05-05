@@ -74,7 +74,7 @@ public class WorldMap {
                 coord.getY() < this.height;
     }
 
-    public void addNewRoad(Road road) throws InstanceAlreadyExistsException{
+    public void addNewRoad(Road road) throws InstanceAlreadyExistsException, StationNotFoundException{
         validateNewRoad(road);
         this.allRoads.add(road);
     }
@@ -95,7 +95,7 @@ public class WorldMap {
 
     }
 
-    public List<Road> getRoadsFromStationsNames(List<String> stationsNames) throws NoRoadBetweenStationsException {
+    public List<Road> getRoadsFromStationsNames(List<String> stationsNames) throws NoRoadBetweenStationsException, StationNotFoundException {
         List<Road> roads = new ArrayList<>();
 
         Iterator<Station> stationsIterator = getStationsFromNames(stationsNames).iterator();

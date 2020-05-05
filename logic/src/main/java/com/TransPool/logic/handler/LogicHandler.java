@@ -39,7 +39,7 @@ public class LogicHandler {
         try {
             initWorldMap(transPool);
         } catch (InvalidMapBoundariesException e) {
-            throw new FaildLoadingXMLFileException("Failed load XML due to invalid map Boundaries" + " (" + e.getWidth() + "," + e.getLength() + ") ");
+            throw new FaildLoadingXMLFileException("Failed load XML due to invalid map Boundaries " + "(" + e.getWidth() + "," + e.getLength() + ")");
         }
 
         initRides(transPool);
@@ -88,13 +88,13 @@ public class LogicHandler {
             try {
                 map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
             } catch (InstanceAlreadyExistsException e) {
-                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station:" + stop.getName() + "already exists");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station: " + stop.getName() + " already exists");
             } catch (StationNameAlreadyExistsException e) {
-                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name:" + e.getStation().getName() + "already exists");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name: " + e.getStation().getName() + " already exists");
             } catch (StationAlreadyExistInCoordinateException e) {
-                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name:" + e.getStation().getName() + "already exists in coords" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name: " + e.getStation().getName() + " already exists in coords" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
             } catch (StationCoordinateoutOfBoundriesException e) {
-                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name:" + e.getStation().getName() + "coords out of Boundries" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name: " + e.getStation().getName() + " coords out of Boundries" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
             }
         }
     }

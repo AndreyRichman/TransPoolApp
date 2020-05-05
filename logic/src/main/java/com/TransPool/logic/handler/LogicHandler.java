@@ -39,7 +39,7 @@ public class LogicHandler {
         try {
             initWorldMap(transPool);
         } catch (InvalidMapBoundariesException e) {
-            throw new FaildLoadingXMLFileException("Map out of Boundaries" + " ( " + e.getWidth() + "," + e.getLength() + " ) ");
+            throw new FaildLoadingXMLFileException("Failed load XML due to invalid map out of Boundaries" + " (" + e.getWidth() + "," + e.getLength() + ") ");
         }
 
         initRides(transPool);
@@ -56,7 +56,7 @@ public class LogicHandler {
             try {
                 map.addNewRoad(toFromRoad);
             } catch (InstanceAlreadyExistsException e) {
-                throw new FaildLoadingXMLFileException("Road from" + path.getFrom() + " to " +path.getTo() + " Already Exists ");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated roads. Road from" + path.getFrom() + " to " +path.getTo() + " Already Exists ");
             }
 
             toFromRoad.getStartStation().addRoadFromCurrentStation(toFromRoad);
@@ -70,7 +70,7 @@ public class LogicHandler {
                 try {
                     map.addNewRoad(fromToRoad);
                 } catch (InstanceAlreadyExistsException e) {
-                    throw new FaildLoadingXMLFileException("Road from" + path.getTo() + " to " +path.getFrom() + " Already Exists ");
+                    throw new FaildLoadingXMLFileException("Failed load XML due to duplicated roads. Road from" + path.getTo() + " to " +path.getFrom() + " Already Exists ");
                 }
 
                 fromToRoad.getStartStation().addRoadFromCurrentStation(fromToRoad);
@@ -84,13 +84,13 @@ public class LogicHandler {
             try {
                 map.addNewStation(new Station(new Coordinate(stop.getX(),stop.getY()),stop.getName()));
             } catch (InstanceAlreadyExistsException e) {
-                throw new FaildLoadingXMLFileException("Station:" + stop.getName() + "already exists");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station:" + stop.getName() + "already exists");
             } catch (StationNameAlreadyExistsException e) {
-                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "already exists");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name:" + e.getStation().getName() + "already exists");
             } catch (StationAlreadyExistInCoordinateException e) {
-                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "already exists in coords" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name:" + e.getStation().getName() + "already exists in coords" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
             } catch (StationCoordinateoutOfBoundriesException e) {
-                throw new FaildLoadingXMLFileException("Station name:" + e.getStation().getName() + "coords out of Boundries" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
+                throw new FaildLoadingXMLFileException("Failed load XML due to duplicated stations. Station name:" + e.getStation().getName() + "coords out of Boundries" + "(" + e.getStation().getCoordinate().getX() +"," +e.getStation().getCoordinate().getY() + ")");
             }
         }
     }
@@ -105,7 +105,7 @@ public class LogicHandler {
             try {
                 newRide = Ride.createRideFromRoads(new User(ride.getOwner()), map.getRoadsFromStationsNames(roadListStringNames), ride.getCapacity());
             } catch (NoRoadBetweenStationsException e) {
-                throw new FaildLoadingXMLFileException("No road between:" + e.getFromStation() + "to" + e.getToStation());
+                throw new FaildLoadingXMLFileException("Failed load XML due to invalid road. No road between:" + e.getFromStation() + "to" + e.getToStation());
             }
             newRide.setPricePerKilometer(ride.getPPK());
                 newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());

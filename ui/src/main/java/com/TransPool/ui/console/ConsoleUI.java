@@ -34,6 +34,9 @@ public class ConsoleUI implements UIHandler {
             if (requestIsValid) {
                 request = getRelevantRequest(chosenAction);
             }
+            else{
+                showOutput("Invalid input. please choose number ( 1 - 7 )");
+            }
         }
         while (!requestIsValid);
 

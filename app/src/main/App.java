@@ -107,7 +107,7 @@ public class App {
             logicHandler.loadXMLFile(request.getFileDirectory());
             uiHandler.showOutput("Xml file loaded successfully!");
         }  catch (FaildLoadingXMLFileException e) {
-            uiHandler.showErrorMsg(e.getReason());
+            uiHandler.showOutput(e.getReason());
         }
     }
 
@@ -129,7 +129,7 @@ public class App {
     }
 
     private String createDescriptionOfRide(Ride ride){
-        return String.join(",",
+        return String.join(", ",
                 String.format("Ride ID: %d", ride.getID()),
                 String.format("Stations: %s", ride.getAllStations()
                         .stream()
@@ -150,14 +150,14 @@ public class App {
     }
 
     private String createDescriptionOfPartOfRide(PartOfRide pride){
-        return String.join(",",
-                String.format("Stop: [ %s ] ", pride.getRoad().getStartStation().getName()),
-                String.format("Dept time: %s ", pride.getStartTime().toString()),
-                String.format("Arr time: %s ", pride.getEndTime().toString()),
-                String.format("Open tremp spots: [ %s ] ", pride.getTotalCapacity()),
-                String.format("Trempists ID: [ %s ] ", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(" , ")))),
-                String.format("Add trempists names: [ %s ] ", (pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
-                String.format("Remove trempists names: [ %s ] ", (pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))));
+        return String.join(", ",
+                String.format("Stop: [ %s ]", pride.getRoad().getStartStation().getName()),
+                String.format("Dept time: %s", pride.getStartTime().toString()),
+                String.format("Arr time: %s", pride.getEndTime().toString()),
+                String.format("Open tremp spots: [ %s ]", pride.getTotalCapacity()),
+                String.format("Trempists ID: [ %s ]", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(" , ")))),
+                String.format("Add trempists names: [ %s ]", (pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
+                String.format("Remove trempists names: [ %s ]", (pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))));
     }
 
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {
@@ -178,6 +178,10 @@ public class App {
     }
 
     private void tryMatchTrempToRide(TryMatchTrempToRideRequest request) {
+
+        String title = "Match For Tremp Request";
+        uiHandler.showTitle(title);
+
         try {
             TrempRequest chosenTrempRequest = getDesiredTrempRequestForMatching();
             int maxNumberOfOptions = getMaxNumberOfTrempChanges();
@@ -327,7 +331,7 @@ public class App {
             uiHandler.showOutput("Your Tremp request was submitted successfully.");
 
         } catch (NoPathExistBetweenStationsException e) {
-            uiHandler.showErrorMsg("No path found between selected stations.");
+            uiHandler.showOutput("No path found between selected stations.");
         } catch (ActionAbortedException ignore){}
 
     }
@@ -381,6 +385,10 @@ public class App {
     }
 
     private void addNewRide(NewRideRequest request) {
+
+        String title = "New Ride";
+        uiHandler.showTitle(title);
+
         try {
             request.setStations(getRouteStationsForNewRide());
             request.setUserName(uiHandler.getStringForQuestion("Enter Your Name:"));
@@ -402,7 +410,7 @@ public class App {
         uiHandler.showOutput("Please Select Your Route Stations, enter 'q' to end the route.");
         selectedStationsNames = getStationsNamesForNewRide(stationsMenu);
 
-        if (selectedStationsNames.size() < 2){
+        if (selectedStationsNames.size() < 2 ){
             boolean tryAgain = uiHandler.getYesNoAnswerForQuestion("Incorrect Number Of Station (minimum 2), would you like to try again?");
             if (tryAgain)
                 return getRouteStationsForNewRide();

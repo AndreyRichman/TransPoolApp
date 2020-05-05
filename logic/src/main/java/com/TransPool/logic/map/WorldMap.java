@@ -51,19 +51,22 @@ public class WorldMap {
     private void validateStation(Station station)
             throws InstanceAlreadyExistsException, StationNameAlreadyExistsException, StationAlreadyExistInCoordinateException, StationCoordinateoutOfBoundriesException {
 
+       for(Station s: allStations){
+
+           if(s.getName().equals(station.getName())){
+               throw new StationNameAlreadyExistsException(station);
+           }
+           if(s.getCoordinate().equals(station.getCoordinate())){
+               throw new StationAlreadyExistInCoordinateException(station);
+           }
+       }
+
         if (!coordinateInBoundaries(station.getCoordinate())) {
             throw new StationCoordinateoutOfBoundriesException(station);
         }
 
         if (this.allStations.contains(station)) {
             throw new InstanceAlreadyExistsException(station.toString());
-        }
-
-        if (this.stationName2Station.containsKey(station.getName()))
-            throw new StationNameAlreadyExistsException(station);
-
-        if (this.coordinateStationNameMap.containsKey(station.getCoordinate())) {
-            throw new StationAlreadyExistInCoordinateException(station);
         }
     }
 
@@ -74,7 +77,7 @@ public class WorldMap {
                 coord.getY() < this.height;
     }
 
-    public void addNewRoad(Road road) throws InstanceAlreadyExistsException{
+    public void addNewRoad(Road road) throws InstanceAlreadyExistsException, StationNotFoundException{
         validateNewRoad(road);
         this.allRoads.add(road);
     }
@@ -95,7 +98,7 @@ public class WorldMap {
 
     }
 
-    public List<Road> getRoadsFromStationsNames(List<String> stationsNames) throws NoRoadBetweenStationsException {
+    public List<Road> getRoadsFromStationsNames(List<String> stationsNames) throws NoRoadBetweenStationsException, StationNotFoundException {
         List<Road> roads = new ArrayList<>();
 
         Iterator<Station> stationsIterator = getStationsFromNames(stationsNames).iterator();

@@ -196,4 +196,12 @@ public class Ride {
     public int getPricePerKilometer() {
         return pricePerKilometer;
     }
+
+    public LocalTime getDepartTime(){
+        return this.partsOfRide.get(0).getStartTime();
+    }
+
+    public LocalTime getArriveTime(){
+        return this.partsOfRide.get(partsOfRide.size() - 1).getEndTime();
+    }
 }

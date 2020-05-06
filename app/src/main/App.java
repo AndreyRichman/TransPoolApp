@@ -17,6 +17,7 @@ import main.java.com.TransPool.ui.request.enums.RequestType;
 import main.java.com.TransPool.ui.interfaces.UserRequest;
 import main.java.com.TransPool.ui.request.type.*;
 
+import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -117,7 +118,7 @@ public class App {
 
     private String createSummaryOfAllRides() {
 
-        StringBuilder out = new StringBuilder(System.lineSeparator());
+        StringBuilder out = new StringBuilder();
 
         String title = "All Ride in the system";
         uiHandler.showTitle(title);
@@ -129,15 +130,24 @@ public class App {
     }
 
     private String createDescriptionOfRide(Ride ride){
-        return String.join(", ",
+        String description = String.join(System.lineSeparator(),
                 String.format("Ride ID: %d", ride.getID()),
+                String.format("Depart Time: %s", ride.getDepartTime()),
+                String.format("Estimated Arrive Time: %s", ride.getArriveTime()),
                 String.format("Stations: %s", ride.getAllStations()
                         .stream()
                         .map(Station::getName)
                         .collect(Collectors.joining(" -> "))),
-                String.format("%s", ride.isTrempsAssignToRide()? getDescriptionOfPartOfRide(ride.getPartOfRide()) : "No tremps assigned to this ride"),
+                String.format("Status: %s", ride.isTrempsAssignToRide()?
+                        "Tremps assigned to this ride": "No Tremps assigned to this ride"),
                 System.lineSeparator()
         );
+
+        if (ride.isTrempsAssignToRide())
+            description = String.format("%s%s%s",description, System.lineSeparator(),
+                    String.join(System.lineSeparator(), getDescriptionOfPartOfRide(ride.getPartOfRide())));
+
+        return description;
     }
 
     private List<String> getTrempistsId(List<Trempist> trempists) {
@@ -146,18 +156,42 @@ public class App {
 
     private List<String> getDescriptionOfPartOfRide(List<PartOfRide> lpride)
     {
-        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists().isEmpty()).map(this::createDescriptionOfPartOfRide).collect(Collectors.toList());
+        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists().isEmpty())
+                .map(this::createDescriptionOfPartOfRide).collect(Collectors.toList());
     }
 
     private String createDescriptionOfPartOfRide(PartOfRide pride){
-        return String.join(", ",
-                String.format("Stop: [ %s ]", pride.getRoad().getStartStation().getName()),
-                String.format("Dept time: %s", pride.getStartTime().toString()),
-                String.format("Arr time: %s", pride.getEndTime().toString()),
-                String.format("Open tremp spots: [ %s ]", pride.getTotalCapacity()),
-                String.format("Trempists ID: [ %s ]", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(" , ")))),
-                String.format("Add trempists names: [ %s ]", (pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))),
-                String.format("Remove trempists names: [ %s ]", (pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(User::getName).collect(Collectors.joining(" , ")))));
+        String fromStation = pride.getRoad().getStartStation().getName();
+        String toStation = pride.getRoad().getEndStation().getName();
+        String startTime = pride.getStartTime().toString();
+        String endTime = pride.getEndTime().toString();
+        int freePlaces = pride.getTotalCapacity();
+        String allTrempistsIDS = String.format("Trempists ID: [ %s ]", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(", "))));
+        String trempistsJoining = pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
+        String trempistsLeaving = pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
+
+        String trempistsNames = pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(
+                user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
+
+        return String.join(System.lineSeparator(),
+                String.join(" ",
+                        String.format("Free Places: %d.", freePlaces),
+                        String.format("All Trempists IDs: %s", allTrempistsIDS)
+                ),
+                String.join(", ",
+                        String.format("From Station: %s", fromStation),
+                        String.format("Leaving at: %s", startTime),
+                        String.format("Picking up: %s", trempistsJoining)
+                ),
+                " | ",
+                "\\|/",
+                String.join(", ",
+                        String.format("To Station: %s", toStation),
+                        String.format("Arriving at: %s", endTime),
+                        String.format("Leaving in Station: %s", trempistsLeaving)
+                ),
+                LIST_ITEMS_SEPARATOR
+        );
     }
 
     private void showStatusOfTremps(GetStatusOfTrempsRequest request) {

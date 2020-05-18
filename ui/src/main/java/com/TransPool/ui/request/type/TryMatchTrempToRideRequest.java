@@ -7,6 +7,7 @@ public class TryMatchTrempToRideRequest implements UserRequest {
 
     int trempRequestID;
     int rideID;
+    int maxNumberOfOptions;
 
     @Override
     public RequestType getRequestType() {
@@ -22,11 +23,19 @@ public class TryMatchTrempToRideRequest implements UserRequest {
         this.trempRequestID = trempRequestID;
     }
 
+    public void setMaxNumberOfOptions(int maxNumberOfOptions) {
+        this.maxNumberOfOptions = maxNumberOfOptions;
+    }
+
     public int getRideID() {
         return rideID;
     }
 
     public int getTrempRequestID() {
         return trempRequestID;
+    }
+
+    public int getMaxNumberOfOptions() {
+        return maxNumberOfOptions;
     }
 }

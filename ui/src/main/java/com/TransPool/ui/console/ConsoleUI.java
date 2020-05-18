@@ -147,12 +147,6 @@ public class ConsoleUI implements UIHandler {
        return new LoadXMLRequest();
     }
 
-    public void getXMLpath(LoadXMLRequest req) {
-
-        showOutput("Please enter full path of XML file:");
-        req.setFileDirectory(getInput());
-    }
-
 
     @Override
     public int showOptionsAndGetUserSelection(String titleForOptions, List<String> options){

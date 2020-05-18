@@ -7,8 +7,9 @@ public class NewTrempRequest implements UserRequest {
     private String userName;
     private String fromStation;
     private String toStation;
-    private String departTime;
+    private String chosenTime;
     private String departDay;
+    private String desiredTimeType;
     private boolean directOnly;
 
     @Override
@@ -24,8 +25,8 @@ public class NewTrempRequest implements UserRequest {
         this.departDay = departDay;
     }
 
-    public void setDepartTime(String departTime) {
-        this.departTime = departTime;
+    public void setChosenTime(String chosenTime) {
+        this.chosenTime = chosenTime;
     }
 
     public void setFromStation(String fromStation) {
@@ -40,12 +41,16 @@ public class NewTrempRequest implements UserRequest {
         this.userName = userName;
     }
 
+    public void setDesiredTimeType(String desiredTimeType) {
+        this.desiredTimeType = desiredTimeType;
+    }
+
     public String getDepartDay() {
         return departDay;
     }
 
-    public String getDepartTime() {
-        return departTime;
+    public String getChosenTime() {
+        return chosenTime;
     }
 
     public String getFromStation() {
@@ -58,5 +63,9 @@ public class NewTrempRequest implements UserRequest {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getDesiredTimeType() {
+        return desiredTimeType;
     }
 }

@@ -78,10 +78,10 @@ public class App {
                 loadContentFromXMLFile((LoadXMLRequest)request);
                 break;
             case NEW_TREMP:
-                addNewTrempRequest((NewTrempRequest) request);
+                addNewTrempRequest((NewTrempRequest)request);
                 break;
             case NEW_RIDE:
-                addNewRide((NewRideRequest) request);
+                addNewRide((NewRideRequest)request);
                 break;
             case GET_STATUS_OF_RIDES:
                 showStatusOfRides((GetStatusOfRidesRequest) request);
@@ -102,14 +102,19 @@ public class App {
 
         String title = "Load XML file";
         uiHandler.showTitle(title);
-        uiHandler.getXMLpath(request);
+        String path = uiHandler.getStringForQuestion("Please enter full path of XML file:");
+        request.setFileDirectory(path);
 
         try {
-            logicHandler.loadXMLFile(request.getFileDirectory());
+            loadXMLFileFromRequest(request);
             uiHandler.showOutput("Xml file loaded successfully!");
         }  catch (FaildLoadingXMLFileException e) {
             uiHandler.showOutput(e.getReason());
         }
+    }
+
+    private void loadXMLFileFromRequest(LoadXMLRequest request) throws FaildLoadingXMLFileException {
+        logicHandler.loadXMLFile(request.getFileDirectory());
     }
 
     private void showStatusOfRides(GetStatusOfRidesRequest request) {
@@ -217,10 +222,10 @@ public class App {
         uiHandler.showTitle(title);
 
         try {
-            TrempRequest chosenTrempRequest = getDesiredTrempRequestForMatching();
-            int maxNumberOfOptions = getMaxNumberOfTrempChanges();
-            List<SubRide> chosenRides = getDesiredRidesForTrempRequest(chosenTrempRequest, maxNumberOfOptions);
-            connectTrempRequestToSubRides(chosenTrempRequest, chosenRides);
+            request.setTrempRequestID(getDesiredTrempRequestForMatching());
+            request.setMaxNumberOfOptions(getMaxNumberOfTrempChanges());
+
+            matchTrempToRideFromRequest(request);
             uiHandler.showOutput("Tremp request was assigned to Ride succesfully!");
         }
         catch (NotFoundTrempRequestsWithoutMatchException e) {
@@ -232,11 +237,22 @@ public class App {
             if (tryAgain)
                 tryMatchTrempToRide(request);
         } catch (ActionAbortedException ignore){}
+        catch (TrempRequestNotExist trempRequestNotExist) {
+            uiHandler.showOutput("Tremp request not found");
+        }
 
 
     }
 
-    private TrempRequest getDesiredTrempRequestForMatching()
+    private void matchTrempToRideFromRequest(TryMatchTrempToRideRequest request) throws TrempRequestNotExist, NoRidesWereFoundForTrempRequestException, ActionAbortedException {
+        TrempRequest chosenTrempRequest = logicHandler.getTrempRequestById(request.getTrempRequestID());
+        int maxNumberOfOptions = request.getMaxNumberOfOptions();
+
+        List<SubRide> chosenRides = getDesiredRidesForTrempRequest(chosenTrempRequest, maxNumberOfOptions);
+        connectTrempRequestToSubRides(chosenTrempRequest, chosenRides);
+    }
+
+    private int getDesiredTrempRequestForMatching()
             throws NotFoundTrempRequestsWithoutMatchException, ActionAbortedException{
         List<TrempRequest> trempRequests = logicHandler.getAllNonMatchedTrempRequests();
         if (listIsEmpty(trempRequests))
@@ -249,7 +265,7 @@ public class App {
         if(chosenTrempRequest == ABORT_INDEX)
             throw new ActionAbortedException();
 
-        return trempRequests.get(chosenTrempRequest);
+        return trempRequests.get(chosenTrempRequest).getID();
     }
 
     private List<SubRide> getDesiredRidesForTrempRequest(TrempRequest trempRequest, int optionsLimit)
@@ -360,62 +376,68 @@ public class App {
 
     private void addNewTrempRequest(NewTrempRequest request) {
         try {
-            TrempRequest newTrempRequest = createNewTrempRequest();
-            logicHandler.addTrempRequest(newTrempRequest);
-            uiHandler.showOutput("Your Tremp request was submitted successfully.");
+            String fromStation = getStartStationFromUser();
+            request.setFromStation(fromStation);
+            request.setToStation(getEndStationFromUserBasedOnFromStation(fromStation));
+            request.setUserName(uiHandler.getStringForQuestion("Enter Your Name:"));
+            String desiredTimeType = getDesiredTypeOfTimeFromUser();
+            request.setDesiredTimeType(desiredTimeType);
+            request.setChosenTime(uiHandler.getTimeFromUser(String.format("Enter %s time in HH:MM format: ", desiredTimeType)).toString());
+
+            addNewTrempFromRequest(request);
 
         } catch (NoPathExistBetweenStationsException e) {
             uiHandler.showOutput("No path found between selected stations.");
         } catch (ActionAbortedException ignore){}
 
     }
-    private TrempRequest createNewTrempRequest() throws NoPathExistBetweenStationsException, ActionAbortedException {
-        Station fromStation = getStartStationFromUser();
-        Station toStation = getEndStationFromUserBasedOnFromStation(fromStation);
+
+    private void addNewTrempFromRequest(NewTrempRequest request) throws NoPathExistBetweenStationsException {
+        Station fromStation = logicHandler.getStationFromName(request.getFromStation());
+        Station toStation = logicHandler.getStationFromName(request.getToStation());
+
         TrempRequest newTrempRequest = logicHandler.createNewEmptyTrempRequest(fromStation, toStation);
-
-        String userName = uiHandler.getStringForQuestion("Enter Your Name:");
-        newTrempRequest.setUser(logicHandler.getUserByName(userName));
-
-        DesiredTimeType desiredTimeType = getDesiredTypeOfTimeFromUser();
+        newTrempRequest.setUser(logicHandler.getUserByName(request.getUserName()));
+        DesiredTimeType desiredTimeType = DesiredTimeType.valueOf(request.getDesiredTimeType());
         newTrempRequest.setDesiredTimeType(desiredTimeType);
 
-        LocalTime desiredTime = uiHandler.getTimeFromUser(String.format("Enter %s time in HH:MM format: ", desiredTimeType.name()));
+        LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
         newTrempRequest.setDesiredTime(desiredTime);
 
-        return newTrempRequest;
+        logicHandler.addTrempRequest(newTrempRequest);
     }
 
-    private DesiredTimeType getDesiredTypeOfTimeFromUser(){
+    private String getDesiredTypeOfTimeFromUser(){
         String title = "Do you wish to Depart or Arrive at specific Time?";
         List<DesiredTimeType> options = Arrays.asList(DesiredTimeType.values());
         List<String> optionsNames = options.stream().map(Enum::name).collect(Collectors.toList());
         int selectedIndex = uiHandler.showOptionsAndGetUserSelection(title, optionsNames);
 
-        return options.get(selectedIndex);
+        return options.get(selectedIndex).name();
     }
 
-    private Station getStartStationFromUser() throws ActionAbortedException {
+    private String getStartStationFromUser() throws ActionAbortedException {
         String title = "Select Depart Station:";
         return getSelectionOfStationFromUser(title, logicHandler.getAllStations());
     }
 
-    private Station getEndStationFromUserBasedOnFromStation(Station fromStation) throws ActionAbortedException {
+    private String getEndStationFromUserBasedOnFromStation(String fromStationName) throws ActionAbortedException {
         String title = "Select Arrive Station:";
+        Station fromStation = logicHandler.getStationFromName(fromStationName);
         Set<Station> allReachableStation = fromStation.getAllReachableStations();
         allReachableStation.remove(fromStation);
 
         return getSelectionOfStationFromUser(title, new ArrayList<>(allReachableStation));
     }
 
-    private Station getSelectionOfStationFromUser(String title, List<Station> stationOptions) throws ActionAbortedException {
+    private String getSelectionOfStationFromUser(String title, List<Station> stationOptions) throws ActionAbortedException {
         List<String> stationsNames = stationOptions.stream().map(Station::getName).collect(Collectors.toList());
         int desiredStationIndex = uiHandler.showOptionsAndGetUserSelection(title, stationsNames);
 
         if (desiredStationIndex == ABORT_INDEX)
             throw new ActionAbortedException();
 
-        return stationOptions.get(desiredStationIndex);
+        return stationOptions.get(desiredStationIndex).getName();
     }
 
     private void addNewRide(NewRideRequest request) {

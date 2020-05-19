@@ -18,5 +18,4 @@ public interface UIHandler {
     void showErrorMsg(String errorMsg);
     LocalTime getTimeFromUser(String question);
     void showTitle(String title);
-    void getXMLpath(LoadXMLRequest request);
 }

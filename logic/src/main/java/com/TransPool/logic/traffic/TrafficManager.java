@@ -3,6 +3,7 @@ package main.java.com.TransPool.logic.traffic;
 import exception.RideNotExistsException;
 import exception.TrempRequestNotExist;
 import main.java.com.TransPool.logic.map.structure.Station;
+import main.java.com.TransPool.logic.traffic.item.RideForTremp;
 import main.java.com.TransPool.logic.traffic.item.SubRide;
 import main.java.com.TransPool.logic.traffic.item.Ride;
 import main.java.com.TransPool.logic.traffic.item.TrempRequest;
@@ -61,21 +62,21 @@ public class TrafficManager {
         return this.mapIdToTrempReuqest.get(idOfTrempRequest);
     }
 
-    private List<List<SubRide>> getRideOptionsWithNoConnections(Station from, Station to){
-        List<List<SubRide>> noConnectionOptions = new LinkedList<>();
+    private List<RideForTremp> getRideOptionsWithNoConnections(Station from, Station to){
+        List<RideForTremp> noConnectionOptions = new LinkedList<>();
         this.allRides.stream()
                 .filter((ride -> ride.containsValidRoute(from, to)))
                 .forEach(ride -> {
                     ArrayList<SubRide> subRidesOption = new ArrayList<>();
                     subRidesOption.add(ride.getSubRide(from, to));
-                    noConnectionOptions.add(subRidesOption);
+                    noConnectionOptions.add(new RideForTremp(subRidesOption));
                 });
 
         return noConnectionOptions;
     }
 
-    private List<List<SubRide>> getRideOptionsWithConnections(int maxConnections, Station from, Station to){
-        List<List<SubRide>> rideOptions = new LinkedList<>();
+    private List<RideForTremp> getRideOptionsWithConnections(int maxConnections, Station from, Station to){
+        List<RideForTremp> rideOptions = new LinkedList<>();
         List<Ride> relevantRides = this.allRides.stream()
                 .filter((ride)-> !ride.containsValidRoute(from, to)).collect(Collectors.toList());
 
@@ -83,8 +84,8 @@ public class TrafficManager {
 
         return rideOptions;
     }
-    public List<List<SubRide>> getRideOptions(int maxConnections, Station from, Station to){
-        List<List<SubRide>> allRideOptions = new ArrayList<>();
+    public List<RideForTremp> getRideOptions(int maxConnections, Station from, Station to){
+        List<RideForTremp> allRideOptions = new ArrayList<>();
 
         allRideOptions.addAll(getRideOptionsWithNoConnections(from, to));
         allRideOptions.addAll(getRideOptionsWithConnections(maxConnections, from, to));

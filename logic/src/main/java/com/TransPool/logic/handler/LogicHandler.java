@@ -10,6 +10,7 @@ import main.java.com.TransPool.logic.map.WorldMap;
 import main.java.com.TransPool.logic.map.structure.Road;
 import main.java.com.TransPool.logic.traffic.TrafficManager;
 import main.java.com.TransPool.logic.traffic.item.Ride;
+import main.java.com.TransPool.logic.traffic.item.RideForTremp;
 import main.java.com.TransPool.logic.traffic.item.TrempRequest;
 import main.java.com.TransPool.logic.map.structure.Station;
 import main.java.com.TransPool.logic.traffic.item.SubRide;
@@ -141,23 +142,19 @@ public class LogicHandler {
         return Ride.createRideFromRoads(rideOwner, roads, capacity);
     }
 
-    public List<List<SubRide>> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
+    public List<RideForTremp> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
         Station start = trempRequest.getStartStation();
         Station end = trempRequest.getEndStation();
         int maxNumberOfConnections = trempRequest.getMaxNumberOfConnections();
 
-        //TODO:pass all possible routes from start to end(using world Map) - or make sure Start can check this
-        List<List<SubRide>> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
-        relevantByRouteOptions.sort(Comparator.comparingInt(List::size));
+        List<RideForTremp> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
+        relevantByRouteOptions.sort(Comparator.comparingInt(RideForTremp::getNumOfParts));
 
-        relevantByRouteOptions.forEach(lstOfSubrides -> System.out.println(String.format("Available time: %s", lstOfSubrides.get(0).getDepartTime()))
-        );
-
-        Function<List<SubRide>, LocalTime> rideCorrectTimeGetter = trempRequest.getDesiredTimeType() == DesiredTimeType.DEPART ?
-                subRideList -> subRideList.get(0).getDepartTime() :  subRideList -> subRideList.get(subRideList.size() - 1).getArrivalTime();
+        Function<RideForTremp, LocalTime> rideCorrectTimeGetter = trempRequest.getDesiredTimeType() == DesiredTimeType.DEPART ?
+                RideForTremp::getDepartTime :  RideForTremp::getArriveTime;
 
         return relevantByRouteOptions.stream()
-                .filter(lstOfSubRides -> rideCorrectTimeGetter.apply(lstOfSubRides).equals(trempRequest.getDesiredTime()))
+                .filter(rideForTremp -> rideCorrectTimeGetter.apply(rideForTremp).equals(trempRequest.getDesiredTime()))
                 .collect(Collectors.toList());
 
     }

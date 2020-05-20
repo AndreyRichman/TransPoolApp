@@ -2,26 +2,25 @@ package main;
 
 import enums.DesiredTimeType;
 import exception.*;
-import main.java.com.TransPool.logic.traffic.item.*;
-import main.java.com.TransPool.ui.interfaces.UIHandler;
-import main.java.com.TransPool.logic.handler.LogicHandler;
-import main.java.com.TransPool.logic.map.structure.Road;
-import main.java.com.TransPool.logic.map.structure.Station;
-import main.java.com.TransPool.logic.user.Trempist;
-import main.java.com.TransPool.logic.user.User;
-import main.java.com.TransPool.ui.console.ConsoleUI;
-import main.java.com.TransPool.ui.request.enums.RequestType;
-import main.java.com.TransPool.ui.interfaces.UserRequest;
-import main.java.com.TransPool.ui.request.type.*;
+import transpool.ui.interfaces.UIHandler;
+import transpool.logic.handler.LogicHandler;
+import transpool.logic.map.structure.Road;
+import transpool.logic.map.structure.Station;
+import transpool.logic.traffic.item.*;
+import transpool.logic.user.Trempist;
+import transpool.logic.user.User;
+import transpool.ui.console.ConsoleUI;
+import transpool.ui.request.enums.RequestType;
+import transpool.ui.interfaces.UserRequest;
+import transpool.ui.request.type.*;
 
-import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static main.java.com.TransPool.ui.request.enums.RequestType.EXIT;
-import static main.java.com.TransPool.ui.request.enums.RequestType.LOAD_XML_FILE;
+import static transpool.ui.request.enums.RequestType.EXIT;
+import static transpool.ui.request.enums.RequestType.LOAD_XML_FILE;
 
 public class App {
     public static final int ABORT_INDEX = -1;

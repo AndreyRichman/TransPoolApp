@@ -2,29 +2,25 @@ package main;
 
 import enums.DesiredTimeType;
 import exception.*;
-import main.java.com.TransPool.ui.interfaces.UIHandler;
-import main.java.com.TransPool.logic.handler.LogicHandler;
-import main.java.com.TransPool.logic.map.structure.Road;
-import main.java.com.TransPool.logic.map.structure.Station;
-import main.java.com.TransPool.logic.traffic.item.PartOfRide;
-import main.java.com.TransPool.logic.traffic.item.Ride;
-import main.java.com.TransPool.logic.traffic.item.SubRide;
-import main.java.com.TransPool.logic.traffic.item.TrempRequest;
-import main.java.com.TransPool.logic.user.Trempist;
-import main.java.com.TransPool.logic.user.User;
-import main.java.com.TransPool.ui.console.ConsoleUI;
-import main.java.com.TransPool.ui.request.enums.RequestType;
-import main.java.com.TransPool.ui.interfaces.UserRequest;
-import main.java.com.TransPool.ui.request.type.*;
+import transpool.ui.interfaces.UIHandler;
+import transpool.logic.handler.LogicHandler;
+import transpool.logic.map.structure.Road;
+import transpool.logic.map.structure.Station;
+import transpool.logic.traffic.item.*;
+import transpool.logic.user.Trempist;
+import transpool.logic.user.User;
+import transpool.ui.console.ConsoleUI;
+import transpool.ui.request.enums.RequestType;
+import transpool.ui.interfaces.UserRequest;
+import transpool.ui.request.type.*;
 
-import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static main.java.com.TransPool.ui.request.enums.RequestType.EXIT;
-import static main.java.com.TransPool.ui.request.enums.RequestType.LOAD_XML_FILE;
+import static transpool.ui.request.enums.RequestType.EXIT;
+import static transpool.ui.request.enums.RequestType.LOAD_XML_FILE;
 
 public class App {
     public static final int ABORT_INDEX = -1;
@@ -248,7 +244,7 @@ public class App {
         TrempRequest chosenTrempRequest = logicHandler.getTrempRequestById(request.getTrempRequestID());
         int maxNumberOfOptions = request.getMaxNumberOfOptions();
 
-        List<SubRide> chosenRides = getDesiredRidesForTrempRequest(chosenTrempRequest, maxNumberOfOptions);
+        RideForTremp chosenRides = getDesiredRidesForTrempRequest(chosenTrempRequest, maxNumberOfOptions);
         connectTrempRequestToSubRides(chosenTrempRequest, chosenRides);
     }
 
@@ -268,10 +264,10 @@ public class App {
         return trempRequests.get(chosenTrempRequest).getID();
     }
 
-    private List<SubRide> getDesiredRidesForTrempRequest(TrempRequest trempRequest, int optionsLimit)
+    private RideForTremp getDesiredRidesForTrempRequest(TrempRequest trempRequest, int optionsLimit)
             throws NoRidesWereFoundForTrempRequestException, ActionAbortedException {
 
-        List<List<SubRide>> allTremps = logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
+        List<RideForTremp> allTremps = logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
         if (listIsEmpty(allTremps))
             throw new NoRidesWereFoundForTrempRequestException();
 
@@ -293,23 +289,23 @@ public class App {
     private int getMaxNumberOfTrempChanges(){
         return uiHandler.getNumberForString("Enter Max number of Ride options:");
     }
-    private List<String> createSummaryOfAllTrempOptions(List<List<SubRide>> trempOptions){
+    private List<String> createSummaryOfAllTrempOptions(List<RideForTremp> trempOptions){
         return trempOptions.stream()
                 .map(this::createDescriptionOfTrempOption)
                 .collect(Collectors.toList());
     }
 
-    private String createDescriptionOfTrempOption(List<SubRide> trempOption){
+    private String createDescriptionOfTrempOption(RideForTremp trempOption){
         StringBuilder out = new StringBuilder();
 
         out.append(String.join(System.lineSeparator() + TREMP_OPTION_DELIMITER,
                 "",
-                String.format("Depart time: %s", trempOption.get(0).getDepartTime()),
-                String.format("Estimated Arrive time: %s", trempOption.get(trempOption.size() - 1).getArrivalTime()),
-                String.format("Average Fuel usage: %.2f", trempOption.stream().mapToDouble(SubRide::getAverageFuelUsage).average().getAsDouble()),
-                String.format("Total Distance: %.1f km", trempOption.stream().mapToDouble(SubRide::getTotalDistance).sum()),
-                String.format("Total Cost: %.2f", trempOption.stream().mapToDouble(SubRide::getTotalCost).sum()),
-                String.format("Total Connections: %d", trempOption.size() - 1),
+                String.format("Depart time: %s", trempOption.getDepartTime()),
+                String.format("Estimated Arrive time: %s", trempOption.getArriveTime()),
+                String.format("Average Fuel usage: %.2f", trempOption.getAverageFuelUsage()),
+                String.format("Total Distance: %.1f km", trempOption.getTotalDistance()),
+                String.format("Total Cost: %.2f", trempOption.getTotalCost()),
+                String.format("Total Connections: %d", trempOption.getNumOfConnections()),
                 String.format("Tremp parts: %s", System.lineSeparator())
                 )
         );
@@ -323,10 +319,10 @@ public class App {
         return out.toString();
     }
 
-    private List<String> createSummaryOfAllTrempOptionParts(List<SubRide> trempOptionParts){
-        List<String> summary = new ArrayList<>(trempOptionParts.size());
+    private List<String> createSummaryOfAllTrempOptionParts(RideForTremp trempOptionParts){
+        List<String> summary = new ArrayList<>(trempOptionParts.getNumOfParts());
 
-        for (SubRide subRide : trempOptionParts) {
+        for (SubRide subRide : trempOptionParts.getSubRides()) {
             summary.add(String.format("%s%s", TREMP_PARTS_DELIMITER,
                     String.join(System.lineSeparator() + TREMP_PARTS_DELIMITER,getSubRideSummary(subRide))));
         }
@@ -343,11 +339,9 @@ public class App {
                 )
         );
     }
-    private void connectTrempRequestToSubRides(TrempRequest trempRequest, List<SubRide> subRides){
-        subRides.forEach(subRide -> {
-            subRide.applyTrempistToAllPartsOfRide(trempRequest.getUser());
-            trempRequest.addSubRide(subRide);
-        });
+    private void connectTrempRequestToSubRides(TrempRequest trempRequest, RideForTremp ridesToAssign){
+        trempRequest.assignRides(ridesToAssign);
+        ridesToAssign.assignTrempRequest(trempRequest);
     }
 
     private List<String> getAllUnMatchedTrempRequestStrOptions(List<TrempRequest> trempRequests) {
@@ -364,7 +358,7 @@ public class App {
                         trempRequest.isNotAssignedToRides()? "Not Assigned to any Ride" : "Assigned to Ride")
         );
         if (!trempRequest.isNotAssignedToRides()){
-            String assignedTrempsDescriptions = this.createDescriptionOfTrempOption(trempRequest.getSubRides());
+            String assignedTrempsDescriptions = this.createDescriptionOfTrempOption(trempRequest.getSelectedRide());
             trempRequestDescription = String.join(System.lineSeparator() + "Assigned Tremp:" + System.lineSeparator(),
                     trempRequestDescription,
                     assignedTrempsDescriptions

@@ -1,0 +1,67 @@
+.menu-btn {
+    -fx-background-color: #2dc5b3;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-min-width: 150px;
+    -fx-max-width: 250px;
+    -fx-max-height: 40px;
+    -fx-min-height: 30px;
+    -fx-padding: 5px;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 12px;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-end-margin: 30px;
+}
+
+.menu-btn:hover {
+    -fx-background-color: white;
+    -fx-text-fill: #2dc5b3;
+    -fx-border-color: #2dc5b3;
+    -fx-padding: 2px;
+
+}
+
+.title {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-min-width: 150px;
+    -fx-max-width: 250px;
+    -fx-text-fill: white;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-padding: 10px;
+}
+.root {
+    -fx-background-color: #2dc5b3;
+}
+
+#quitBtn:hover {
+    -fx-background-color: #ff7369;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-padding: 2px;
+}
+
+#main-title {
+    -fx-font-size: 44;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-padding: 10px;
+}
+
+.sub-title {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-min-width: 150px;
+    -fx-max-width: 250px;
+    -fx-text-fill: white;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-padding: 10px;
+}

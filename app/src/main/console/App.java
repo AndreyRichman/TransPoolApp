@@ -1,4 +1,4 @@
-package main;
+package main.console;
 
 import enums.DesiredTimeType;
 import exception.*;

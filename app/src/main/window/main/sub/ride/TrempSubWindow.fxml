@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane hgap="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="328.0" prefWidth="446.0" stylesheets="@../../../style/mainStyle1.css" vgap="2.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.main.sub.ride.TrempSubWindowController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="20.0" prefWidth="199.0" />
+      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="20.0" minWidth="14.0" prefWidth="14.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="104.0" prefWidth="112.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="89.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+    <RowConstraints fillHeight="false" maxHeight="53.0" minHeight="35.0" prefHeight="35.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="294.0" minHeight="10.0" prefHeight="224.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="51.0" minHeight="35.0" prefHeight="41.0" vgrow="NEVER" />
+    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="userTitle" styleClass="field-title" text="User Name:" />
+            <Label fx:id="fromStationTitle" prefHeight="39.0" prefWidth="114.0" styleClass="field-title" text="From Station:" />
+            <Label fx:id="toStationTitle" styleClass="field-title" text="To Station:" />
+            <Label fx:id="wantToTitle" styleClass="field-title" text="Want to:" />
+            <Label fx:id="atTimeTitle" styleClass="field-title" text="At:" />
+            <Label fx:id="statusTitle" styleClass="field-title" text="Status:" />
+         </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="userValue" styleClass="field-title" text="Moshe" />
+            <Label fx:id="fromStationTitle" styleClass="field-title" text="Station A" />
+            <Label fx:id="toStationValue" styleClass="field-title" text="Station B" />
+            <Label fx:id="wantToValue" styleClass="field-title" text="Depart" />
+            <Label fx:id="atTimeValue" styleClass="field-title" text="10:00" />
+            <Label fx:id="statusValue" styleClass="field-title" text="Fuel Value" />
+         </children>
+      </VBox>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <content>
+          <AnchorPane fx:id="allTrempsScrollPane" onMouseClicked="#onMouseClickedScrollPane" />
+        </content>
+      </ScrollPane>
+      <Label styleClass="mid-title" text="Tremps" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Button fx:id="showTrempDetails" mnemonicParsing="false" onAction="#onClickShowTrempDetails" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Show More Details" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+   </children>
+</GridPane>

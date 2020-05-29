@@ -217,4 +217,8 @@ public class LogicHandler {
     public List<Road> getRoadsFromStationsNames(List<String> stationNames) throws NoRoadBetweenStationsException {
         return this.map.getRoadsFromStationsNames(stationNames);
     }
+
+    public String getTestMessage(){
+        return "Logic was initialized";
+    }
 }

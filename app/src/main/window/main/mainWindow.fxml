@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<GridPane prefHeight="746.0" prefWidth="1055.0" stylesheets="@../style/mainStyle1.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.main.MainWindowController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="581.0" minWidth="0.0" prefWidth="20.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="588.0" minWidth="10.0" prefWidth="477.0" />
+      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="484.0" minWidth="421.0" prefWidth="482.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="234.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="61.0" prefHeight="37.0" valignment="CENTER" vgrow="NEVER" />
+      <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="20.0" minHeight="0.0" prefHeight="11.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="399.0" minHeight="10.0" prefHeight="335.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="20.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <VBox alignment="CENTER" prefHeight="192.0" prefWidth="272.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <children>
+            <Button id="loadBtn" fx:id="loadXmlBtn" maxHeight="47.0" maxWidth="263.0" mnemonicParsing="false" onAction="#onLoadXmlBtnClick" prefHeight="47.0" prefWidth="235.0" styleClass="menu-btn" text="LOAD MAP" />
+            <Button id="newTrempBtn" fx:id="newBtn" maxHeight="263.0" maxWidth="263.0" mnemonicParsing="false" onAction="#onNewTrempBtnClick" prefHeight="47.0" prefWidth="235.0" styleClass="menu-btn" text="NEW TREMP" />
+            <Button id="newRideBtn" fx:id="newBtn1" maxHeight="263.0" maxWidth="263.0" mnemonicParsing="false" onAction="#onNewRideBtnClick" prefHeight="47.0" prefWidth="235.0" styleClass="menu-btn" text="NEW RIDE" />
+            <Button id="matchBtn" fx:id="matchBtn" maxHeight="208.0" maxWidth="263.0" mnemonicParsing="false" onAction="#onMatchBtnClick" prefHeight="47.0" prefWidth="235.0" styleClass="menu-btn" text="MATCH" />
+            <Button id="quitBtn" fx:id="matchBtn1" maxHeight="208.0" maxWidth="263.0" mnemonicParsing="false" onAction="#onQuitBtnClick" prefHeight="47.0" prefWidth="235.0" styleClass="menu-btn" text="QUIT" />
+         </children>
+      </VBox>
+      <Label id="menu-title" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="394.0" prefHeight="43.0" prefWidth="394.0" styleClass="title" text="What do you want to do?" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.vgrow="SOMETIMES">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Label>
+      <Label id="main-title" maxHeight="-Infinity" maxWidth="522.0" minWidth="147.0" prefHeight="73.0" prefWidth="522.0" text="Welcome to TransPool!" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8f8f8" height="243.0" stroke="BLACK" strokeType="INSIDE" width="491.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label id="map-title" maxHeight="-Infinity" maxWidth="262.0" minWidth="147.0" prefHeight="23.0" prefWidth="147.0" styleClass="title" text="Live Map" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.vgrow="SOMETIMES">
+         <children>
+            <fx:include fx:id="trempComponent" source="sub/ride/TrempSubWindow.fxml" />
+         </children>
+      </Pane>
+      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.vgrow="SOMETIMES">
+         <children>
+            <fx:include fx:id="rideComponent" source="sub/ride/RideSubWindow.fxml" />
+         </children>
+      </Pane>
+   </children>
+</GridPane>

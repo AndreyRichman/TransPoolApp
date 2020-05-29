@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane hgap="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="296.0" prefWidth="477.0" stylesheets="@../../../style/mainStyle1.css" vgap="2.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.main.sub.ride.RideSubWindowController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="20.0" prefWidth="199.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="20.0" prefWidth="54.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="142.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="139.0" />
+      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+    <RowConstraints fillHeight="false" maxHeight="51.0" minHeight="35.0" prefHeight="35.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="199.0" minHeight="-Infinity" prefHeight="195.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="39.0" minHeight="35.0" prefHeight="39.0" vgrow="NEVER" />
+    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="userTitle" styleClass="field-title" text="User Name:" />
+            <Label fx:id="departTitle" styleClass="field-title" text="Depart Time:" />
+            <Label fx:id="ArriveTitle" styleClass="field-title" text="Arrive Time:" />
+            <Label fx:id="ppkTitle" styleClass="field-title" text="PPK:" />
+            <Label fx:id="fuelTitle" styleClass="field-title" text="Average Fuel:" />
+         </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="userValue" styleClass="field-title" text="User Value" />
+            <Label fx:id="departValue" styleClass="field-title" text="Depart Value" />
+            <Label fx:id="arriveValue" styleClass="field-title" text="Arrive Value" />
+            <Label fx:id="ppkValue" styleClass="field-title" text="PPK value" />
+            <Label fx:id="fuelValue" styleClass="field-title" text="Fuel Value" />
+         </children>
+      </VBox>
+      <ScrollPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <content>
+          <AnchorPane />
+        </content>
+      </ScrollPane>
+      <Label styleClass="mid-title" text="Rides" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="229.0" styleClass="menu-btn" text="Show More Details" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+   </children>
+</GridPane>

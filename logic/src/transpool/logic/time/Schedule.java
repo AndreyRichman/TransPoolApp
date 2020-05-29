@@ -1,26 +1,51 @@
 package transpool.logic.time;
 
-import enums.Recurrences;
+import enums.RepeatType;
+import exception.NotSupportedRideRepeatTimeException;
 
 public class Schedule {
     private int hour;
     private int min;
     private Integer day;
-    private Recurrences recurrences;
+    private RepeatType repeatType;
 
-    public Schedule(int hour, Integer day, String rec ){
+    public Schedule(int hour, Integer day, String repeatType ) throws NotSupportedRideRepeatTimeException {
         this.hour = hour;
         this.day = day;
+
+        setRepeatTypeFromString(repeatType);
     }
 
-    public void setRecurrences(String rec) {
+    public void setRepeatType(RepeatType repeatType) {
+        this.repeatType = repeatType;
+    }
 
-        switch(rec){
-            case "OneTime" : {this.recurrences = Recurrences.ONE_TIME; break;}
-            case "Daily" : {this.recurrences = Recurrences.DAILY; break;}
-            case "BiDaily " : {this.recurrences = Recurrences.BIDAIILY; break;}
-            case "Weekly " : {this.recurrences = Recurrences.WEEKLY; break;}
-            case "Monthly " : {this.recurrences = Recurrences.MONTHLY; break;}
+    public void setRepeatTypeFromString(String repeatType) throws NotSupportedRideRepeatTimeException {
+
+        switch(repeatType){
+            case "OneTime" : {
+                setRepeatType(RepeatType.ONE_TIME);
+                break;
+            }
+            case "Daily" : {
+                setRepeatType(RepeatType.DAILY);
+                break;
+            }
+            case "BiDaily" : {
+                setRepeatType(RepeatType.BIDAIILY);
+                break;
+            }
+            case "Weekly" : {
+                setRepeatType(RepeatType.WEEKLY);
+                break;
+            }
+            case "Monthly" : {
+                setRepeatType(RepeatType.MONTHLY);
+                break;
+            }
+            default: {
+                throw new NotSupportedRideRepeatTimeException(repeatType);
+            }
 
         }
     }

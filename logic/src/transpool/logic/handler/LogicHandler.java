@@ -113,9 +113,14 @@ public class LogicHandler {
             } catch (StationNotFoundException e) {
                 throw new FaildLoadingXMLFileException("Failed load XML due to invalid station. Station " + e.getStationName() + " not found ");
             }
+
             newRide.setPricePerKilometer(ride.getPPK());
+            try {
                 newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
-                trafficManager.addRide(newRide);
+            } catch (NotSupportedRideRepeatTimeException e) {
+                throw new FaildLoadingXMLFileException("Failed load XML due to invalid Ride Recurrences. Provided: " + e.getType() + " not supported");
+            }
+            trafficManager.addRide(newRide);
         }
     }
 

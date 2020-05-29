@@ -1,10 +1,10 @@
 package enums;
 
-public enum Recurrences {
+public enum RepeatType {
     ONE_TIME ,
     DAILY,
     BIDAIILY,
     WEEKLY,
-    MONTHLY;
+    MONTHLY
 
 }

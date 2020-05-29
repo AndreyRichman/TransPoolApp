@@ -1,5 +1,6 @@
 package transpool.logic.traffic.item;
 
+import exception.NotSupportedRideRepeatTimeException;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
 import transpool.logic.time.Schedule;
@@ -170,7 +171,7 @@ public class Ride {
         return this.mapFromStationToRoad.get(station).canAddTrempist();
     }
 
-    public void setSchedule(int hour, Integer day, String rec) {
+    public void setSchedule(int hour, Integer day, String rec) throws NotSupportedRideRepeatTimeException {
         this.schedule = new Schedule(hour, day, rec);
         this.setStartTime(LocalTime.MIN.plusHours(hour));
     }

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static transpool.ui.request.enums.RequestType.EXIT;
 import static transpool.ui.request.enums.RequestType.LOAD_XML_FILE;
 
-public class App {
+public class ConsoleApp implements Runnable {
     public static final int ABORT_INDEX = -1;
     public static final String LIST_ITEMS_SEPARATOR = System.lineSeparator()
             + String.join("", Collections.nCopies(40, "="))
@@ -36,7 +36,7 @@ public class App {
     private boolean exit;
     private boolean xmlLoadedCond = false;
 
-    public App() {
+    public ConsoleApp() {
         uiHandler = new ConsoleUI();
         logicHandler = new LogicHandler();
         exit = false;

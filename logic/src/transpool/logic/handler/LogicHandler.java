@@ -1,6 +1,7 @@
 package transpool.logic.handler;
 
 import enums.DesiredTimeType;
+import enums.RepeatType;
 import exception.*;
 import jaxb.schema.generated.Path;
 import jaxb.schema.generated.Stop;
@@ -17,7 +18,7 @@ import transpool.logic.user.User;
 import transpool.logic.map.structure.Coordinate;
 
 import javax.management.InstanceAlreadyExistsException;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -116,7 +117,9 @@ public class LogicHandler {
 
             newRide.setPricePerKilometer(ride.getPPK());
             try {
-                newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
+                newRide.setSchedule(ride.getScheduling().getHourStart(),
+                        1,//ride.getScheduling() == null? 1: ride.getScheduling().getDayStart(),
+                        RepeatType.getRepeatTypeFromString(ride.getScheduling().getRecurrences()));
             } catch (NotSupportedRideRepeatTimeException e) {
                 throw new FaildLoadingXMLFileException("Failed load XML due to invalid Ride Recurrences. Provided: " + e.getType() + " not supported");
             }
@@ -147,15 +150,17 @@ public class LogicHandler {
     }
 
     public List<RideForTremp> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
+        //TODO: move this to traffic manager
         Station start = trempRequest.getStartStation();
         Station end = trempRequest.getEndStation();
         int maxNumberOfConnections = trempRequest.getMaxNumberOfConnections();
+        int dayOfTrempRequest = trempRequest.getDay();
 
-        List<RideForTremp> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
+        List<RideForTremp> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end, dayOfTrempRequest);
         relevantByRouteOptions.sort(Comparator.comparingInt(RideForTremp::getNumOfParts));
 
-        Function<RideForTremp, LocalTime> rideCorrectTimeGetter = trempRequest.getDesiredTimeType() == DesiredTimeType.DEPART ?
-                RideForTremp::getDepartTime :  RideForTremp::getArriveTime;
+        Function<RideForTremp, LocalDateTime> rideCorrectTimeGetter = trempRequest.getDesiredTimeType() == DesiredTimeType.DEPART ?
+                RideForTremp::getDepartDateTime :  RideForTremp::getArriveDateTime;
 
         return relevantByRouteOptions.stream()
                 .filter(rideForTremp -> rideCorrectTimeGetter.apply(rideForTremp).equals(trempRequest.getDesiredTime()))

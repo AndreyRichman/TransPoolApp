@@ -1,7 +1,10 @@
 package transpool.logic.traffic.item;
 
 import enums.DesiredTimeType;
+import enums.RepeatType;
+import exception.InvalidDayException;
 import transpool.logic.map.structure.Station;
+import transpool.logic.time.Schedule;
 import transpool.logic.user.User;
 
 import java.time.LocalTime;
@@ -12,19 +15,22 @@ public class TrempRequest {
     private final Station startStation;
     private final Station endStation;
     private User user;
-    private LocalTime desiredTime;
+    //private LocalTime desiredTime;
     private int day;
     private int maxNumberOfConnections = 0;
     private RideForTremp selectedRide = null;
-    DesiredTimeType desiredTimeType;
+
+    private DesiredTimeType desiredTimeType;
+    private Schedule schedule;
 
     public TrempRequest(Station startStation, Station endStation) {
         this.id = unique_id++;
         this.startStation = startStation;
         this.endStation = endStation;
 
-        this.desiredTime = LocalTime.MIN;
+        //this.desiredTime = LocalTime.MIN;
         this.desiredTimeType = DesiredTimeType.DEPART;
+        this.day = 1;
 
     }
 
@@ -48,8 +54,12 @@ public class TrempRequest {
         this.user = user;
     }
 
-    public void setDesiredTime(LocalTime departTime) {
-        this.desiredTime = departTime;
+//    public void setDesiredTime(LocalTime departTime) {
+//        this.desiredTime = departTime;
+//    }
+
+    public void setDesiredDayAndTime(int day, LocalTime time){
+        this.schedule = new Schedule(time, day, RepeatType.ONE_TIME);
     }
 
     public int getID(){
@@ -77,7 +87,7 @@ public class TrempRequest {
     }
 
     public LocalTime getDesiredTime() {
-        return desiredTime;
+        return this.schedule.getStartTime();
     }
 
     public DesiredTimeType getDesiredTimeType() {
@@ -86,5 +96,17 @@ public class TrempRequest {
 
     public void assignRides(RideForTremp ridesToAssign){
         this.selectedRide = ridesToAssign;
+        this.schedule.setEndDateTime(ridesToAssign.getArriveDateTime());
+    }
+
+    public void setDay(int day) throws InvalidDayException {
+        if (day < 1)
+            throw new InvalidDayException(day);
+
+        this.day = day;
+    }
+
+    public int getDay() {
+        return day;
     }
 }

@@ -62,10 +62,10 @@ public class TrafficManager {
         return this.mapIdToTrempReuqest.get(idOfTrempRequest);
     }
 
-    private List<RideForTremp> getRideOptionsWithNoConnections(Station from, Station to){
+    private List<RideForTremp> getRideOptionsWithNoConnections(Station from, Station to, int onDay){
         List<RideForTremp> noConnectionOptions = new LinkedList<>();
         this.allRides.stream()
-                .filter((ride -> ride.containsValidRoute(from, to)))
+                .filter((ride -> ride.containsValidRoute(from, to, onDay)))
                 .forEach(ride -> {
                     ArrayList<SubRide> subRidesOption = new ArrayList<>();
                     subRidesOption.add(ride.getSubRide(from, to));
@@ -75,20 +75,20 @@ public class TrafficManager {
         return noConnectionOptions;
     }
 
-    private List<RideForTremp> getRideOptionsWithConnections(int maxConnections, Station from, Station to){
+    private List<RideForTremp> getRideOptionsWithConnections(int maxConnections, Station from, Station to, int onDay){
         List<RideForTremp> rideOptions = new LinkedList<>();
         List<Ride> relevantRides = this.allRides.stream()
-                .filter((ride)-> !ride.containsValidRoute(from, to)).collect(Collectors.toList());
+                .filter((ride)-> !ride.containsValidRoute(from, to, onDay)).collect(Collectors.toList());
 
         //TODO: write algorithm to groups of rides and filter by max connections
 
         return rideOptions;
     }
-    public List<RideForTremp> getRideOptions(int maxConnections, Station from, Station to){
+    public List<RideForTremp> getRideOptions(int maxConnections, Station from, Station to, int onDay){
         List<RideForTremp> allRideOptions = new ArrayList<>();
 
-        allRideOptions.addAll(getRideOptionsWithNoConnections(from, to));
-        allRideOptions.addAll(getRideOptionsWithConnections(maxConnections, from, to));
+        allRideOptions.addAll(getRideOptionsWithNoConnections(from, to, onDay));
+        allRideOptions.addAll(getRideOptionsWithConnections(maxConnections, from, to, onDay));
 
         return allRideOptions;
     }

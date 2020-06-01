@@ -125,12 +125,12 @@ public class ConsoleApp implements Runnable {
         uiHandler.showTitle(title);
 
         for(Ride ride: logicHandler.getAllRides()){
-            out.append(createDescriptionOfRide(ride));
+            out.append(createDescriptionOfRide(ride, ride.getSchedule().getStartDay()));
         }
         return out.toString();
     }
 
-    private String createDescriptionOfRide(Ride ride){
+    private String createDescriptionOfRide(Ride ride, int onDay){
         String description = String.join(System.lineSeparator(),
                 String.format("Ride ID: %d", ride.getID()),
                 String.format("Depart Time: %s", ride.getDepartTime()),
@@ -139,12 +139,12 @@ public class ConsoleApp implements Runnable {
                         .stream()
                         .map(Station::getName)
                         .collect(Collectors.joining(" -> "))),
-                String.format("Status: %s", ride.isTrempsAssignToRide()?
+                String.format("Status: %s", ride.isTrempsAssignedToRide(onDay)?
                         "Tremps assigned to this ride": "No Tremps assigned to this ride"),
                 System.lineSeparator()
         );
 
-        if (ride.isTrempsAssignToRide())
+        if (ride.isTrempsAssignedToRide(onDay))
             description = String.format("%s%s%s",description, System.lineSeparator(),
                     String.join(System.lineSeparator(), getDescriptionOfPartOfRide(ride.getPartOfRide())));
 
@@ -157,21 +157,22 @@ public class ConsoleApp implements Runnable {
 
     private List<String> getDescriptionOfPartOfRide(List<PartOfRide> lpride)
     {
-        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists().isEmpty())
+        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists(p.getStartDay()).isEmpty())
                 .map(this::createDescriptionOfPartOfRide).collect(Collectors.toList());
     }
 
     private String createDescriptionOfPartOfRide(PartOfRide pride){
         String fromStation = pride.getRoad().getStartStation().getName();
         String toStation = pride.getRoad().getEndStation().getName();
-        String startTime = pride.getStartTime().toString();
-        String endTime = pride.getEndTime().toString();
+        String startTime = pride.getSchedule().getStartTime().toString();
+        String endTime = pride.getSchedule().getEndTime().toString();
         int freePlaces = pride.getTotalCapacity();
-        String allTrempistsIDS = String.format("Trempists ID: [ %s ]", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(", "))));
-        String trempistsJoining = pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
-        String trempistsLeaving = pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
+        int onDay = pride.getStartDay();
+        String allTrempistsIDS = String.format("Trempists ID: [ %s ]", (pride.getTrempistsManager().getAllTrempists(onDay).stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(", "))));
+        String trempistsJoining = pride.getTrempistsManager().getJustJoinedTrempists(onDay).stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
+        String trempistsLeaving = pride.getTrempistsManager().getLeavingTrempists(onDay).stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
 
-        String trempistsNames = pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(
+        String trempistsNames = pride.getTrempistsManager().getAllTrempists(onDay).stream().map(Trempist::getUser).map(
                 user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
 
         return String.join(System.lineSeparator(),
@@ -300,8 +301,8 @@ public class ConsoleApp implements Runnable {
 
         out.append(String.join(System.lineSeparator() + TREMP_OPTION_DELIMITER,
                 "",
-                String.format("Depart time: %s", trempOption.getDepartTime()),
-                String.format("Estimated Arrive time: %s", trempOption.getArriveTime()),
+                String.format("Depart time: %s", trempOption.getDepartDateTime().toLocalTime()),
+                String.format("Estimated Arrive time: %s", trempOption.getArriveDateTime().toLocalTime()),
                 String.format("Average Fuel usage: %.2f", trempOption.getAverageFuelUsage()),
                 String.format("Total Distance: %.1f km", trempOption.getTotalDistance()),
                 String.format("Total Cost: %.2f", trempOption.getTotalCost()),
@@ -396,7 +397,8 @@ public class ConsoleApp implements Runnable {
         newTrempRequest.setDesiredTimeType(desiredTimeType);
 
         LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
-        newTrempRequest.setDesiredTime(desiredTime);
+        int day = request.getDepartDay();
+        newTrempRequest.setDesiredDayAndTime(day, desiredTime);
 
         logicHandler.addTrempRequest(newTrempRequest);
     }
@@ -502,7 +504,8 @@ public class ConsoleApp implements Runnable {
         User user = logicHandler.getUserByName(request.getUserName());
         Ride newRide = logicHandler.createNewEmptyRide(user, roads, request.getCarCapacity());
 
-        newRide.setStartTime(request.getStartTime());
+        //TODO: get day from user (default = 1)
+        newRide.setSchedule(request.getStartTime().getHour(), request.getDay(), request.getRepeatType());
         newRide.setPricePerKilometer(request.getPricePerKilometer());
 
         return newRide;

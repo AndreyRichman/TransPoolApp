@@ -1,10 +1,12 @@
 package transpool.logic.user;
 
 import enums.TrempPartType;
+import javafx.util.Pair;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class TrempistsManager {
 
@@ -30,11 +32,18 @@ public class TrempistsManager {
             addTrempistToMap(leavingTrempists, onDay, trempistToAdd);
     }
 
-    private void addTrempistToMap(HashMap<Integer, LinkedList<Trempist>> map, int key, Trempist trempistToAdd){
-        if (!map.containsKey(key))
-            map.put(key, new LinkedList<>());
+    private void addTrempistToMap(HashMap<Integer, LinkedList<Trempist>> map, int dayKey, Trempist trempistToAdd){
+        if (!map.containsKey(dayKey))
+            map.put(dayKey, new LinkedList<>());
 
-        map.get(key).add(trempistToAdd);
+        map.get(dayKey).add(trempistToAdd);
+    }
+
+    public void addTrempistToAllTrempists(int dayKey, Trempist trempistToAdd){
+        if (!this.allTrempists.containsKey(dayKey))
+            this.allTrempists.put(dayKey, new LinkedList<>());
+
+        this.allTrempists.get(dayKey).add(trempistToAdd);
     }
 
     public List<Trempist> getAllTrempists(int onDay) {
@@ -57,4 +66,27 @@ public class TrempistsManager {
 
         return leavingTrempists.get(onDay);
     }
+
+    public boolean haveTrempistsOnAnyDay(){
+        return this.allTrempists.entrySet().stream().filter(dayToList -> dayToList.getValue().size() > 0)
+                .map(Map.Entry::getKey).count() > 0;
+    }
+
+    public HashMap<Integer, LinkedList<Trempist>> getAllTrempists() {
+        return allTrempists;
+    }
+
+//    public List<Pair<Integer, Trempist>> getDayToTrempistPairs(){
+//        List<Pair<Integer, Trempist>> trempistsPairs = new LinkedList<>();
+//
+//        for (Map.Entry<Integer, LinkedList<Trempist>> dayToTrempistEntry : this.getAllTrempists().entrySet()) {
+//            if (dayToTrempistEntry.getValue().size() > 0){
+//                for (Trempist trempist : dayToTrempistEntry.getValue()) {
+//                    trempistsPairs.add(new Pair<>(dayToTrempistEntry.getKey(), trempist));
+//                }
+//            }
+//        }
+//
+//        return trempistsPairs;
+//    }
 }

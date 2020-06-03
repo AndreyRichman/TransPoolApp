@@ -54,6 +54,9 @@ public class SubRide {
     }
 
     public void applyTrempistToAllPartsOfRide(User user, int onDay) {
+        //TODO: add here a reference from Ride to Trempist
+        this.originalRide.addTrempistToRide(new Trempist(user, this), onDay);
+
         selectedPartsOfRide.forEach( partOfRide -> {
             TrempPartType fromStation = TrempPartType.MIDDLE, toStation = TrempPartType.MIDDLE;
 
@@ -63,7 +66,7 @@ public class SubRide {
             if (partOfRide == selectedPartsOfRide.get(selectedPartsOfRide.size() - 1))
                 toStation = TrempPartType.LAST;
 
-            partOfRide.addTrempist(new Trempist(user, fromStation, toStation), onDay);
+            partOfRide.addTrempist(new Trempist(user, fromStation, toStation, this), onDay);
         });
     }
 

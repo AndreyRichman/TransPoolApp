@@ -4,12 +4,16 @@ import enums.RepeatType;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
 import transpool.logic.time.Schedule;
+import transpool.logic.user.Driver;
+import transpool.logic.user.Trempist;
+import transpool.logic.user.TrempistsManager;
 import transpool.logic.user.User;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Ride {
 
@@ -17,7 +21,7 @@ public class Ride {
 
     private static int unique_id = 6000;
     private final int id;
-    private final User rideOwner;
+    private final Driver rideOwner;
     private int pricePerKilometer = 0;
 
 
@@ -25,10 +29,12 @@ public class Ride {
     private List<Station> allStations;
     private LinkedHashMap<Station, PartOfRide> mapFromStationToRoad;
     private Schedule schedule;
+    TrempistsManager allTrempistsManager;
 
     private Ride(User rideOwner, List<Road> allRoads, int carCapacity) {
         this.id = unique_id++;
-        this.rideOwner = rideOwner;
+        this.rideOwner = new Driver(rideOwner);
+        this.allTrempistsManager = new TrempistsManager();
         initDataStructures(allRoads, carCapacity);
     }
 
@@ -223,7 +229,7 @@ public class Ride {
         return this.id;
     }
 
-    public User getRideOwner() {
+    public Driver getRideOwner() {
         return rideOwner;
     }
 
@@ -235,5 +241,25 @@ public class Ride {
 
     public int getPricePerKilometer() {
         return pricePerKilometer;
+    }
+
+    public void addTrempistToRide(Trempist trempistToAdd, int onDay){
+        this.allTrempistsManager.addTrempistToAllTrempists(onDay, trempistToAdd);
+    }
+
+    public boolean hasAnyTrempistsOnAnyDay(){
+        return this.allTrempistsManager.haveTrempistsOnAnyDay();
+    }
+
+    public boolean isNotRankedBySomeTrempists(){
+        return getNotRankedTrempists().size() > 0;
+    }
+
+    public List<Trempist> getNotRankedTrempists(){
+        return this.allTrempistsManager.getAllTrempists().values().stream()
+                .filter(trempists -> trempists.size() > 0)
+                .flatMap(List::stream)
+                .filter(Trempist::notRankedRide)
+                .collect(Collectors.toList());
     }
 }

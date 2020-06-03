@@ -334,7 +334,7 @@ public class ConsoleApp implements Runnable {
         return new ArrayList<>(
                 Arrays.asList(
                         String.format("Ride ID: %d", subRide.getOriginalRide().getID()),
-                        String.format("Ride Owner: %s", subRide.getOriginalRide().getRideOwner().getName()),
+                        String.format("Ride Owner: %s", subRide.getOriginalRide().getRideOwner().getUser().getName()),
                         String.format("Tremp cost : %.2f", subRide.getTotalCost()),
                         String.format("Route: %s", subRide.getAllStations().stream().map(Station::getName).collect(Collectors.joining(" -> ")))
                 )

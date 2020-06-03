@@ -19,6 +19,7 @@ import transpool.logic.map.structure.Coordinate;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -117,7 +118,7 @@ public class LogicHandler {
 
             newRide.setPricePerKilometer(ride.getPPK());
             try {
-                newRide.setSchedule(ride.getScheduling().getHourStart(),
+                newRide.setSchedule(LocalTime.MIN.plusHours(ride.getScheduling().getHourStart()),
                         1,//ride.getScheduling() == null? 1: ride.getScheduling().getDayStart(),
                         RepeatType.getRepeatTypeFromString(ride.getScheduling().getRecurrences()));
             } catch (NotSupportedRideRepeatTimeException e) {
@@ -150,22 +151,8 @@ public class LogicHandler {
     }
 
     public List<RideForTremp> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
-        //TODO: move this to traffic manager
-        Station start = trempRequest.getStartStation();
-        Station end = trempRequest.getEndStation();
-        int maxNumberOfConnections = trempRequest.getMaxNumberOfConnections();
-        int dayOfTrempRequest = trempRequest.getDay();
 
-        List<RideForTremp> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end, dayOfTrempRequest);
-        relevantByRouteOptions.sort(Comparator.comparingInt(RideForTremp::getNumOfParts));
-
-        Function<RideForTremp, LocalDateTime> rideCorrectTimeGetter = trempRequest.getDesiredTimeType() == DesiredTimeType.DEPART ?
-                RideForTremp::getDepartDateTime :  RideForTremp::getArriveDateTime;
-
-        return relevantByRouteOptions.stream()
-                .filter(rideForTremp -> rideCorrectTimeGetter.apply(rideForTremp).equals(trempRequest.getDesiredTime()))
-                .collect(Collectors.toList());
-
+        return trafficManager.getAllPossibleTrempsForTrempRequest(trempRequest);
     }
 
     public void addRide(Ride rideToAdd){

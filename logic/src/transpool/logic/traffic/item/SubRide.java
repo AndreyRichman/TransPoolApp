@@ -7,8 +7,6 @@ import transpool.logic.user.Trempist;
 import transpool.logic.user.User;
 import transpool.logic.map.structure.Station;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,24 +18,27 @@ public class SubRide {
     private final Station startStation;
     private final Station endStation;
     List<PartOfRide> selectedPartsOfRide;
-    Schedule schedule;
+    private Schedule schedule;
 
-    public SubRide(Ride originalRide, Station startStation, Station endStation) {
+    public SubRide(Ride originalRide, Station startStation, Station endStation, int onDay) {
         this.originalRide = originalRide;
         this.startStation = startStation;
         this.endStation = endStation;
         this.selectedPartsOfRide = getRelevantPartsOfRide(startStation, endStation);
-        this.schedule = initOneTimeScheduleAccordingToParts();
+        this.schedule = initOneTimeScheduleAccordingToParts(onDay);
     }
 
-    private Schedule initOneTimeScheduleAccordingToParts(){
+    private Schedule initOneTimeScheduleAccordingToParts(int onDay){
         PartOfRide firstPart = selectedPartsOfRide.get(0);
         PartOfRide lastPart = selectedPartsOfRide.get(selectedPartsOfRide.size() - 1);
 
-        Schedule schedule = firstPart.getSchedule().createClone();
+        Schedule schedule = new Schedule(firstPart.getSchedule().getStartTime(), onDay, RepeatType.ONE_TIME); //firstPart.getSchedule().createClone();
         schedule.setEndDateTime(lastPart.getSchedule().getEndDateTime());
-        schedule.setRepeatType(RepeatType.ONE_TIME);
 
+        return schedule;
+    }
+
+    public Schedule getSchedule() {
         return schedule;
     }
 
@@ -92,22 +93,6 @@ public class SubRide {
         });
 
         return new ArrayList<>(allStations);
-    }
-
-    public LocalTime getDepartTime(){
-        return this.selectedPartsOfRide.get(0).getSchedule().getStartTime();
-    }
-
-    public LocalTime getArrivalTime(){
-        return this.selectedPartsOfRide.get(this.selectedPartsOfRide.size() - 1).getSchedule().getEndTime();
-    }
-
-    public LocalDateTime getDepartDateTime(){
-        return this.schedule.getEndDateTime();
-    }
-
-    public LocalDateTime getArrivalDateTime(){
-        return this.schedule.getEndDateTime();
     }
 
     public double getAverageFuelUsage(){

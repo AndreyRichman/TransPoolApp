@@ -8,7 +8,7 @@ public class NewTrempRequest implements UserRequest {
     private String fromStation;
     private String toStation;
     private String chosenTime;
-    private int departDay;
+    private int departDay = 1;
     private String desiredTimeType;
     private boolean directOnly;
 

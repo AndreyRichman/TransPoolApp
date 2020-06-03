@@ -111,11 +111,11 @@ public class MainWindowController {
 
         newTrempRequest.setUser(logicHandler.getUserByName(request.getUserName()));
         DesiredTimeType desiredTimeType = DesiredTimeType.valueOf(request.getDesiredTimeType());
-        newTrempRequest.setDesiredTimeType(desiredTimeType);
+        //newTrempRequest.setDesiredTimeType(desiredTimeType);
 
         LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
         int onDay = request.getDepartDay();
-        newTrempRequest.setDesiredDayAndTime(onDay, desiredTime);
+        newTrempRequest.setDesiredDayAndTime(onDay, desiredTime, desiredTimeType);
 
         logicHandler.addTrempRequest(newTrempRequest);
 

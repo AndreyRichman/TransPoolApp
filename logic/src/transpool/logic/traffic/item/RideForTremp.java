@@ -1,37 +1,42 @@
 package transpool.logic.traffic.item;
 
+import transpool.logic.time.Schedule;
 import transpool.logic.user.User;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 public class RideForTremp {
 
     private List<SubRide> subRides;
+    Schedule schedule;
 
     public RideForTremp(List<SubRide> subRides) {
         this.subRides = subRides;
+        this.schedule = initScheduleAccordingToRides(subRides);
+    }
+
+    private Schedule initScheduleAccordingToRides(List<SubRide> subRides){
+        SubRide first = subRides.get(0);
+        SubRide last = subRides.get(subRides.size() - 1);
+
+        return new Schedule(first.getSchedule(), last.getSchedule());
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
     }
 
     public void assignTrempRequest(TrempRequest trempRequest){
         User userToAssign = trempRequest.getUser();
-        int dayOfTremp = trempRequest.getDay();
+
         this.getSubRides()
                 .forEach(
-                        subRide -> subRide.applyTrempistToAllPartsOfRide(userToAssign, dayOfTremp));
+                        subRide -> {
+                            subRide.applyTrempistToAllPartsOfRide(userToAssign, subRide.getSchedule().getStartDay());
+                        });
     }
 
     public List<SubRide> getSubRides() {
         return subRides;
-    }
-
-    public LocalDateTime getDepartDateTime(){
-        return this.subRides.get(0).getDepartDateTime();
-    }
-
-    public LocalDateTime getArriveDateTime(){
-        return this.subRides.get(this.subRides.size() - 1).getArrivalDateTime();
     }
 
     public double getAverageFuelUsage(){

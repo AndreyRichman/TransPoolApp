@@ -20,19 +20,15 @@ public class Ride {
     private final User rideOwner;
     private int pricePerKilometer = 0;
 
-    //TODO: move start time to SCHEDULE
-    //private LocalTime startTime = LocalTime.MIN;
 
     private List<PartOfRide> partsOfRide;
     private List<Station> allStations;
     private LinkedHashMap<Station, PartOfRide> mapFromStationToRoad;
     private Schedule schedule;
-    private int carCapacity;
 
     private Ride(User rideOwner, List<Road> allRoads, int carCapacity) {
         this.id = unique_id++;
         this.rideOwner = rideOwner;
-        this.carCapacity = carCapacity;
         initDataStructures(allRoads, carCapacity);
     }
 
@@ -63,18 +59,8 @@ public class Ride {
         return this.partsOfRide;
     }
 
-//    public void setStartTimeAndDay(LocalTime startTime, int day, RepeatType repeatType) {
-//        //this.startTime = startTime;
-//        this.schedule = new Schedule(startTime, day, repeatType);//.setStartTimeAndDay(startTime, day, repeatType);
-//        //this.schedule.setRepeatType(repeatType);
-//
-//        updateTimesAccordingToSchedule(this.schedule);
-////        updateTimesOfAllPartsOfRide(startTime);
-////        this.schedule.setEndTime(this.partsOfRide.get(partsOfRide.size() - 1).getEndTime());
-//    }
-
-    public void setSchedule(int hour, int day, RepeatType repeatType) {
-        this.schedule = new Schedule(hour, day, repeatType);
+    public void setSchedule(LocalTime time, int day, RepeatType repeatType) {
+        this.schedule = new Schedule(time, day, repeatType);
         updateTimesOfAllPartsOfRide(this.schedule);
         this.schedule.setEndDateTime(this.partsOfRide.get(partsOfRide.size() - 1).getSchedule().getEndDateTime());
     }
@@ -91,10 +77,6 @@ public class Ride {
             part.updateEndDateTime();
             LocalDateTime endDateTime = part.getSchedule().getEndDateTime();
             scheduleToSet = scheduleToSet.createCloneWithNewStartDateTime(endDateTime);
-
-//            part.setStartTimeAndDay(start, day, repeatType);
-//            start = part.getEndTime();
-//            day = part.getEndDay();
         }
     }
 
@@ -104,6 +86,7 @@ public class Ride {
     }
 
     public double getTotalTimeOfRide(){
+        //TODO consider substract start time from end time
         return this.partsOfRide
                 .stream()
                 .mapToDouble(PartOfRide::getPeriodInMinutes)
@@ -127,8 +110,44 @@ public class Ride {
 
     }
 
-    public SubRide getSubRide(Station fromStation, Station toStation){
-        return new SubRide(this, fromStation, toStation);
+    public SubRide getSubRide(Station fromStation, Station toStation, int onDay){
+        return new SubRide(this, fromStation, toStation, onDay);
+    }
+
+    public boolean containsValidRouteDepartingOn(int onDay, Station from, Station to){    //valid = have empty space in all parts
+        boolean containsRoute = false;
+
+        if (rideContainsStations(from, to)){
+            boolean hasSpaceInRoad = true;
+
+            while(from != to && hasSpaceInRoad){
+                PartOfRide partRoad = mapFromStationToRoad.get(from);
+                hasSpaceInRoad = partRoad.canAddTrempist(onDay);
+                from = partRoad.getRoad().getEndStation();
+                onDay = partRoad.getSchedule().getEndDay();
+            }
+            if (from == to){
+                containsRoute = true;
+            }
+        }
+
+        return containsRoute;
+    }
+
+    public boolean containsValidRouteArrivingOn(int arriveOnDay, Station from, Station to){    //valid = have empty space in all parts
+        int dayOfDepart = mapFromStationToRoad.get(from).getSchedule().getStartDay();
+        Station originalFromStation = from;
+        int dayOfArrival = dayOfDepart;
+        if (rideContainsStations(from, to)){
+
+            while(from != to){
+                PartOfRide partRoad = mapFromStationToRoad.get(from);
+                from = partRoad.getRoad().getEndStation();
+                dayOfArrival = partRoad.getSchedule().getEndDay();
+            }
+        }
+
+        return dayOfArrival == arriveOnDay && containsValidRouteDepartingOn(dayOfDepart, originalFromStation, to);
     }
 
     public boolean containsValidRoute(Station from, Station to, int onDay){    //valid = have empty space in all parts
@@ -216,14 +235,5 @@ public class Ride {
 
     public int getPricePerKilometer() {
         return pricePerKilometer;
-    }
-
-    public LocalTime getDepartTime(){
-        return this.schedule.getStartTime();// this.partsOfRide.get(0).getStartTime();
-    }
-
-    public LocalTime getArriveTime(){
-        //return this.partsOfRide.get(partsOfRide.size() - 1).getEndTime();
-        return this.schedule.getEndTime();
     }
 }

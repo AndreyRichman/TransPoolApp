@@ -1,47 +1,40 @@
 package transpool.logic.time;
 
+import enums.DesiredTimeType;
 import enums.RepeatType;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAmount;
+
 
 public class Schedule {
-    //private int hour;
-    //private int min;
-    //private int startDay;
-    //private int endDay;
     private RepeatType repeatType;
-    //private LocalTime startTime;
-    //private LocalTime endTime;
-
     LocalDateTime minDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
     LocalDateTime startDateTime;
     LocalDateTime endDateTime;
 
-    public Schedule(int hour, int startDay, RepeatType repeatType){
-        this.repeatType = repeatType;
-        initStartAndEndDateTimes(startDay, hour);
-    }
+
 
     public Schedule(LocalTime startTime, int day, RepeatType repeatType){
         this.repeatType = repeatType;
-        initStartAndEndDateTimes(day, startTime.getHour());
+        initStartAndEndDateTimes(day, startTime);
+    }
+
+    public Schedule(Schedule startSchedule, Schedule endSchedule){
+        this.repeatType = RepeatType.UNDEFINED;
+        setStartDateTime(startSchedule.getStartDateTime());
+        setEndDateTime(endSchedule.getEndDateTime());
+
     }
 
     //TODO: add validation for hour & day
-    private void initStartAndEndDateTimes(int day, int hour){
-        this.startDateTime = this.minDateTime.plusDays(day).plusHours(hour);
+    private void initStartAndEndDateTimes(int day,LocalTime startTime){
+        int hour = startTime.getHour();
+        int minutes = startTime.getMinute();
+        this.startDateTime = this.minDateTime.plusDays(day).plusHours(hour).plusMinutes(minutes);
         this.endDateTime = this.startDateTime;
     }
-
-//    public void setStartTimeAndDay(LocalTime startTime, int day){
-//        this.startDateTime = minDateTime.plusDays(day).plusHours(startTime.getHour());
-////        this.startTime = startTime;
-////        this.startDay = day;
-//    }
 
     public void addHoursFromStart(int hoursToAdd){
         this.endDateTime = this.endDateTime.plusHours(hoursToAdd);
@@ -79,7 +72,7 @@ public class Schedule {
         return (int)Duration.between(this.startDateTime, this.minDateTime).abs().toDays();
     }
     public int getEndDay() {
-        return (int)Duration.between(this.endDateTime, this.minDateTime).toDays();
+        return (int)Duration.between(this.endDateTime, this.minDateTime).abs().toDays();
     }
 
     public LocalTime getStartTime() {
@@ -98,13 +91,30 @@ public class Schedule {
         this.repeatType = repeatType;
     }
 
-    public boolean startDaysRangeMatchesDateTime(LocalDateTime dateTimeToCheck, int maxMinutesDiff){
+    public boolean scheduleIsRelevantForTimeAndDay(LocalTime time, int day, DesiredTimeType timeType, int minutesDiffLimit){
+        LocalDateTime desiredDateTime = minDateTime.plusHours(time.getHour()).plusDays(day);
+
+        return timeType == DesiredTimeType.DEPART ?
+                startDaysRangeMatchesDateTime(desiredDateTime, minutesDiffLimit) :
+                endDaysRangeMatchesDateTime(desiredDateTime, minutesDiffLimit);
+    }
+
+    public boolean scheduleIsRelevantForRequestSchedule(RequestSchedule requestSchedule){
+        LocalDateTime desiredDateTime = requestSchedule.getDesiredDateTimeAccordingToTimeType();
+        int minutesDiffLimit = requestSchedule.getMaxDiffInMinutes();
+
+        return requestSchedule.getDesiredTimeType() == DesiredTimeType.DEPART ?
+                startDaysRangeMatchesDateTime(desiredDateTime, minutesDiffLimit) :
+                endDaysRangeMatchesDateTime(desiredDateTime, minutesDiffLimit);
+    }
+
+    private boolean startDaysRangeMatchesDateTime(LocalDateTime dateTimeToCheck, int maxMinutesDiff){
         int dayToCheck = (int) Duration.between(minDateTime, dateTimeToCheck).abs().toDays();
         return daysRangeContainsDay(this.getStartDay(), dayToCheck)
                 && startDateTimeIsNearDateTime(this.getStartDateTime(), dateTimeToCheck, maxMinutesDiff);
     }
 
-    public boolean endDaysRangeMatchesDateTime(LocalDateTime dateTimeToCheck, int maxMinutesDiff){
+    private boolean endDaysRangeMatchesDateTime(LocalDateTime dateTimeToCheck, int maxMinutesDiff){
         int dayToCheck = (int) Duration.between(minDateTime, dateTimeToCheck).abs().toDays();
         return daysRangeContainsDay(this.getEndDay(), dayToCheck)
                 && startDateTimeIsNearDateTime(this.getEndDateTime(), dateTimeToCheck, maxMinutesDiff);

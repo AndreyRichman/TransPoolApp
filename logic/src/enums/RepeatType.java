@@ -5,6 +5,10 @@ import exception.NotSupportedRideRepeatTimeException;
 import java.util.function.Function;
 
 public enum RepeatType {
+    UNDEFINED {
+        @Override
+        int getDevider(){ return 0;}
+    },
     ONE_TIME {
         @Override
         int getDevider() {

@@ -18,6 +18,7 @@ package main.window.main;
         import main.window.main.sub.ride.RideSubWindowController;
         import main.window.main.sub.ride.TrempSubWindowController;
         import main.window.newtremp.CreateTrempController;
+        import main.window.newxmlload.newXmlLoadController;
         import transpool.logic.handler.LogicHandler;
         import transpool.logic.map.structure.Station;
         import transpool.logic.traffic.item.TrempRequest;
@@ -30,6 +31,7 @@ package main.window.main;
 public class MainWindowController {
 
     LogicHandler logicHandler;
+    private Stage primaryStage;
 
     @FXML private Pane rideComponent;
     @FXML private RideSubWindowController rideComponentController;
@@ -52,8 +54,21 @@ public class MainWindowController {
     private Button matchBtn1;
 
     @FXML
-    void onLoadXmlBtnClick(ActionEvent event) {
+    void onLoadXmlBtnClick(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        URL resource = getClass().getResource("../newxmlload/newXmlLoadWindow.fxml");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(resource);
+        Parent root = loader.load();
+        newXmlLoadController controller = loader.getController();
+        controller.setMainController(this);
+        controller.setPrimaryStage(primaryStage);
+        Scene scene = new Scene(root, 400, 390);
 
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
@@ -69,6 +84,10 @@ public class MainWindowController {
     @FXML
     void onQuitBtnClick(ActionEvent event) {
 
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     public void setLogic(LogicHandler logicHandler) {

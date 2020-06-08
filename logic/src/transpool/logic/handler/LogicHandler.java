@@ -8,6 +8,7 @@ import jaxb.schema.generated.Path;
 import jaxb.schema.generated.Stop;
 import jaxb.schema.generated.TransPool;
 import jaxb.schema.generated.TransPoolTrip;
+import main.window.newxmlload.newXmlLoadController;
 import tasks.loadFile.loadXmlFileTask;
 import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
@@ -30,7 +31,7 @@ public class LogicHandler {
     private TrafficManager trafficManager;
     private Map<String, User> usersNameToObject;
 
-    //private newXmlLoadController XmlLoadController;
+    //new UI attributes
     private Task<Boolean> currentRunningTask;
     private SimpleStringProperty fileName;
 
@@ -43,10 +44,15 @@ public class LogicHandler {
         return this.fileName;
     }
 
-    public void collectMetadata(){
-
+    public void collectMetadata(newXmlLoadController XmlLoadController){
+        //creates new task to load xml file
         currentRunningTask = new loadXmlFileTask(fileName.get(), this);
 
+        //bind task to UI
+        XmlLoadController.bindTaskToUIComponents(currentRunningTask);
+
+        //run the task in background thread
+        new Thread(currentRunningTask).start();
     }
 
     public void loadXMLFile(String pathToFile) throws FaildLoadingXMLFileException {

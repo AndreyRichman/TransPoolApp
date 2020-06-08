@@ -54,6 +54,6 @@
             <Label fx:id="progressPercentLabel" prefHeight="17.0" prefWidth="0.0" styleClass="field-title" />
          </children>
       </HBox>
-      <ProgressBar prefWidth="200.0" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+      <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
    </children>
 </GridPane>

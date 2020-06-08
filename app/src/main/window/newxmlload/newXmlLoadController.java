@@ -1,12 +1,13 @@
 package main.window.newxmlload;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
@@ -36,6 +37,9 @@ public class newXmlLoadController {
 
     @FXML
     private Label progressPercentLabel;
+
+    @FXML
+    private ProgressBar progressBar;
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
@@ -82,4 +86,8 @@ public class newXmlLoadController {
     }
 
 
+    public void bindTaskToUIComponents(Task<Boolean> task) {
+        // task progress bar
+        progressBar.progressProperty().bind(task.progressProperty());
+    }
 }

@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
@@ -33,17 +34,28 @@ public class newXmlLoadController {
     private Button cancelButton;
 
     @FXML
-    private Label FilePathLabel;
+    private Button clearButton;
 
     @FXML
-    private Label progressPercentLabel;
+    private Label FilePathLabel;
 
     @FXML
     private ProgressBar progressBar;
 
     @FXML
+    private ProgressIndicator progressIndicator;
+
+    @FXML
     void onClickCancelButton(ActionEvent event) {
 
+    }
+
+    @FXML
+    void onClickClearButton(ActionEvent event) {
+        selectedFileProperty.set("");
+        isFileSelected.set(false);
+        progressBar.setProgress(0);
+        progressIndicator.setProgress(0);
     }
 
     @FXML
@@ -83,11 +95,15 @@ public class newXmlLoadController {
     private void initialize() {
         FilePathLabel.textProperty().bind(selectedFileProperty);
         LoadFileButton.disableProperty().bind(isFileSelected.not());
+        clearButton.disableProperty().bind(isFileSelected.not());
     }
 
 
     public void bindTaskToUIComponents(Task<Boolean> task) {
         // task progress bar
         progressBar.progressProperty().bind(task.progressProperty());
+
+        //task progress Indicator
+        progressIndicator.progressProperty().bind(task.progressProperty());
     }
 }

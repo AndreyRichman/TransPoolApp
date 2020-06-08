@@ -15,7 +15,7 @@ public class loadXmlFileTask extends Task<Boolean> {
 
     private String fileName;
     private LogicHandler logicHandler;
-    private final int SLEEP_TIME = 5;
+    private final int SLEEP_TIME = 100;
 
 
     @Override

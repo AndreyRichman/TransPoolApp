@@ -48,7 +48,7 @@ public class newXmlLoadController {
 
     @FXML
     void onClickLoadFileButton(ActionEvent event) {
-
+        logicHandler.collectMetadata(selectedFileProperty, this);
     }
 
     @FXML

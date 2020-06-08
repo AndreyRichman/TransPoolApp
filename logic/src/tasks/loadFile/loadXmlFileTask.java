@@ -1,7 +1,10 @@
 package tasks.loadFile;
 
+import exception.FaildLoadingXMLFileException;
+import exception.InvalidMapBoundariesException;
 import javafx.concurrent.Task;
 import transpool.logic.handler.LogicHandler;
+import transpool.logic.handler.XMLHandler;
 
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
@@ -18,11 +21,27 @@ public class loadXmlFileTask extends Task<Boolean> {
     @Override
     protected Boolean call() throws Exception {
 
-        updateProgress(0,1);
+        updateProgress(0,5);
 
-        logicHandler.loadXMLFile(fileName);
+        logicHandler.fetchFile(fileName);
+        updateProgress(1,5);
+        Thread.sleep(SLEEP_TIME);
 
-        updateProgress(0,1);
+        logicHandler.loadWorld();
+        updateProgress(2,5);
+        Thread.sleep(SLEEP_TIME);
+
+        logicHandler.loadStations();
+        updateProgress(3,5);
+        Thread.sleep(SLEEP_TIME);
+
+        logicHandler.loadRoads();
+        updateProgress(4,5);
+        Thread.sleep(SLEEP_TIME);
+
+        logicHandler.loadRides();
+        updateProgress(5,5);
+        Thread.sleep(SLEEP_TIME);
 
         return Boolean.TRUE;
 
@@ -32,9 +51,5 @@ public class loadXmlFileTask extends Task<Boolean> {
         this.fileName = fileName;
         this.logicHandler = logicHandler;
     }
-
-
-
-
-
 }
+

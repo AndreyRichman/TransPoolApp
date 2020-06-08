@@ -3,6 +3,8 @@ package main.window.main;
         import enums.DesiredTimeType;
         import exception.FaildLoadingXMLFileException;
         import exception.NoPathExistBetweenStationsException;
+        import javafx.beans.property.SimpleBooleanProperty;
+        import javafx.beans.property.SimpleStringProperty;
         import javafx.event.ActionEvent;
         import javafx.fxml.FXML;
         import javafx.fxml.FXMLLoader;
@@ -30,12 +32,12 @@ package main.window.main;
 
 public class MainWindowController {
 
-    LogicHandler logicHandler;
+    private LogicHandler logicHandler;
     private Stage primaryStage;
 
     @FXML private Pane rideComponent;
-    @FXML private RideSubWindowController rideComponentController;
     @FXML private Pane trempComponent;
+    @FXML private RideSubWindowController rideComponentController;
     @FXML private TrempSubWindowController trempComponentController;
 
     @FXML
@@ -64,6 +66,7 @@ public class MainWindowController {
         newXmlLoadController controller = loader.getController();
         controller.setMainController(this);
         controller.setPrimaryStage(primaryStage);
+        controller.setLogicHandler(logicHandler);
         Scene scene = new Scene(root, 400, 390);
 
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -90,10 +93,7 @@ public class MainWindowController {
         this.primaryStage = primaryStage;
     }
 
-    public void setLogic(LogicHandler logicHandler) {
-        this.logicHandler = logicHandler;
-    }
-
+    public void setLogic(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }
 
     @FXML
     public void initialize(){

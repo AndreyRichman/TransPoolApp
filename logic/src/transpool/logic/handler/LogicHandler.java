@@ -2,10 +2,13 @@ package transpool.logic.handler;
 
 import enums.DesiredTimeType;
 import exception.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Task;
 import jaxb.schema.generated.Path;
 import jaxb.schema.generated.Stop;
 import jaxb.schema.generated.TransPool;
 import jaxb.schema.generated.TransPoolTrip;
+import tasks.loadFile.loadXmlFileTask;
 import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.traffic.TrafficManager;
@@ -27,14 +30,28 @@ public class LogicHandler {
     private TrafficManager trafficManager;
     private Map<String, User> usersNameToObject;
 
+    //private newXmlLoadController XmlLoadController;
+    private Task<Boolean> currentRunningTask;
+    private SimpleStringProperty fileName;
+
     public LogicHandler() {
         trafficManager = new TrafficManager();
         usersNameToObject = new HashMap<>();
     }
 
+    public SimpleStringProperty fileNameProperty() {
+        return this.fileName;
+    }
+
+    public void collectMetadata(){
+
+        currentRunningTask = new loadXmlFileTask(fileName.get(), this);
+
+    }
+
     public void loadXMLFile(String pathToFile) throws FaildLoadingXMLFileException {
 
-        TransPool transPool = (new XMLHandler(pathToFile)).LoadXML();
+        TransPool transPool = (new XMLHandler(fileName.get())).LoadXML();
 
         try {
             initWorldMap(transPool);

@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
 import transpool.logic.handler.LogicHandler;
+import transpool.ui.request.type.LoadXMLRequest;
 
 import java.io.File;
 
@@ -68,6 +69,9 @@ public class newXmlLoadController {
 
     @FXML
     void onClickLoadFileButton(ActionEvent event) {
+//        not used due to progress bar load. might be used in future, right now its working with bypass.
+//        LoadXMLRequest req = new LoadXMLRequest();
+//        req.setFileDirectory(selectedFileProperty.get());
         logicHandler.collectMetadata(selectedFileProperty, this);
     }
 

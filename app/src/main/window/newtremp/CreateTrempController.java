@@ -1,22 +1,35 @@
 package main.window.newtremp;
 
+import enums.DesiredTimeType;
+import exception.NoPathExistBetweenStationsException;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import main.window.main.MainWindowController;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import transpool.logic.handler.LogicHandler;
+import transpool.logic.map.structure.Station;
+import transpool.logic.traffic.item.TrempRequest;
 import transpool.ui.request.type.NewTrempRequest;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class CreateTrempController {
 
     MainWindowController mainController;
+    private LogicHandler logicHandler;
+    private NewTrempRequest request;
+    private ObservableList stationsNames;
 
     @FXML
     private Button createBtn;
@@ -28,10 +41,25 @@ public class CreateTrempController {
     private TextField userNameTextField;
 
     @FXML
-    private ChoiceBox<?> fromStationChoiceBox;
+    private ChoiceBox<String> fromStationChoiceBox;
 
     @FXML
-    private ChoiceBox<?> toStationChoiceBox;
+    private ChoiceBox<String> toStationChoiceBox;
+
+    @FXML
+    private Spinner<?> daySpinner;
+
+    @FXML
+    private ChoiceBox<?> hourChoiceBox;
+
+    @FXML
+    private ChoiceBox<?> minutesChoiceBox;
+
+    @FXML
+    private CheckBox deptatureCheckBox;
+
+    @FXML
+    private CheckBox arrivalCheckBox;
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
@@ -40,10 +68,9 @@ public class CreateTrempController {
 
     @FXML
     void onClickCreateBtn(ActionEvent event) {
-        NewTrempRequest request = new NewTrempRequest();
         request.setUserName(userNameTextField.getText());
 
-        this.mainController.addNewTrempFromRequest(request);
+        addNewTrempFromRequest(request);
     }
 
     @FXML
@@ -54,22 +81,62 @@ public class CreateTrempController {
     @FXML
     void onToStationSelected(MouseEvent event) {
 
+
     }
 
     public void setMainController(MainWindowController mainController) {
         this.mainController = mainController;
     }
 
-    @FXML
-    public void initialize() {
-        List<String> stationsNames = new ArrayList<>();
-        stationsNames.add("Test1");
-        stationsNames.add("Test2");
-        ObservableList options = FXCollections.observableList(stationsNames);
-
-        this.fromStationChoiceBox.setItems(options);
+    public CreateTrempController(){
+        NewTrempRequest request = new NewTrempRequest();
+        fromStationChoiceBox = new ChoiceBox<>();
+        toStationChoiceBox = new ChoiceBox<>();
+        stationsNames = FXCollections.observableArrayList();
     }
 
+    @FXML
+    public void initialize() { Platform.runLater(this::loadMetadata); }
+
+    private void loadMetadata() {
+        stationsNames.addAll(logicHandler.getAllStations().stream().map(Station::getName).collect(Collectors.toList()));
+        this.fromStationChoiceBox.getItems().addAll(stationsNames);
+        this.toStationChoiceBox.getItems().addAll(stationsNames);
+    }
+
+    @FXML
+    void onClickDepChoise(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onClickArrChoise(ActionEvent event) {
+
+    }
+
+    public void addNewTrempFromRequest(NewTrempRequest request)  {
+        Station fromStation = logicHandler.getStationFromName(request.getFromStation());
+        Station toStation = logicHandler.getStationFromName(request.getToStation());
+
+        TrempRequest newTrempRequest = null;
+        try {
+            newTrempRequest = logicHandler.createNewEmptyTrempRequest(fromStation, toStation);
+
+            newTrempRequest.setUser(logicHandler.getUserByName(request.getUserName()));
+            DesiredTimeType desiredTimeType = DesiredTimeType.valueOf(request.getDesiredTimeType());
+            newTrempRequest.setDesiredTimeType(desiredTimeType);
+
+            LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
+            newTrempRequest.setDesiredTime(desiredTime);
+
+            logicHandler.addTrempRequest(newTrempRequest);
+
+        } catch (NoPathExistBetweenStationsException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }
 }
 
 

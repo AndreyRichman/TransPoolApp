@@ -108,6 +108,7 @@ public class MainWindowController {
         Parent root = loader.load();
         CreateTrempController controller = loader.getController();
         controller.setMainController(this);
+        controller.setLogicHandler(logicHandler);
         Scene scene = new Scene(root, 400, 390);
 
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -115,26 +116,5 @@ public class MainWindowController {
         stage.show();
     }
 
-    public void addNewTrempFromRequest(NewTrempRequest request)  {
-        Station fromStation = logicHandler.getStationFromName(request.getFromStation());
-        Station toStation = logicHandler.getStationFromName(request.getToStation());
-
-        TrempRequest newTrempRequest = null;
-        try {
-            newTrempRequest = logicHandler.createNewEmptyTrempRequest(fromStation, toStation);
-
-        newTrempRequest.setUser(logicHandler.getUserByName(request.getUserName()));
-        DesiredTimeType desiredTimeType = DesiredTimeType.valueOf(request.getDesiredTimeType());
-        newTrempRequest.setDesiredTimeType(desiredTimeType);
-
-        LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
-        newTrempRequest.setDesiredTime(desiredTime);
-
-        logicHandler.addTrempRequest(newTrempRequest);
-
-        } catch (NoPathExistBetweenStationsException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

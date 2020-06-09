@@ -3,18 +3,13 @@ package main.window.main;
         import enums.DesiredTimeType;
         import exception.FaildLoadingXMLFileException;
         import exception.NoPathExistBetweenStationsException;
-        import javafx.beans.property.SimpleBooleanProperty;
-        import javafx.beans.property.SimpleStringProperty;
         import javafx.event.ActionEvent;
         import javafx.fxml.FXML;
         import javafx.fxml.FXMLLoader;
         import javafx.scene.Parent;
         import javafx.scene.Scene;
         import javafx.scene.control.Button;
-        import javafx.scene.input.MouseEvent;
-        import javafx.scene.layout.AnchorPane;
         import javafx.scene.layout.Pane;
-        import javafx.scene.text.Text;
         import javafx.stage.Modality;
         import javafx.stage.Stage;
         import main.window.main.sub.ride.RideSubWindowController;
@@ -65,7 +60,7 @@ public class MainWindowController {
         Parent root = loader.load();
         newXmlLoadController controller = loader.getController();
         controller.setMainController(this);
-        controller.setPrimaryStage(primaryStage);
+        controller.setStage(stage);
         controller.setLogicHandler(logicHandler);
         Scene scene = new Scene(root, 400, 390);
 

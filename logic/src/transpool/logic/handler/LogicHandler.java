@@ -266,4 +266,8 @@ public class LogicHandler {
     public String getTestMessage(){
         return "Logic was initialized";
     }
+
+    public void cleanOldResults() {
+        //TODO: clean old result function
+    }
 }

@@ -19,7 +19,7 @@ import java.io.File;
 public class newXmlLoadController {
 
     private LogicHandler logicHandler;
-    private Stage primaryStage;
+    private Stage stage;
     private MainWindowController mainWindowController;
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
@@ -47,15 +47,23 @@ public class newXmlLoadController {
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
-
+        stage.close();
     }
 
     @FXML
     void onClickClearButton(ActionEvent event) {
+        //clear buttons & labels
         selectedFileProperty.set("");
-        isFileSelected.set(false);
+        progressBar.progressProperty().unbind();
         progressBar.setProgress(0);
+        progressIndicator.progressProperty().unbind();
         progressIndicator.setProgress(0);
+
+        //disable Load & clear
+        isFileSelected.set(false);
+
+        //clear old metadata
+        logicHandler.cleanOldResults();
     }
 
     @FXML
@@ -68,7 +76,7 @@ public class newXmlLoadController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select XML file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.XML"));
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile == null) { return; }
 
@@ -80,8 +88,8 @@ public class newXmlLoadController {
 
     public void setMainController(MainWindowController mainWindowController) { this.mainWindowController = mainWindowController;  }
 
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }

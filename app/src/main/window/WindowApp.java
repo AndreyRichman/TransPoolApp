@@ -11,7 +11,7 @@ import main.window.main.MainWindowController;
 import java.net.URL;
 
 
-public class WindowApp extends Application {
+public class WindowApp extends Application implements Runnable{
 
 
     @Override
@@ -31,5 +31,9 @@ public class WindowApp extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void run(){
+        javafx.application.Application.launch(WindowApp.class);
     }
 }

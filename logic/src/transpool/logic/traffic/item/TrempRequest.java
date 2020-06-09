@@ -1,7 +1,9 @@
 package transpool.logic.traffic.item;
 
 import enums.DesiredTimeType;
+import enums.RepeatType;
 import transpool.logic.map.structure.Station;
+import transpool.logic.time.RequestSchedule;
 import transpool.logic.user.User;
 
 import java.time.LocalTime;
@@ -12,25 +14,16 @@ public class TrempRequest {
     private final Station startStation;
     private final Station endStation;
     private User user;
-    private LocalTime desiredTime;
-    private int day;
-    private int maxNumberOfConnections = 0;
+    private int maxNumberOfConnections = 1; //TODO: set defualt to 0 and update according to user preference
     private RideForTremp selectedRide = null;
-    DesiredTimeType desiredTimeType;
+
+    private RequestSchedule schedule;
 
     public TrempRequest(Station startStation, Station endStation) {
         this.id = unique_id++;
         this.startStation = startStation;
         this.endStation = endStation;
-
-        this.desiredTime = LocalTime.MIN;
-        this.desiredTimeType = DesiredTimeType.DEPART;
-
     }
-
-//    public void addSubRide(SubRide subRide){
-//        this.selectedRide.addSubRide(subRide);
-//    }
 
     public RideForTremp getSelectedRide() {
         return selectedRide;
@@ -48,16 +41,13 @@ public class TrempRequest {
         this.user = user;
     }
 
-    public void setDesiredTime(LocalTime departTime) {
-        this.desiredTime = departTime;
+
+    public void setDesiredDayAndTime(int day, LocalTime time, DesiredTimeType desiredTimeType){
+        this.schedule = new RequestSchedule(time, day, RepeatType.ONE_TIME, desiredTimeType);
     }
 
     public int getID(){
         return this.id;
-    }
-
-    public void setDesiredTimeType(DesiredTimeType desiredTimeType) {
-        this.desiredTimeType = desiredTimeType;
     }
 
     public User getUser() {
@@ -76,15 +66,28 @@ public class TrempRequest {
         return maxNumberOfConnections;
     }
 
-    public LocalTime getDesiredTime() {
-        return desiredTime;
+    public RequestSchedule getSchedule() {
+        return schedule;
     }
 
     public DesiredTimeType getDesiredTimeType() {
-        return desiredTimeType;
+        return this.schedule.getDesiredTimeType();
     }
 
     public void assignRides(RideForTremp ridesToAssign){
         this.selectedRide = ridesToAssign;
+
+        if (this.schedule.getDesiredTimeType() == DesiredTimeType.DEPART)
+            this.schedule.setEndDateTime(ridesToAssign.getSchedule().getEndDateTime());
+        else
+            this.schedule.setStartDateTime(ridesToAssign.getSchedule().getStartDateTime());
+    }
+
+    public int getDesiredDay() {
+        return this.schedule.getDesiredDayAccordingToTimeType();
+    }
+
+    public RequestSchedule getDesiredSchedule(){
+        return this.schedule;
     }
 }

@@ -1,18 +1,18 @@
 package transpool.logic.traffic.item;
 
 import transpool.logic.map.structure.Road;
+import transpool.logic.time.Schedule;
 import transpool.logic.user.Trempist;
 import transpool.logic.user.TrempistsManager;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class PartOfRide {
 
     private Road road;
     private int capacity;
-    private LocalTime startTime;
-    private LocalTime endTime;
     private TrempistsManager trempistsManager;
+    private Schedule schedule;
 
     public PartOfRide(Road road, int capacity) {
         this.road = road;
@@ -20,20 +20,24 @@ public class PartOfRide {
         this.trempistsManager = new TrempistsManager();
     }
 
-    public void addTrempist(Trempist trempist) {
-        trempistsManager.addTrempist(trempist);
+    public void addTrempist(Trempist trempist, int onDay) {
+        trempistsManager.addTrempist(trempist, onDay);
     }
 
-    public boolean canAddTrempist(){
-        return getTotalCapacity() - getCurrentCapacity() > 0;
+    public boolean canAddTrempist(int onDay){
+        return getTotalCapacity() - getCurrentCapacity(onDay) > 0;
+    }
+
+    public boolean canAddTrempistOnDateTime(LocalDateTime onDateTime){
+        return getTotalCapacity() - getCurrentCapacity(Schedule.getDayOfDateTime(onDateTime)) > 0;
     }
 
     public int getTotalCapacity() {
         return capacity;
     }
 
-    public int getCurrentCapacity(){
-        return this.trempistsManager.getAllTrempists().size();
+    public int getCurrentCapacity(int onDay){
+        return 1 + this.trempistsManager.getAllTrempists(onDay).size();
     }
 
     public double getPeriodInMinutes(){
@@ -57,23 +61,18 @@ public class PartOfRide {
         return road;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
+    public void updateEndDateTime(){
         int duration = this.road.getDurationInMinutes();
-        LocalTime end = startTime.plusMinutes(duration);
 
-        int minutesAtEnd = end.getMinute();
-        int sheerit = minutesAtEnd % 5;
-        int minutesToAdd = sheerit > 2 ? 5 - sheerit: -sheerit;
-        this.endTime = end.plusMinutes(minutesToAdd);
+        this.schedule.addMintuesFromStart(duration);
     }
 
-    public LocalTime getStartTime() {
-        return startTime;
+    public void setStartSchedule(Schedule startSchedule){
+        this.schedule = startSchedule;
     }
 
-    public LocalTime getEndTime() {
-        return endTime;
+    public Schedule getSchedule() {
+        return schedule;
     }
 }
 

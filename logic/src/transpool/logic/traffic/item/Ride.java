@@ -1,13 +1,19 @@
 package transpool.logic.traffic.item;
 
+import enums.RepeatType;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
 import transpool.logic.time.Schedule;
+import transpool.logic.user.Driver;
+import transpool.logic.user.Trempist;
+import transpool.logic.user.TrempistsManager;
 import transpool.logic.user.User;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Ride {
 
@@ -15,20 +21,20 @@ public class Ride {
 
     private static int unique_id = 6000;
     private final int id;
-    private final User rideOwner;
+    private final Driver rideOwner;
     private int pricePerKilometer = 0;
-    private LocalTime startTime = LocalTime.MIN;
+
 
     private List<PartOfRide> partsOfRide;
     private List<Station> allStations;
     private LinkedHashMap<Station, PartOfRide> mapFromStationToRoad;
     private Schedule schedule;
-    private int carCapacity;
+    TrempistsManager allTrempistsManager;
 
     private Ride(User rideOwner, List<Road> allRoads, int carCapacity) {
         this.id = unique_id++;
-        this.rideOwner = rideOwner;
-        this.carCapacity = carCapacity;
+        this.rideOwner = new Driver(rideOwner);
+        this.allTrempistsManager = new TrempistsManager();
         initDataStructures(allRoads, carCapacity);
     }
 
@@ -47,9 +53,9 @@ public class Ride {
 
     }
 
-    public boolean isTrempsAssignToRide() {
+    public boolean isTrempsAssignedToRide(int onDay) {
         for(PartOfRide pride: this.getPartOfRide())
-            if(!pride.getTrempistsManager().getAllTrempists().isEmpty())
+            if(!pride.getTrempistsManager().getAllTrempists(onDay).isEmpty())
                 return true;
         return false;
     }
@@ -59,16 +65,24 @@ public class Ride {
         return this.partsOfRide;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-        updateTimesOfAllPartsOfRide(startTime);
+    public void setSchedule(LocalTime time, int day, RepeatType repeatType) {
+        this.schedule = new Schedule(time, day, repeatType);
+        updateTimesOfAllPartsOfRide(this.schedule);
+        this.schedule.setEndDateTime(this.partsOfRide.get(partsOfRide.size() - 1).getSchedule().getEndDateTime());
     }
 
-    private void updateTimesOfAllPartsOfRide(LocalTime start){
+    public Schedule getSchedule() {
+        return schedule;
+    }
 
+    private void updateTimesOfAllPartsOfRide(Schedule schedule){
+        Schedule scheduleToSet = schedule.createClone();
         for (PartOfRide part : this.partsOfRide){
-            part.setStartTime(start);
-            start = part.getEndTime();
+
+            part.setStartSchedule(scheduleToSet);
+            part.updateEndDateTime();
+            LocalDateTime endDateTime = part.getSchedule().getEndDateTime();
+            scheduleToSet = scheduleToSet.createCloneWithNewStartDateTime(endDateTime);
         }
     }
 
@@ -78,6 +92,7 @@ public class Ride {
     }
 
     public double getTotalTimeOfRide(){
+        //TODO consider substract start time from end time
         return this.partsOfRide
                 .stream()
                 .mapToDouble(PartOfRide::getPeriodInMinutes)
@@ -101,11 +116,11 @@ public class Ride {
 
     }
 
-    public SubRide getSubRide(Station fromStation, Station toStation){
-        return new SubRide(this, fromStation, toStation);
+    public SubRide getSubRide(Station fromStation, Station toStation, int onDay){
+        return new SubRide(this, fromStation, toStation, onDay);
     }
 
-    public boolean containsValidRoute(Station from, Station to){    //valid = have empty space in all parts
+    public boolean containsValidRouteDepartingOn(int onDay, Station from, Station to){    //valid = have empty space in all parts
         boolean containsRoute = false;
 
         if (rideContainsStations(from, to)){
@@ -113,7 +128,43 @@ public class Ride {
 
             while(from != to && hasSpaceInRoad){
                 PartOfRide partRoad = mapFromStationToRoad.get(from);
-                hasSpaceInRoad = partRoad.canAddTrempist();
+                hasSpaceInRoad = partRoad.canAddTrempist(onDay);
+                from = partRoad.getRoad().getEndStation();
+                onDay = partRoad.getSchedule().getEndDay();
+            }
+            if (from == to){
+                containsRoute = true;
+            }
+        }
+
+        return containsRoute;
+    }
+
+    public boolean containsValidRouteArrivingOn(int arriveOnDay, Station from, Station to){    //valid = have empty space in all parts
+        int dayOfDepart = mapFromStationToRoad.get(from).getSchedule().getStartDay();
+        Station originalFromStation = from;
+        int dayOfArrival = dayOfDepart;
+        if (rideContainsStations(from, to)){
+
+            while(from != to){
+                PartOfRide partRoad = mapFromStationToRoad.get(from);
+                from = partRoad.getRoad().getEndStation();
+                dayOfArrival = partRoad.getSchedule().getEndDay();
+            }
+        }
+
+        return dayOfArrival == arriveOnDay && containsValidRouteDepartingOn(dayOfDepart, originalFromStation, to);
+    }
+
+    public boolean containsValidRoute(Station from, Station to, int onDay){    //valid = have empty space in all parts
+        boolean containsRoute = false;
+
+        if (rideContainsStations(from, to)){
+            boolean hasSpaceInRoad = true;
+
+            while(from != to && hasSpaceInRoad){
+                PartOfRide partRoad = mapFromStationToRoad.get(from);
+                hasSpaceInRoad = partRoad.canAddTrempist(onDay);
                 from = partRoad.getRoad().getEndStation();
             }
             if (from == to){
@@ -124,7 +175,7 @@ public class Ride {
         return containsRoute;
     }
 
-    public List<List<Station>> getListsOfAllStationsStillRelevantForTremps() {
+    public List<List<Station>> getListsOfAllStationsStillRelevantForTremps(int onDay) {
         List<List<Station>> routesWithFreeSpace = new ArrayList<>();
         List<Station> subRoute = new ArrayList<>();
 
@@ -146,7 +197,7 @@ public class Ride {
 
         for(PartOfRide part: partsOfRide){
             subRoute.add(part.getRoad().getStartStation());
-            if (part.canAddTrempist() && part == partsOfRide.get(partsOfRide.size() - 1)) {
+            if (part.canAddTrempist(onDay) && part == partsOfRide.get(partsOfRide.size() - 1)) {
                 subRoute.add(part.getRoad().getEndStation());
                 routesWithFreeSpace.add(subRoute);
             }
@@ -160,19 +211,25 @@ public class Ride {
         return routesWithFreeSpace;
     }
 
-    private boolean rideContainsStations(Station a, Station b){
+    public boolean rideContainsStations(Station a, Station b){
         return allStations.contains(a)
                 && allStations.contains(b)
                 && allStations.indexOf(a) < allStations.indexOf(b);
     }
 
-    private boolean hasFreeSpaceFromStation(Station station){
-        return this.mapFromStationToRoad.get(station).canAddTrempist();
+
+    public boolean departingFrom(Station station){
+        return this.allStations.contains(station)
+                && this.allStations.indexOf(station) != this.allStations.size() - 1;
     }
 
-    public void setSchedule(int hour, Integer day, String rec) {
-        this.schedule = new Schedule(hour, day, rec);
-        this.setStartTime(LocalTime.MIN.plusHours(hour));
+    public boolean arrivingTo(Station station){
+        return this.allStations.contains(station)
+                && this.allStations.indexOf(station) != 0;
+    }
+
+    private boolean hasFreeSpaceFromStation(Station station, int onDay){
+        return this.mapFromStationToRoad.get(station).canAddTrempist(onDay);
     }
 
     public void setPricePerKilometer(int pricePerKilometer) {
@@ -183,7 +240,7 @@ public class Ride {
         return this.id;
     }
 
-    public User getRideOwner() {
+    public Driver getRideOwner() {
         return rideOwner;
     }
 
@@ -193,15 +250,36 @@ public class Ride {
         return this.allStations;
     }
 
+    public List<Station> getAllStationsAfter(Station fromStation){
+        List<Station> stationsAfterStation = new LinkedList<>();
+        this.allStations.stream().forEach(station -> {
+            if (this.allStations.indexOf(fromStation) < this.allStations.indexOf(station))
+                stationsAfterStation.add(station);
+        });
+        return stationsAfterStation;
+    }
+
     public int getPricePerKilometer() {
         return pricePerKilometer;
     }
 
-    public LocalTime getDepartTime(){
-        return this.partsOfRide.get(0).getStartTime();
+    public void addTrempistToRide(Trempist trempistToAdd, int onDay){
+        this.allTrempistsManager.addTrempistToAllTrempists(onDay, trempistToAdd);
     }
 
-    public LocalTime getArriveTime(){
-        return this.partsOfRide.get(partsOfRide.size() - 1).getEndTime();
+    public boolean hasAnyTrempistsOnAnyDay(){
+        return this.allTrempistsManager.haveTrempistsOnAnyDay();
+    }
+
+    public boolean isNotRankedBySomeTrempists(){
+        return getNotRankedTrempists().size() > 0;
+    }
+
+    public List<Trempist> getNotRankedTrempists(){
+        return this.allTrempistsManager.getAllTrempists().values().stream()
+                .filter(trempists -> trempists.size() > 0)
+                .flatMap(List::stream)
+                .filter(Trempist::notRankedRide)
+                .collect(Collectors.toList());
     }
 }

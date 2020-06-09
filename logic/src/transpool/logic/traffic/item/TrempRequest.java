@@ -14,7 +14,7 @@ public class TrempRequest {
     private final Station startStation;
     private final Station endStation;
     private User user;
-    private int maxNumberOfConnections = 0;
+    private int maxNumberOfConnections = 1; //TODO: set defualt to 0 and update according to user preference
     private RideForTremp selectedRide = null;
 
     private RequestSchedule schedule;

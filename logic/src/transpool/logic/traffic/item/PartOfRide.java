@@ -5,6 +5,8 @@ import transpool.logic.time.Schedule;
 import transpool.logic.user.Trempist;
 import transpool.logic.user.TrempistsManager;
 
+import java.time.LocalDateTime;
+
 public class PartOfRide {
 
     private Road road;
@@ -24,6 +26,10 @@ public class PartOfRide {
 
     public boolean canAddTrempist(int onDay){
         return getTotalCapacity() - getCurrentCapacity(onDay) > 0;
+    }
+
+    public boolean canAddTrempistOnDateTime(LocalDateTime onDateTime){
+        return getTotalCapacity() - getCurrentCapacity(Schedule.getDayOfDateTime(onDateTime)) > 0;
     }
 
     public int getTotalCapacity() {

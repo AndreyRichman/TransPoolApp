@@ -19,6 +19,16 @@ public enum RepeatType {
         public Function<Integer, Boolean> getDayMatchComparator(int rideDay) {
             return trempRequestDay -> rideDay == trempRequestDay;
         }
+
+        @Override
+        public Function<Integer, Integer> getDaysUntilClosestFutureDayIncludedGetter(int initialDay){
+            return futureDay -> initialDay;
+        }
+
+        @Override
+        public Function<Integer, Integer> getDaysUntilClosestPastDayIncludedGetter(int initialDay){
+            return futureDay -> initialDay;
+        }
     },
     DAILY {
         @Override
@@ -47,6 +57,16 @@ public enum RepeatType {
 
      public Function<Integer, Boolean> getDayMatchComparator(int rideDay){
         return trempRequestDay -> (trempRequestDay - rideDay) % getDevider() == 0;
+    }
+
+    public Function<Integer, Integer> getDaysUntilClosestFutureDayIncludedGetter(int initialDay){
+         return futureDay ->
+                 (int) (Math.ceil((double)(futureDay - initialDay) / getDevider() ) * getDevider());
+    }
+
+    public Function<Integer, Integer> getDaysUntilClosestPastDayIncludedGetter(int initialDay){
+        return futureDay ->
+                ((futureDay - initialDay) / getDevider() ) * getDevider();
     }
 
     abstract int getDevider();

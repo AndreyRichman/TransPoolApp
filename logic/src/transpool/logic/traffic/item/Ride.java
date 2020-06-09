@@ -211,10 +211,21 @@ public class Ride {
         return routesWithFreeSpace;
     }
 
-    private boolean rideContainsStations(Station a, Station b){
+    public boolean rideContainsStations(Station a, Station b){
         return allStations.contains(a)
                 && allStations.contains(b)
                 && allStations.indexOf(a) < allStations.indexOf(b);
+    }
+
+
+    public boolean departingFrom(Station station){
+        return this.allStations.contains(station)
+                && this.allStations.indexOf(station) != this.allStations.size() - 1;
+    }
+
+    public boolean arrivingTo(Station station){
+        return this.allStations.contains(station)
+                && this.allStations.indexOf(station) != 0;
     }
 
     private boolean hasFreeSpaceFromStation(Station station, int onDay){
@@ -237,6 +248,15 @@ public class Ride {
 
     public List<Station> getAllStations(){
         return this.allStations;
+    }
+
+    public List<Station> getAllStationsAfter(Station fromStation){
+        List<Station> stationsAfterStation = new LinkedList<>();
+        this.allStations.stream().forEach(station -> {
+            if (this.allStations.indexOf(fromStation) < this.allStations.indexOf(station))
+                stationsAfterStation.add(station);
+        });
+        return stationsAfterStation;
     }
 
     public int getPricePerKilometer() {

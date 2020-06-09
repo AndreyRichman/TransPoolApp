@@ -10,9 +10,9 @@ import java.time.LocalTime;
 
 public class Schedule {
     private RepeatType repeatType;
-    LocalDateTime minDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
-    LocalDateTime startDateTime;
-    LocalDateTime endDateTime;
+    private static LocalDateTime minDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
+    protected LocalDateTime startDateTime;
+    protected LocalDateTime endDateTime;
 
 
 
@@ -25,7 +25,13 @@ public class Schedule {
         this.repeatType = RepeatType.UNDEFINED;
         setStartDateTime(startSchedule.getStartDateTime());
         setEndDateTime(endSchedule.getEndDateTime());
+    }
 
+    public static Schedule createScheduleMixFromSchedules(Schedule startSchedule, Schedule endSchedule){
+        Schedule schedule = new Schedule(startSchedule, endSchedule);
+        schedule.setRepeatType(startSchedule.getRepeatType());
+
+        return schedule;
     }
 
     //TODO: add validation for hour & day
@@ -53,7 +59,7 @@ public class Schedule {
 
     public void setStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
-        this.endDateTime = startDateTime;
+//        this.endDateTime = startDateTime;
     }
 
     public LocalDateTime getStartDateTime() {
@@ -69,10 +75,15 @@ public class Schedule {
     }
 
     public int getStartDay(){
-        return (int)Duration.between(this.startDateTime, this.minDateTime).abs().toDays();
+        return (int)Duration.between(this.startDateTime, minDateTime).abs().toDays();
     }
+
+    public static int getDayOfDateTime(LocalDateTime localDateTime){
+        return (int)Duration.between(localDateTime, minDateTime).abs().toDays();
+    }
+
     public int getEndDay() {
-        return (int)Duration.between(this.endDateTime, this.minDateTime).abs().toDays();
+        return (int)Duration.between(this.endDateTime, minDateTime).abs().toDays();
     }
 
     public LocalTime getStartTime() {
@@ -140,4 +151,48 @@ public class Schedule {
 
         return newSchedule;
     }
+
+    public boolean hasInstanceAfterDateTime(LocalDateTime dateTime){
+        return (this.getStartDateTime().isEqual(dateTime) || this.getStartDateTime().isAfter(dateTime))
+                ||
+                (this.getRepeatType() != RepeatType.ONE_TIME && this.getRepeatType() != RepeatType.UNDEFINED);
+    }
+
+
+    public boolean hasInstanceBeforeDateTime(LocalDateTime dateTime){
+        return this.getEndDateTime().isEqual(dateTime) || this.getEndDateTime().isBefore(dateTime);
+    }
+
+
+    public LocalDateTime getClosestDateTimeAfter(LocalDateTime dateTime, LocalDateTime originalDateTime){
+        int day = this.repeatType
+                .getDaysUntilClosestFutureDayIncludedGetter(getDayOfDateTime(originalDateTime))
+                .apply(getDayOfDateTime(dateTime));
+        int daysAfter = day - getDayOfDateTime(originalDateTime);
+
+        return originalDateTime.plusDays(daysAfter);
+    }
+
+    public LocalDateTime getClosestDateTimeBefore(LocalDateTime dateTime, LocalDateTime originalDateTime){
+        int day = this.repeatType
+                .getDaysUntilClosestPastDayIncludedGetter(getDayOfDateTime(originalDateTime))
+                .apply(getDayOfDateTime(dateTime));
+        int daysBefore = getDayOfDateTime(originalDateTime) - day;
+
+        return originalDateTime.plusDays(daysBefore);
+    }
+
+
+
+//    public void updateWithClosestDayAfter(LocalDateTime dateTime){
+//
+//    }
+
+//    public boolean isBeforeDateTime(LocalDateTime dateTime){
+//
+//    }
+
+//    public boolean withinDateRange(LocalDateTime start, LocalDateTime end){
+//        this.getStartDateTime()
+//    }
 }

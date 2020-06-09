@@ -28,7 +28,7 @@ public class RideForTremp {
     public void assignTrempRequest(TrempRequest trempRequest){
         User userToAssign = trempRequest.getUser();
 
-        this.getSubRides()
+        getSubRides()
                 .forEach(
                         subRide -> {
                             subRide.applyTrempistToAllPartsOfRide(userToAssign, subRide.getSchedule().getStartDay());

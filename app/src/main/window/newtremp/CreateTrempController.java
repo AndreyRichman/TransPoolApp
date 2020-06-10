@@ -50,10 +50,10 @@ public class CreateTrempController {
     private Spinner<Integer> daySpinner;
 
     @FXML
-    private ChoiceBox<?> hourChoiceBox;
+    private ChoiceBox<Integer> hourChoiceBox;
 
     @FXML
-    private ChoiceBox<?> minutesChoiceBox;
+    private ChoiceBox<Integer> minutesChoiceBox;
 
     @FXML
     private CheckBox deptatureCheckBox;
@@ -69,10 +69,10 @@ public class CreateTrempController {
     @FXML
     void onClickCreateBtn(ActionEvent event) {
         request.setUserName(userNameTextField.getText());
-        //request.setChosenTime();
+        request.setChosenTime(String.join(":", hourChoiceBox.getValue().toString(), minutesChoiceBox.getValue().toString()));
         request.setFromStation(fromStationChoiceBox.getValue());
         request.setToStation(toStationChoiceBox.getValue());
-        request.setDepartDay(daySpinner.getValue().toString());
+        request.setDepartDay(daySpinner.getValue());
 
 
         addNewTrempFromRequest(request);
@@ -93,7 +93,6 @@ public class CreateTrempController {
         fromStationChoiceBox = new ChoiceBox<>();
         toStationChoiceBox = new ChoiceBox<>();
         stationsNames = FXCollections.observableArrayList();
-
     }
 
     @FXML
@@ -149,16 +148,14 @@ public class CreateTrempController {
 
             newTrempRequest.setUser(logicHandler.getUserByName(request.getUserName()));
             DesiredTimeType desiredTimeType = DesiredTimeType.valueOf(request.getDesiredTimeType());
-            newTrempRequest.setDesiredTimeType(desiredTimeType);
 
             LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
-            newTrempRequest.setDesiredTime(desiredTime);
+            int onDay = request.getDepartDay();
+            newTrempRequest.setDesiredDayAndTime(onDay, desiredTime, desiredTimeType);
 
             logicHandler.addTrempRequest(newTrempRequest);
 
-        } catch (NoPathExistBetweenStationsException e) {
-            e.printStackTrace();
-        }
+        }  catch (NoPathExistBetweenStationsException e) { e.printStackTrace();  }
     }
 
     public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }

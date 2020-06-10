@@ -47,7 +47,7 @@ public class CreateTrempController {
     private ChoiceBox<String> toStationChoiceBox;
 
     @FXML
-    private Spinner<?> daySpinner;
+    private Spinner<Integer> daySpinner;
 
     @FXML
     private ChoiceBox<?> hourChoiceBox;
@@ -81,7 +81,6 @@ public class CreateTrempController {
     @FXML
     void onToStationSelected(MouseEvent event) {
 
-
     }
 
     public CreateTrempController(){
@@ -89,10 +88,15 @@ public class CreateTrempController {
         fromStationChoiceBox = new ChoiceBox<>();
         toStationChoiceBox = new ChoiceBox<>();
         stationsNames = FXCollections.observableArrayList();
+
     }
 
     @FXML
-    public void initialize() { Platform.runLater(this::loadMetadata); }
+    public void initialize() {
+        Platform.runLater(this::loadMetadata);
+        SpinnerValueFactory<Integer> spinerFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100,1);
+        this.daySpinner.setValueFactory(spinerFactory);
+    }
 
     private void loadMetadata() {
         stationsNames.addAll(logicHandler.getAllStations().stream().map(Station::getName).collect(Collectors.toList()));

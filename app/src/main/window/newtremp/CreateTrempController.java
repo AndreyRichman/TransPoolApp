@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import main.window.main.MainWindowController;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import transpool.logic.handler.LogicHandler;
@@ -19,8 +20,6 @@ import transpool.logic.traffic.item.TrempRequest;
 import transpool.ui.request.type.NewTrempRequest;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -30,6 +29,7 @@ public class CreateTrempController {
     private LogicHandler logicHandler;
     private NewTrempRequest request;
     private ObservableList stationsNames;
+    private Stage stage;
 
     @FXML
     private Button createBtn;
@@ -63,7 +63,7 @@ public class CreateTrempController {
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
-
+        stage.close();
     }
 
     @FXML
@@ -84,12 +84,8 @@ public class CreateTrempController {
 
     }
 
-    public void setMainController(MainWindowController mainController) {
-        this.mainController = mainController;
-    }
-
     public CreateTrempController(){
-        NewTrempRequest request = new NewTrempRequest();
+        request = new NewTrempRequest();
         fromStationChoiceBox = new ChoiceBox<>();
         toStationChoiceBox = new ChoiceBox<>();
         stationsNames = FXCollections.observableArrayList();
@@ -137,6 +133,13 @@ public class CreateTrempController {
     }
 
     public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public void setMainController(MainWindowController mainController) { this.mainController = mainController;  }
+
 }
 
 

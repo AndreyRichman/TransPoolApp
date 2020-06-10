@@ -81,7 +81,7 @@ public class MainWindowController {
 
     @FXML
     void onQuitBtnClick(ActionEvent event) {
-
+        primaryStage.close();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -108,6 +108,7 @@ public class MainWindowController {
         Parent root = loader.load();
         CreateTrempController controller = loader.getController();
         controller.setMainController(this);
+        controller.setStage(stage);
         controller.setLogicHandler(logicHandler);
         Scene scene = new Scene(root, 400, 390);
 

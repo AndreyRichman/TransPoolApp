@@ -1,5 +1,6 @@
 package main.window.newtremp;
 
+import com.sun.deploy.security.SelectableSecurityManager;
 import enums.DesiredTimeType;
 import exception.NoPathExistBetweenStationsException;
 import javafx.application.Platform;
@@ -68,12 +69,14 @@ public class CreateTrempController {
 
     @FXML
     void onClickCreateBtn(ActionEvent event) {
+        //set request attributes
         request.setUserName(userNameTextField.getText());
-        request.setChosenTime(String.join(":", hourChoiceBox.getValue().toString(), minutesChoiceBox.getValue().toString()));
+        request.setChosenTime(String.format(hourChoiceBox.getValue().toString()+":"+ minutesChoiceBox.getValue().toString()));
         request.setFromStation(fromStationChoiceBox.getValue());
         request.setToStation(toStationChoiceBox.getValue());
         request.setDepartDay(daySpinner.getValue());
-
+        if (deptatureCheckBox.isSelected()) {  request.setDesiredTimeType(DesiredTimeType.DEPART.toString()); }
+        else { request.setDesiredTimeType(DesiredTimeType.ARRIVE.toString());  }
 
         addNewTrempFromRequest(request);
     }

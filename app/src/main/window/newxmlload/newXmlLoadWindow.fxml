@@ -43,7 +43,7 @@
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <children>
             <Button fx:id="LoadFileButton" mnemonicParsing="false" onAction="#onClickLoadFileButton" prefHeight="31.0" prefWidth="152.0" styleClass="menu-btn" text="Load File" />
-            <Button fx:id="clearButton" mnemonicParsing="false" onAction="#onClickClearButton" prefHeight="31.0" prefWidth="152.0" styleClass="menu-btn" text="ClearButton" />
+            <Button fx:id="clearButton" mnemonicParsing="false" onAction="#onClickClearButton" prefHeight="31.0" prefWidth="152.0" styleClass="menu-btn" text="Clear" />
          </children>
       </VBox>
       <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3">

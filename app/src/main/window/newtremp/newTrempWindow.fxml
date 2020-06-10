@@ -24,8 +24,8 @@
    </columnConstraints>
    <rowConstraints>
       <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="NEVER" />
-      <RowConstraints maxHeight="299.0" minHeight="0.0" prefHeight="88.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="381.0" minHeight="0.0" prefHeight="321.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="299.0" minHeight="0.0" prefHeight="60.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="381.0" minHeight="0.0" prefHeight="349.0" vgrow="NEVER" />
       <RowConstraints minHeight="10.0" vgrow="NEVER" />
       <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="NEVER" />
    </rowConstraints>
@@ -43,30 +43,31 @@
             <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="From:" textAlignment="CENTER" />
             <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="To:" textAlignment="CENTER" />
             <Label styleClass="field-title" text="Day: " />
-            <Label styleClass="field-title" text="Time:" />
+            <Label styleClass="field-title" text="Hour" />
+            <Label styleClass="field-title" text="Minutes" />
             <Label styleClass="field-title" text="Search by:" />
          </children>
       </VBox>
       <VBox prefHeight="296.0" prefWidth="152.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <children>
-            <TextField fx:id="userNameTextField" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" promptText="Enter your name" styleClass="field-text-box" />
+            <TextField fx:id="userNameTextField" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" styleClass="field-text-box" />
             <ChoiceBox fx:id="fromStationChoiceBox" maxWidth="1.7976931348623157E308" onMouseClicked="#onFromStationSelected" prefWidth="150.0" styleClass="field-text-box">
                <rotationAxis>
                   <Point3D />
                </rotationAxis></ChoiceBox>
             <ChoiceBox fx:id="toStationChoiceBox" maxWidth="1.7976931348623157E308" onMouseClicked="#onToStationSelected" prefWidth="150.0" styleClass="field-text-box" />
             <Spinner fx:id="daySpinner" prefHeight="38.0" prefWidth="232.0" styleClass="menu-btn" />
-            <GridPane>
+            <GridPane prefHeight="89.0" prefWidth="206.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ChoiceBox fx:id="hourChoiceBox" prefWidth="150.0" styleClass="menu-btn" />
-                  <ChoiceBox fx:id="minutesChoiceBox" prefWidth="150.0" styleClass="menu-btn" GridPane.columnIndex="1" />
+                  <ChoiceBox fx:id="hourChoiceBox" prefWidth="249.0" styleClass="menu-btn" />
+                  <ChoiceBox fx:id="minutesChoiceBox" prefHeight="38.0" prefWidth="235.0" styleClass="menu-btn" GridPane.rowIndex="1" />
                </children>
             </GridPane>
             <GridPane prefHeight="45.0" prefWidth="211.0">

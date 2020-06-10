@@ -118,4 +118,6 @@ public class newXmlLoadController {
         //task progress Indicator
         progressIndicator.progressProperty().bind(task.progressProperty());
     }
+
+    // TODO: Needs to show that there is XML file in the System and massge to Clear first or just Clear befor loading
 }

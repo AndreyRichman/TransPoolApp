@@ -70,6 +70,8 @@ public class CreateTrempController {
     void onClickCreateBtn(ActionEvent event) {
         request.setUserName(userNameTextField.getText());
 
+
+
         addNewTrempFromRequest(request);
     }
 
@@ -93,16 +95,36 @@ public class CreateTrempController {
 
     @FXML
     public void initialize() {
-        Platform.runLater(this::loadMetadata);
+        Platform.runLater(this::initStations);
+
+        initdaySpinner();
+
+        initHourAndMin();
+    }
+
+    private void initHourAndMin() {
+        ObservableList min = FXCollections.observableArrayList();
+        ObservableList hour = FXCollections.observableArrayList();
+
+        for(int i=5; i<=60; i+=5) {min.add(i);}
+        for(int i=1; i<=24; i++) {hour.add(i);}
+
+        hourChoiceBox.getItems().addAll(hour);
+        minutesChoiceBox.getItems().addAll(min);
+    }
+
+    private void initdaySpinner() {
         SpinnerValueFactory<Integer> spinerFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100,1);
         this.daySpinner.setValueFactory(spinerFactory);
     }
 
-    private void loadMetadata() {
+    private void initStations() {
         stationsNames.addAll(logicHandler.getAllStations().stream().map(Station::getName).collect(Collectors.toList()));
         this.fromStationChoiceBox.getItems().addAll(stationsNames);
         this.toStationChoiceBox.getItems().addAll(stationsNames);
     }
+
+
 
     @FXML
     void onClickDepChoise(ActionEvent event) {

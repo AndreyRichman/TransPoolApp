@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static transpool.ui.request.enums.RequestType.EXIT;
 import static transpool.ui.request.enums.RequestType.LOAD_XML_FILE;
 
-public class App {
+public class ConsoleApp implements Runnable {
     public static final int ABORT_INDEX = -1;
     public static final String LIST_ITEMS_SEPARATOR = System.lineSeparator()
             + String.join("", Collections.nCopies(40, "="))
@@ -36,7 +36,7 @@ public class App {
     private boolean exit;
     private boolean xmlLoadedCond = false;
 
-    public App() {
+    public ConsoleApp() {
         uiHandler = new ConsoleUI();
         logicHandler = new LogicHandler();
         exit = false;
@@ -125,26 +125,26 @@ public class App {
         uiHandler.showTitle(title);
 
         for(Ride ride: logicHandler.getAllRides()){
-            out.append(createDescriptionOfRide(ride));
+            out.append(createDescriptionOfRide(ride, ride.getSchedule().getStartDay()));
         }
         return out.toString();
     }
 
-    private String createDescriptionOfRide(Ride ride){
+    private String createDescriptionOfRide(Ride ride, int onDay){
         String description = String.join(System.lineSeparator(),
                 String.format("Ride ID: %d", ride.getID()),
-                String.format("Depart Time: %s", ride.getDepartTime()),
-                String.format("Estimated Arrive Time: %s", ride.getArriveTime()),
+                String.format("Depart Time: %s", ride.getSchedule().getStartTime()),
+                String.format("Estimated Arrive Time: %s", ride.getSchedule().getEndTime()),
                 String.format("Stations: %s", ride.getAllStations()
                         .stream()
                         .map(Station::getName)
                         .collect(Collectors.joining(" -> "))),
-                String.format("Status: %s", ride.isTrempsAssignToRide()?
+                String.format("Status: %s", ride.isTrempsAssignedToRide(onDay)?
                         "Tremps assigned to this ride": "No Tremps assigned to this ride"),
                 System.lineSeparator()
         );
 
-        if (ride.isTrempsAssignToRide())
+        if (ride.isTrempsAssignedToRide(onDay))
             description = String.format("%s%s%s",description, System.lineSeparator(),
                     String.join(System.lineSeparator(), getDescriptionOfPartOfRide(ride.getPartOfRide())));
 
@@ -157,21 +157,22 @@ public class App {
 
     private List<String> getDescriptionOfPartOfRide(List<PartOfRide> lpride)
     {
-        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists().isEmpty())
+        return lpride.stream().filter(p -> !p.getTrempistsManager().getAllTrempists(p.getSchedule().getStartDay()).isEmpty())
                 .map(this::createDescriptionOfPartOfRide).collect(Collectors.toList());
     }
 
     private String createDescriptionOfPartOfRide(PartOfRide pride){
         String fromStation = pride.getRoad().getStartStation().getName();
         String toStation = pride.getRoad().getEndStation().getName();
-        String startTime = pride.getStartTime().toString();
-        String endTime = pride.getEndTime().toString();
-        int freePlaces = pride.getTotalCapacity();
-        String allTrempistsIDS = String.format("Trempists ID: [ %s ]", (pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(", "))));
-        String trempistsJoining = pride.getTrempistsManager().getJustJoinedTrempists().stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
-        String trempistsLeaving = pride.getTrempistsManager().getLeavingTrempists().stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
+        String startTime = pride.getSchedule().getStartTime().toString();
+        String endTime = pride.getSchedule().getEndTime().toString();
+        int freePlaces = pride.getTotalCapacity() - pride.getCurrentCapacity(pride.getSchedule().getStartDay());
+        int onDay = pride.getSchedule().getStartDay();
+        String allTrempistsIDS = String.format("Trempists ID: [ %s ]", (pride.getTrempistsManager().getAllTrempists(onDay).stream().map(Trempist::getUser).map(User::getID).map(Object::toString).collect(Collectors.joining(", "))));
+        String trempistsJoining = pride.getTrempistsManager().getJustJoinedTrempists(onDay).stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
+        String trempistsLeaving = pride.getTrempistsManager().getLeavingTrempists(onDay).stream().map(Trempist::getUser).map(user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
 
-        String trempistsNames = pride.getTrempistsManager().getAllTrempists().stream().map(Trempist::getUser).map(
+        String trempistsNames = pride.getTrempistsManager().getAllTrempists(onDay).stream().map(Trempist::getUser).map(
                 user -> String.format("%d-%s", user.getID(), user.getName())).collect(Collectors.joining(", "));
 
         return String.join(System.lineSeparator(),
@@ -300,8 +301,8 @@ public class App {
 
         out.append(String.join(System.lineSeparator() + TREMP_OPTION_DELIMITER,
                 "",
-                String.format("Depart time: %s", trempOption.getDepartTime()),
-                String.format("Estimated Arrive time: %s", trempOption.getArriveTime()),
+                String.format("Depart time: %s", trempOption.getSchedule().getStartTime()),
+                String.format("Estimated Arrive time: %s", trempOption.getSchedule().getEndTime()),
                 String.format("Average Fuel usage: %.2f", trempOption.getAverageFuelUsage()),
                 String.format("Total Distance: %.1f km", trempOption.getTotalDistance()),
                 String.format("Total Cost: %.2f", trempOption.getTotalCost()),
@@ -333,7 +334,7 @@ public class App {
         return new ArrayList<>(
                 Arrays.asList(
                         String.format("Ride ID: %d", subRide.getOriginalRide().getID()),
-                        String.format("Ride Owner: %s", subRide.getOriginalRide().getRideOwner().getName()),
+                        String.format("Ride Owner: %s", subRide.getOriginalRide().getRideOwner().getUser().getName()),
                         String.format("Tremp cost : %.2f", subRide.getTotalCost()),
                         String.format("Route: %s", subRide.getAllStations().stream().map(Station::getName).collect(Collectors.joining(" -> ")))
                 )
@@ -353,7 +354,8 @@ public class App {
                 String.format("Request ID: %d", trempRequest.getID()),
                 String.format("Request User: %s", trempRequest.getUser().getName()),
                 String.format("Stations: [ %s ] --> [ %s ]", trempRequest.getStartStation().getName(), trempRequest.getEndStation().getName()),
-                String.format("Desired %s Time: %s", trempRequest.getDesiredTimeType().name(), trempRequest.getDesiredTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
+                String.format("Desired %s Time: %s", trempRequest.getDesiredTimeType().name(),
+                        trempRequest.getSchedule().getDesiredDateTimeAccordingToTimeType().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))),
                 String.format("Status: %s",
                         trempRequest.isNotAssignedToRides()? "Not Assigned to any Ride" : "Assigned to Ride")
         );
@@ -393,10 +395,11 @@ public class App {
         TrempRequest newTrempRequest = logicHandler.createNewEmptyTrempRequest(fromStation, toStation);
         newTrempRequest.setUser(logicHandler.getUserByName(request.getUserName()));
         DesiredTimeType desiredTimeType = DesiredTimeType.valueOf(request.getDesiredTimeType());
-        newTrempRequest.setDesiredTimeType(desiredTimeType);
+        //newTrempRequest.setDesiredTimeType(desiredTimeType);
 
         LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
-        newTrempRequest.setDesiredTime(desiredTime);
+        int day = request.getDepartDay();
+        newTrempRequest.setDesiredDayAndTime(day, desiredTime, desiredTimeType);
 
         logicHandler.addTrempRequest(newTrempRequest);
     }
@@ -502,7 +505,8 @@ public class App {
         User user = logicHandler.getUserByName(request.getUserName());
         Ride newRide = logicHandler.createNewEmptyRide(user, roads, request.getCarCapacity());
 
-        newRide.setStartTime(request.getStartTime());
+        //TODO: get day from user (default = 1)
+        newRide.setSchedule(request.getStartTime(), request.getDay(), request.getRepeatType());
         newRide.setPricePerKilometer(request.getPricePerKilometer());
 
         return newRide;

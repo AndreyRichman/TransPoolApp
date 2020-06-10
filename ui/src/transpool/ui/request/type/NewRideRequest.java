@@ -1,5 +1,6 @@
 package transpool.ui.request.type;
 
+import enums.RepeatType;
 import transpool.ui.request.enums.RequestType;
 import transpool.ui.interfaces.UserRequest;
 
@@ -11,6 +12,8 @@ public class NewRideRequest implements UserRequest {
     private String userName;
     private int carCapacity;
     private int pricePerKilometer = 0;
+    private int day = 1;
+    private RepeatType repeatType;
     private LocalTime startTime = LocalTime.MIN;
     private List<String> stations;
 
@@ -40,6 +43,10 @@ public class NewRideRequest implements UserRequest {
         this.stations = stations;
     }
 
+    public void setRepeatType(RepeatType repeatType) {
+        this.repeatType = repeatType;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -58,5 +65,13 @@ public class NewRideRequest implements UserRequest {
 
     public List<String> getStations() {
         return stations;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public RepeatType getRepeatType() {
+        return repeatType;
     }
 }

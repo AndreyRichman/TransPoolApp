@@ -1,6 +1,7 @@
 package transpool.logic.handler;
 
 import enums.DesiredTimeType;
+import enums.RepeatType;
 import exception.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
@@ -21,6 +22,7 @@ import transpool.logic.user.User;
 import transpool.logic.map.structure.Coordinate;
 
 import javax.management.InstanceAlreadyExistsException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
@@ -158,9 +160,16 @@ public class LogicHandler {
             } catch (StationNotFoundException e) {
                 throw new FaildLoadingXMLFileException("Failed load XML due to invalid station. Station " + e.getStationName() + " not found ");
             }
+
             newRide.setPricePerKilometer(ride.getPPK());
-                newRide.setSchedule(ride.getScheduling().getHourStart(),ride.getScheduling().getDayStart() ,ride.getScheduling().getRecurrences());
-                trafficManager.addRide(newRide);
+            try {
+                newRide.setSchedule(LocalTime.MIN.plusHours(ride.getScheduling().getHourStart()),
+                        1,//ride.getScheduling() == null? 1: ride.getScheduling().getDayStart(),
+                        RepeatType.getRepeatTypeFromString(ride.getScheduling().getRecurrences()));
+            } catch (NotSupportedRideRepeatTimeException e) {
+                throw new FaildLoadingXMLFileException("Failed load XML due to invalid Ride Recurrences. Provided: " + e.getType() + " not supported");
+            }
+            trafficManager.addRide(newRide);
         }
     }
 
@@ -187,20 +196,8 @@ public class LogicHandler {
     }
 
     public List<RideForTremp> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
-        Station start = trempRequest.getStartStation();
-        Station end = trempRequest.getEndStation();
-        int maxNumberOfConnections = trempRequest.getMaxNumberOfConnections();
 
-        List<RideForTremp> relevantByRouteOptions = trafficManager.getRideOptions(maxNumberOfConnections, start, end);
-        relevantByRouteOptions.sort(Comparator.comparingInt(RideForTremp::getNumOfParts));
-
-        Function<RideForTremp, LocalTime> rideCorrectTimeGetter = trempRequest.getDesiredTimeType() == DesiredTimeType.DEPART ?
-                RideForTremp::getDepartTime :  RideForTremp::getArriveTime;
-
-        return relevantByRouteOptions.stream()
-                .filter(rideForTremp -> rideCorrectTimeGetter.apply(rideForTremp).equals(trempRequest.getDesiredTime()))
-                .collect(Collectors.toList());
-
+        return trafficManager.getAllPossibleTrempsForTrempRequest(trempRequest);
     }
 
     public void addRide(Ride rideToAdd){

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#showStationDetails" prefHeight="40.0" prefWidth="40.0" styleClass="station-container" stylesheets="@StationStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.map.component.station.visual.StationController">
+   <children>
+      <Circle fx:id="stationCircle" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" styleClass="station-circle" />
+   </children>
+   <cursor>
+      <Cursor fx:constant="HAND" />
+   </cursor>
+</HBox>

@@ -34,6 +34,8 @@ public class WindowApp extends Application implements Runnable{
         Scene scene = new Scene(root, 1000, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
     }
 
     public void run(){

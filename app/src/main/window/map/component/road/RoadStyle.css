@@ -1,0 +1,26 @@
+.line1 {
+    -fx-stroke: BLUE;
+    -fx-stroke-width: 3px;
+}
+
+.line2 {
+    -fx-stroke: PURPLE;
+    -fx-stroke-width: 5px;
+}
+
+.line3 {
+    -fx-stroke: GREEN;
+    -fx-stroke-width: 7px;
+}
+
+.edge-text {
+    -fx-fill: RED;
+    -fx-font-weight: BOLD;
+    -fx-underline: true;
+}
+
+.arrow-head {
+    -fx-stroke: YELLOW;
+    -fx-fill: "BLACK";
+    -fx-stroke-width: 1px;
+}

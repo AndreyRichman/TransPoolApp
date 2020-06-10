@@ -3,10 +3,14 @@ package transpool.logic.handler;
 import enums.DesiredTimeType;
 import enums.RepeatType;
 import exception.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Task;
 import jaxb.schema.generated.Path;
 import jaxb.schema.generated.Stop;
 import jaxb.schema.generated.TransPool;
 import jaxb.schema.generated.TransPoolTrip;
+import main.window.newxmlload.newXmlLoadController;
+import tasks.loadFile.loadXmlFileTask;
 import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.traffic.TrafficManager;
@@ -29,10 +33,51 @@ public class LogicHandler {
     private TrafficManager trafficManager;
     private Map<String, User> usersNameToObject;
 
+    //new UI attributes
+    private Task<Boolean> currentRunningTask;
+    private TransPool transPool;
+
     public LogicHandler() {
         trafficManager = new TrafficManager();
         usersNameToObject = new HashMap<>();
     }
+
+    public void collectMetadata(SimpleStringProperty fileName, newXmlLoadController XmlLoadController){
+
+        //creates new task to load xml file
+        currentRunningTask = new loadXmlFileTask(fileName.get(), this);
+
+        //bind task to UI
+        XmlLoadController.bindTaskToUIComponents(currentRunningTask);
+
+        //run the task in background thread
+        new Thread(currentRunningTask).start();
+    }
+
+    public void fetchFile(String pathToFile) throws FaildLoadingXMLFileException {
+        transPool = (new XMLHandler(pathToFile)).LoadXML();
+    }
+
+    public void loadWorld() throws FaildLoadingXMLFileException {
+        try {
+            initWorldMap(transPool);
+        } catch (InvalidMapBoundariesException e) {
+            throw new FaildLoadingXMLFileException("Failed load XML due to invalid map Boundaries " + "(" + e.getWidth() + "," + e.getLength() + ")");
+        }
+    }
+
+    public void loadStations() throws FaildLoadingXMLFileException {
+        initStations(transPool);
+    }
+
+    public void loadRoads() throws FaildLoadingXMLFileException {
+        initRoads(transPool);
+    }
+
+    public void loadRides() throws FaildLoadingXMLFileException {
+        initRides(transPool);
+    }
+
 
     public void loadXMLFile(String pathToFile) throws FaildLoadingXMLFileException {
 
@@ -44,7 +89,7 @@ public class LogicHandler {
             throw new FaildLoadingXMLFileException("Failed load XML due to invalid map Boundaries " + "(" + e.getWidth() + "," + e.getLength() + ")");
         }
 
-        initRides(transPool);
+        //initRides(transPool);
     }
 
     private void initRoads(TransPool transPool) throws FaildLoadingXMLFileException  {
@@ -137,8 +182,8 @@ public class LogicHandler {
 
         map = new WorldMap(width,Length);
 
-        initStations(transPool);
-        initRoads(transPool);
+        //initStations(transPool);
+        //initRoads(transPool);
     }
 
     private void checkMapBoundaries(int width, int Length) throws InvalidMapBoundariesException {
@@ -217,5 +262,9 @@ public class LogicHandler {
 
     public String getTestMessage(){
         return "Logic was initialized";
+    }
+
+    public void cleanOldResults() {
+        //TODO: clean old result function
     }
 }

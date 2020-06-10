@@ -18,17 +18,20 @@ public class WindowApp extends Application implements Runnable{
     public void start(Stage primaryStage) throws Exception {
 
 //        Parent load = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
+
+        // load main fxml
         URL resource = getClass().getResource("main/mainWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
+
+        // wire up controller
         MainWindowController controller = loader.getController();
-
         controller.setLogic(new LogicHandler());
+        controller.setPrimaryStage(primaryStage);
 
-
+        // set stage
         Scene scene = new Scene(root, 1000, 700);
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }

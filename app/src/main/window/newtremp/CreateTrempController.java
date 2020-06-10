@@ -69,7 +69,10 @@ public class CreateTrempController {
     @FXML
     void onClickCreateBtn(ActionEvent event) {
         request.setUserName(userNameTextField.getText());
-
+        //request.setChosenTime();
+        request.setFromStation(fromStationChoiceBox.getValue());
+        request.setToStation(toStationChoiceBox.getValue());
+        request.setDepartDay(daySpinner.getValue().toString());
 
 
         addNewTrempFromRequest(request);

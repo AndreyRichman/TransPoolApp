@@ -5,7 +5,7 @@ import main.window.WindowApp;
 
 public class Main {
     public static void main(String[] args) {
-        Runnable app = new ConsoleApp(); //WindowApp();
+        Runnable app = new WindowApp(); //ConsoleApp();
         app.run();
     }
 }

@@ -12,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.window.main.sub.ride.RideSubWindowController;
 import main.window.main.sub.ride.TrempSubWindowController;
+import main.window.newride.newRideController;
 import main.window.newtremp.CreateTrempController;
 import main.window.newxmlload.newXmlLoadController;
 import transpool.logic.handler.LogicHandler;
@@ -76,11 +77,11 @@ public class MainWindowController {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
-        CreateTrempController controller = loader.getController();
+        newRideController controller = loader.getController();
         controller.setMainController(this);
         controller.setStage(stage);
         controller.setLogicHandler(logicHandler);
-        Scene scene = new Scene(root, 400, 390);
+        Scene scene = new Scene(root, 500, 700);
 
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
@@ -88,9 +89,7 @@ public class MainWindowController {
     }
 
     @FXML
-    void onQuitBtnClick(ActionEvent event) {
-        primaryStage.close();
-    }
+    void onQuitBtnClick(ActionEvent event) { primaryStage.close(); }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;

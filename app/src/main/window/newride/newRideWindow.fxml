@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<GridPane hgap="5.0" prefHeight="700.0" prefWidth="500.0" stylesheets="@../style/mainStyle1.css" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.newride.newRideController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="224.0" minWidth="10.0" prefWidth="168.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="54.0" minWidth="5.0" prefWidth="10.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="267.0" minWidth="10.0" prefWidth="166.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="91.0" minWidth="0.0" prefWidth="0.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="299.0" minHeight="0.0" prefHeight="84.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="537.0" minHeight="0.0" prefHeight="394.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="129.0" minHeight="10.0" prefHeight="127.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="41.0" minHeight="10.0" prefHeight="41.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="20.0" minHeight="9.0" prefHeight="9.0" vgrow="NEVER" />
+   </rowConstraints>
+   <children>
+  <Label alignment="CENTER" maxWidth="415.0" prefHeight="86.0" prefWidth="333.0" style="&#10;" styleClass="mid-title" text="New Ride Request" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+    <font>
+      <Font size="18.0" />
+    </font>
+  </Label>
+      <Button fx:id="createBtn" mnemonicParsing="false" onAction="#onClickCreateBtn" prefHeight="31.0" prefWidth="299.0" styleClass="menu-btn" text="Create" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <Button id="quitBtn" fx:id="cancelBtn" mnemonicParsing="false" onAction="#onClickCancelButton" prefHeight="31.0" prefWidth="253.0" styleClass="menu-btn" text="Cancel" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+      <VBox fillWidth="false" prefHeight="492.0" prefWidth="214.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="Name:" textAlignment="CENTER" />
+            <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="Add station:" textAlignment="CENTER" />
+            <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="Remove Station:" textAlignment="CENTER" />
+            <Label styleClass="field-title" text="Day: " />
+            <Label styleClass="field-title" text="Hour:" />
+            <Label styleClass="field-title" text="Minutes:" />
+            <Label styleClass="field-title" text="PPK:" />
+            <Label styleClass="field-title" text="Capacity:" />
+            <Label fx:id="Reputabel" styleClass="field-title" text="Reputabel?" />
+         </children>
+      </VBox>
+      <VBox prefHeight="558.0" prefWidth="211.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <children>
+            <TextField fx:id="userNameTextField" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" styleClass="field-text-box" />
+            <ChoiceBox fx:id="addStationChoiceBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" styleClass="field-text-box">
+               <rotationAxis>
+                  <Point3D />
+               </rotationAxis></ChoiceBox>
+            <ChoiceBox fx:id="removeStationChoiceBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" styleClass="field-text-box" />
+            <Spinner fx:id="daySpinner" prefHeight="38.0" prefWidth="232.0" styleClass="menu-btn" />
+            <GridPane prefHeight="89.0" prefWidth="206.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ChoiceBox fx:id="hourChoiceBox" prefWidth="249.0" styleClass="menu-btn" />
+                  <ChoiceBox fx:id="minutesChoiceBox" prefHeight="38.0" prefWidth="235.0" styleClass="menu-btn" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
+            <TextField fx:id="ppkTextField" maxHeight="42.0" prefHeight="38.0" prefWidth="235.0" styleClass="field-text-box" />
+            <TextField fx:id="capacityTextField" prefHeight="38.0" prefWidth="235.0" styleClass="field-text-box" />
+            <ChoiceBox fx:id="reputabelChoiceBox" prefHeight="38.0" prefWidth="267.0" styleClass="menu-btn" />
+         </children>
+      </VBox>
+      <TextField prefHeight="90.0" prefWidth="445.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+   </children>
+</GridPane>

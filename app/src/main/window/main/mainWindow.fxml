@@ -44,7 +44,7 @@
       <Label id="map-title" maxHeight="-Infinity" maxWidth="327.0" minWidth="147.0" prefHeight="90.0" prefWidth="327.0" styleClass="title" text="Live Map" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.vgrow="SOMETIMES">
          <children>
-            <fx:include fx:id="trempComponent" source="sub/ride/TrempSubWindow.fxml" />
+            <fx:include fx:id="trempComponent" source="sub/tremp/TrempSubWindow.fxml" />
          </children>
       </Pane>
       <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="4" GridPane.vgrow="SOMETIMES">

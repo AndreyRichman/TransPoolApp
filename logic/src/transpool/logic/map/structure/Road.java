@@ -49,4 +49,8 @@ public class Road {
     public int getDurationInMinutes(){
         return (int) (lengthInKM * 60) / maxSpeed;
     }
+
+    public boolean sharesOppositeStations(Road other){
+        return this.startStation == other.endStation && this.endStation == other.startStation;
+    }
 }

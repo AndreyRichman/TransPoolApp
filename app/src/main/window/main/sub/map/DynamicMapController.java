@@ -21,9 +21,8 @@ import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -40,6 +39,10 @@ public class DynamicMapController {
     private Graph graphMap;
     private CoordinatesManager coordinatesManager;
     private StationManager stationManager;
+    private List<ArrowedEdge>  allEdges;
+    private List<ArrowedEdge>  markedEdges;
+
+    Map<Road, ArrowedEdge> road2Edge;
 
 
     @FXML
@@ -80,6 +83,7 @@ public class DynamicMapController {
 
     public void setMainController(MainWindowController mainController) {
         this.mainController = mainController;
+
     }
 
 
@@ -87,13 +91,7 @@ public class DynamicMapController {
 
         this.graphMap = new Graph();
         initializeMapWithLogicMap(worldMap);
-//        PannableCanvas canvas = graphMap.getCanvas();
-//        this.mapScrollPane.setContent(canvas);
-//
-//        Platform.runLater(() -> {
-//            graphMap.getUseViewportGestures().set(false);
-//            graphMap.getUseNodeGestures().set(false);
-//        });
+
         updateVisualMapByScale(0);
     }
 
@@ -104,9 +102,10 @@ public class DynamicMapController {
         this.graphMap.beginUpdate();
         this.stationManager = loadStations(graphModel, worldMap.getAllStations());
         this.coordinatesManager = new CoordinatesManager(CoordinateNode::new);// createCoordinates(graphModel);
-        List<ArrowedEdge>  edges = createEdges(this.coordinatesManager, worldMap.getAllRoads());
-        edges.forEach(graphModel::addEdge);
-        updateEdgesUIStyle(edges);
+        this.allEdges = createEdges(this.coordinatesManager, worldMap.getAllRoads());
+        this.allEdges.forEach(graphModel::addEdge);
+        updateEdgesWithClass(this.allEdges, "road-line", "transparent-arrow-head");
+//        updateEdgesUIStyle(this.allEdges);
 
         this.graphMap.endUpdate();
 //        graph.layout(new MapGridLayout(coordinatesManager, stationManager));
@@ -133,8 +132,42 @@ public class DynamicMapController {
     private void updateEdgesUIStyle(List<ArrowedEdge> edges) {
         Platform.runLater(() -> {
             edges.forEach(edge -> {
+                edge.getLine().getStyleClass().clear();
                 edge.getLine().getStyleClass().add("road-line");
-                edge.getText().getStyleClass().add("edge-text");
+                //edge.getText().getStyleClass().add("edge-text");
+            });
+        });
+    }
+
+    private void updateEdgesWithSelectedStyle(List<ArrowedEdge> specialEdges) {
+        if (this.markedEdges != null) {
+            updateEdgesWithClass(this.markedEdges, "road-line", "transparent-arrow-head");
+            //updateEdgesUIStyle(this.allEdges);
+        }
+            //updateEdgesUIStyle(this.markedEdges);
+
+        this.markedEdges = specialEdges;
+
+        updateEdgesWithClass(specialEdges, "selected-road-line", "red-arrow-head");
+//        Platform.runLater(() -> {
+//            specialEdges.forEach(edge -> {
+//                edge.getLine().getStyleClass().clear();
+//                edge.getLine().getStyleClass().add("selected-road-line");
+//                //edge.getText().getStyleClass().add("edge-text");    //TODO show number of trempists
+//            });
+//        });
+    }
+
+    private void updateEdgesWithClass(List<ArrowedEdge> specialEdges, String lineStyleClass, String arrowStyleClass){
+        Platform.runLater(() -> {
+            specialEdges.forEach(edge -> {
+                edge.getLine().getStyleClass().clear();
+                edge.getLine().getStyleClass().add(lineStyleClass);
+                if (arrowStyleClass != null) {
+                    edge.getArrowHead().getStyleClass().clear();
+                    edge.getArrowHead().getStyleClass().add(arrowStyleClass);
+                }
+
             });
         });
     }
@@ -163,13 +196,16 @@ public class DynamicMapController {
     private List<ArrowedEdge> createEdges(CoordinatesManager coordinatesManager, List<Road> roads) {
         List<ArrowedEdge> edges = new LinkedList<>();
 
+        this.road2Edge = new HashMap<>();
+
         roads.forEach(road -> {
             int fromX = road.getStartStation().getCoordinate().getX();
             int fromY = road.getStartStation().getCoordinate().getY();
             int toX = road.getEndStation().getCoordinate().getX();
             int toY = road.getEndStation().getCoordinate().getY();
             ArrowedEdge e = new ArrowedEdge(coordinatesManager.getOrCreate(fromX, fromY), coordinatesManager.getOrCreate(toX, toY));
-            e.textProperty().set(String.format("%s KM", road.getLengthInKM()));
+//            e.textProperty().set(String.format("%s KM", road.getLengthInKM()));
+            this.road2Edge.put(road, e);
             edges.add(e);
 
 
@@ -177,5 +213,26 @@ public class DynamicMapController {
 
         return edges;
 
+    }
+
+    public void updateTextOfEdge(ArrowedEdge edgeToUpdate, String setText){
+        edgeToUpdate.textProperty().set(setText);
+    }
+
+
+    public void markRoads(List<Road> roadsToMark){
+        List<ArrowedEdge>  edgesToMark = roadsToMark.stream()
+                .map(rode -> this.road2Edge.get(rode))
+                .collect(Collectors.toList());
+        ;//createEdges(this.coordinatesManager, roadsToMark);
+        updateEdgesWithSelectedStyle(edgesToMark);
+
+    }
+
+    public void hideRoads(List<Road> roadsToHide){
+        List<ArrowedEdge>  edgesToHide = roadsToHide.stream()
+                .map(rode -> this.road2Edge.get(rode))
+                .collect(Collectors.toList());
+        updateEdgesWithClass(edgesToHide, "hidden-road", "transparent-arrow-head");
     }
 }

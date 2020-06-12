@@ -31,7 +31,7 @@ public class ArrowedEdge extends Edge {
     public EdgeGraphic getGraphic(Graph graph) {
         if (edgeGraphic == null) {
             edgeGraphic = super.getGraphic(graph);
-            addArrowShape(edgeGraphic.getLine());
+            addArrowShape(edgeGraphic.getLine()); //TODO uncomment to have a heady arrow
             edgeGraphic.getStylesheets().add(edgeStyleSheet);
         }
         return edgeGraphic;
@@ -95,8 +95,12 @@ public class ArrowedEdge extends Edge {
 
         // create and add the new arrow head
         arrowHead = new Polygon(arrowHeadX, arrowHeadY, x1, y1, x2, y2);
-        arrowHead.getStyleClass().add("arrow-head");
+        arrowHead.getStyleClass().add("transparent-arrow-head");  //TODO: removed for dynamic update using getArrowHead()
         group.getChildren().add(arrowHead);
+    }
+
+    public Polygon getArrowHead() {
+        return arrowHead;
     }
 
     public Line getLine() {

@@ -14,10 +14,16 @@
     -fx-stroke-width: 7px;
 }
 
-.edge-text {
-    -fx-fill: RED;
-    -fx-font-weight: BOLD;
-    -fx-underline: true;
+.red-arrow-head{
+    -fx-stroke: #ff7369;
+    -fx-fill: #ff7369;
+    -fx-stroke-width: 3px;
+}
+
+.transparent-arrow-head{
+    -fx-stroke: TRANSPARENT;
+    -fx-fill: TRANSPARENT;
+    -fx-stroke-width: 1px;
 }
 
 .arrow-head {
@@ -26,14 +32,25 @@
     -fx-stroke-width: 1px;
 }
 
+
 .road-line {
     -fx-stroke: #2dc5b3;
     -fx-stroke-width: 3px;
 }
-.road-line:hover {
-    -fx-stroke: #ff7369;
-    -fx-stroke-width: 3px;
 
+.hidden-road{
+    -fx-stroke: TRANSPARENT;
+    -fx-stroke-width: 3px;
+}
+/*.road-line:hover {*/
+/*    -fx-stroke: #ff7369;*/
+/*    -fx-stroke-width: 3px;*/
+
+/*}*/
+
+.selected-road-line {
+    -fx-stroke: #ff7369;
+    -fx-stroke-width: 6px;
 }
 
 .edge-text {

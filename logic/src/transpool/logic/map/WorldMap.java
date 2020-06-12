@@ -120,4 +120,7 @@ public class WorldMap {
                 .collect(Collectors.toList());
     }
 
+    public List<Road> getAllRoads() {
+        return allRoads;
+    }
 }

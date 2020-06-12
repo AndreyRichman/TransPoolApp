@@ -66,7 +66,7 @@ public class SampleMain extends Application {
 
         graph.endUpdate();
 
-        graph.layout(new MapGridLayout(cm, sm));
+        graph.layout(new MapGridLayout(cm, sm, 0));
     }
 
     private StationManager createStations(Model model) {
@@ -118,17 +118,17 @@ public class SampleMain extends Application {
 
         CoordinatesManager cm = new CoordinatesManager(CoordinateNode::new);
 
-        for (int i=0; i<10; i++) {
-            for (int j = 0; j < 10; j++) {
-                model.addCell(cm.getOrCreate(i+1, j+1));
-            }
-        }
+//        for (int i=0; i<5; i++) {
+//            for (int j = 0; j < 5; j++) {
+//                model.addCell(cm.getOrCreate(i+1, j+1));
+//            }
+//        }
 
         return cm;
     }
 
     private void createEdges(Model model, CoordinatesManager cm) {
-        ArrowedEdge e13 = new ArrowedEdge(cm.getOrCreate(2,2), cm.getOrCreate(7,9));
+        ArrowedEdge e13 = new ArrowedEdge(cm.getOrCreate(2,2), cm.getOrCreate(1,4));
         e13.textProperty().set("L: 7 ; FC: 4");
         model.addEdge(e13); // 1-3
 

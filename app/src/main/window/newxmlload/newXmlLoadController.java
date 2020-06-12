@@ -48,6 +48,8 @@ public class newXmlLoadController {
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
+        this.mainWindowController.updateMap(); //TODO: a temp workaround
+
         stage.close();
     }
 
@@ -73,6 +75,7 @@ public class newXmlLoadController {
 //        LoadXMLRequest req = new LoadXMLRequest();
 //        req.setFileDirectory(selectedFileProperty.get());
         logicHandler.collectMetadata(selectedFileProperty, this);
+
     }
 
     @FXML

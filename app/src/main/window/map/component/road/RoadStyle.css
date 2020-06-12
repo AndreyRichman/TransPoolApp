@@ -1,3 +1,4 @@
+
 .line1 {
     -fx-stroke: BLUE;
     -fx-stroke-width: 3px;
@@ -20,7 +21,111 @@
 }
 
 .arrow-head {
-    -fx-stroke: YELLOW;
-    -fx-fill: "BLACK";
+    -fx-stroke: #ff7369;
+    -fx-fill: #ff7369;
     -fx-stroke-width: 1px;
 }
+
+.road-line {
+    -fx-stroke: #2dc5b3;
+    -fx-stroke-width: 3px;
+}
+.road-line:hover {
+    -fx-stroke: #ff7369;
+    -fx-stroke-width: 3px;
+
+}
+
+.edge-text {
+    -fx-fill: RED;
+    -fx-font-weight: BOLD;
+    -fx-underline: true;
+}
+
+
+/*sd
+
+
+
+.button_back {
+
+    background-color: #2dc5b3;
+    color: white;
+    border: 2px solid white;
+    border-radius: 12px;
+    padding: 14px 60px;
+}
+.button_back:hover {
+    background-color: #ff7369;
+    color: white;
+    border: 2px solid white;
+    border-radius: 12px;
+    padding: 14px 60px;
+}
+
+
+.button_submit {
+    background-color: #2dc5b3;
+    color: white;
+    border: 2px solid white;
+    border-radius: 12px;
+    padding: 14px 60px;
+}
+.button_submit:hover {
+    background-color: white;
+    color: #2dc5b3;
+    border: 2px solid white;
+    border-radius: 12px;
+    padding: 14px 60px;
+}
+a {
+    color: white;
+}
+a:hover {
+    color:#ff7369;
+}
+select {
+
+    padding:3px;
+    margin: 0;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    -moz-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    background: #f8f8f8;
+    color:#888;
+    border:none;
+    outline:none;
+    display: inline-block;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    cursor:pointer;
+    text-align-last: center; text-align: center;
+    -ms-text-align-last: center;
+    -moz-text-align-last: center; text-align-last: center;
+}
+input {
+    border: 2px solid white;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+input:focus {
+    border: 3px solid white;
+}
+h1 {
+    text-align: center;
+    font-family: "Arial";
+    font-size: 45px;
+}
+h2 {
+    text-align: center;
+    font-family: "Arial";
+    font-size: 30px;
+}
+
+
+*/

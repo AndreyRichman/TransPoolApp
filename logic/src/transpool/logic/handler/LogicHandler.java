@@ -267,4 +267,8 @@ public class LogicHandler {
     public void cleanOldResults() {
         //TODO: clean old result function
     }
+
+    public WorldMap getMap() {
+        return map;
+    }
 }

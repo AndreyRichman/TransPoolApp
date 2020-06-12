@@ -2,11 +2,19 @@ package main.window.main.sub.ride;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import main.window.main.MainWindowController;
+import transpool.logic.traffic.item.Ride;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RideSubWindowController {
 
     MainWindowController mainController;
+    Map<Integer, Ride> ridesVisibleInView;
 
     @FXML
     private Label userTitle;
@@ -38,7 +46,41 @@ public class RideSubWindowController {
     @FXML
     private Label fuelValue;
 
+    @FXML
+    private ListView<String> ridesListView;
+
     public void setMainController(MainWindowController mainController) {
         this.mainController = mainController;
     }
+
+    public void updateRidesList(){
+        this.ridesVisibleInView = new HashMap<>();
+        int index = 0;
+        List<Ride> allRides = this.mainController.getAllRides();
+        for(Ride ride : allRides) {
+            String toSHow = String.format("%d - %s",
+                        ride.getID(),
+                        ride.getRideOwner().getUser().getName());
+            this.ridesListView.getItems().add(toSHow);
+            ridesVisibleInView.put(index++, ride);
+        }
+
+//        List<String> ridesRepresentations = allRides.stream()
+//                .map(ride -> String.format("%d - %s",
+//                        ride.getID(),
+//                        ride.getRideOwner().getUser().getName()))
+//                .collect(Collectors.toList());
+//
+//        this.ridesListView.getItems().addAll(ridesRepresentations);
+    }
+
+    @FXML
+    void onRideSelected(MouseEvent event) {
+        if (this.mainController != null){
+            int index = this.ridesListView.getSelectionModel().getSelectedIndex();
+            Ride selectedRide = this.ridesVisibleInView.get(index);
+            this.mainController.updateMapWithRide(selectedRide);
+        }
+    }
+
 }

@@ -1,5 +1,12 @@
 .station-circle {
-    -fx-fill: BLUE;
+    -fx-fill: #2dc5b3;
+    -fx-border-color: WHITE;
+}
+
+.station-circle:hover{
+    -fx-fill: #ff7369;
+    -fx-border-width: 5px;
+    -fx-border-radius: 5px;
 }
 
 .station-container {

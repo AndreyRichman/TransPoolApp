@@ -231,6 +231,10 @@ public class LogicHandler {
         return this.trafficManager.getAllRides();
     }
 
+    public List<Road> getAllRoads(){
+        return this.map.getAllRoads();
+    }
+
 
     public List<TrempRequest> getAllTrempRequests(){
         return this.trafficManager.getAllTrempRequests();
@@ -256,6 +260,7 @@ public class LogicHandler {
         return this.map.getAllStations();
     }
 
+
     public List<Road> getRoadsFromStationsNames(List<String> stationNames) throws NoRoadBetweenStationsException {
         return this.map.getRoadsFromStationsNames(stationNames);
     }
@@ -266,5 +271,9 @@ public class LogicHandler {
 
     public void cleanOldResults() {
         //TODO: clean old result function
+    }
+
+    public WorldMap getMap() {
+        return map;
     }
 }

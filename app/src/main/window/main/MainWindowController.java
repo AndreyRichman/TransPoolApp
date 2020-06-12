@@ -1,23 +1,32 @@
 package main.window.main;
 
-import exception.FaildLoadingXMLFileException;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import main.window.main.sub.ride.RideSubWindowController;
-import main.window.main.sub.ride.TrempSubWindowController;
-import main.window.newride.newRideController;
-import main.window.newtremp.CreateTrempController;
-import main.window.newxmlload.newXmlLoadController;
-import transpool.logic.handler.LogicHandler;
-import java.io.IOException;
-import java.net.URL;
+        import exception.FaildLoadingXMLFileException;
+        import javafx.event.ActionEvent;
+        import javafx.fxml.FXML;
+        import javafx.fxml.FXMLLoader;
+        import javafx.scene.Parent;
+        import javafx.scene.Scene;
+        import javafx.scene.control.Button;
+        import javafx.scene.layout.GridPane;
+        import javafx.scene.layout.Pane;
+        import javafx.stage.Modality;
+        import javafx.stage.Stage;
+        import main.window.main.sub.map.DynamicMapController;
+        import main.window.main.sub.ride.RideSubWindowController;
+        import main.window.main.sub.tremp.TrempSubWindowController;
+        import main.window.newtremp.CreateTrempController;
+        import main.window.newxmlload.newXmlLoadController;
+        import transpool.logic.handler.LogicHandler;
+        import transpool.logic.map.structure.Road;
+        import transpool.logic.traffic.item.PartOfRide;
+        import transpool.logic.traffic.item.Ride;
+        import transpool.logic.traffic.item.TrempRequest;
+
+        import java.io.IOException;
+        import java.net.URL;
+        import java.util.LinkedList;
+        import java.util.List;
+        import java.util.stream.Collectors;
 
 
 public class MainWindowController {
@@ -27,8 +36,10 @@ public class MainWindowController {
 
     @FXML private Pane rideComponent;
     @FXML private Pane trempComponent;
+    @FXML private GridPane mapComponent;
     @FXML private RideSubWindowController rideComponentController;
     @FXML private TrempSubWindowController trempComponentController;
+    @FXML private DynamicMapController mapComponentController;
 
     @FXML
     private Button loadXmlBtn;
@@ -99,11 +110,40 @@ public class MainWindowController {
 
     @FXML
     public void initialize(){
-        if (rideComponentController != null && this.trempComponentController != null){
+        if (rideComponentController != null && this.trempComponentController != null && mapComponentController != null){
             this.rideComponentController.setMainController(this);
             this.trempComponentController.setMainController(this);
+            mapComponentController.setMainController(this);
         }
     }
+
+    public void updateMap(){
+        mapComponentController.initVisualMap(this.logicHandler.getMap());
+    }
+
+    public void updateRidesList(){
+        this.rideComponentController.updateRidesList();
+    }
+
+    public void updateMapWithRide(Ride ride){
+        List<Road> roadsToMark = ride.getPartsOfRide().stream().map(PartOfRide::getRoad).collect(Collectors.toList());
+        this.mapComponentController.markRoads(roadsToMark); //markRoads()
+
+        List<Road> roadsToHide = new LinkedList<>();
+        for (Road toHide: this.logicHandler.getAllRoads()){
+            for (Road toMark: roadsToMark){
+                if (toHide.sharesOppositeStations(toMark))
+                    roadsToHide.add(toHide);
+            }
+        }
+
+        this.mapComponentController.hideRoads(roadsToHide);
+    }
+
+    public void updateTrempsList(){
+        this.trempComponentController.updateRidesList();
+    }
+
 
     @FXML
     void onNewTrempBtnClick(ActionEvent event) throws IOException, FaildLoadingXMLFileException {
@@ -125,4 +165,11 @@ public class MainWindowController {
     }
 
 
+    public List<Ride> getAllRides() {
+        return this.logicHandler.getAllRides();
+    }
+
+    public List<TrempRequest> getAllTrempRequests(){
+        return this.logicHandler.getAllTrempRequests();
+    }
 }

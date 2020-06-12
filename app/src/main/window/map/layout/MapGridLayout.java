@@ -7,13 +7,14 @@ import main.window.map.component.station.StationManager;
 
 public class MapGridLayout implements Layout {
 
-    private final int SCALE = 70;
+    private int scale;
     private CoordinatesManager coordinatesManager;
     private StationManager stationManager;
 
-    public MapGridLayout(CoordinatesManager coordinatesManager, StationManager stationManager) {
+    public MapGridLayout(CoordinatesManager coordinatesManager, StationManager stationManager, int scale) {
         this.coordinatesManager = coordinatesManager;
         this.stationManager = stationManager;
+        this.scale = scale;
     }
 
     @Override
@@ -22,7 +23,7 @@ public class MapGridLayout implements Layout {
         coordinatesManager.getAllCoordinates().forEach(coordinateNode ->
                 graph
                     .getGraphic(coordinateNode)
-                    .relocate(coordinateNode.getX() * SCALE, coordinateNode.getY() * SCALE)
+                    .relocate(coordinateNode.getX() * this.scale, coordinateNode.getY() * this.scale)
         );
         
         final int STATION_FIX_X = -15;
@@ -30,7 +31,7 @@ public class MapGridLayout implements Layout {
         stationManager.getAllCoordinates().forEach(stationNode -> {
             int x = stationNode.getX();
             int y = stationNode.getY();
-            graph.getGraphic(stationNode).relocate(x * SCALE + STATION_FIX_X, y * SCALE + STATION_FIX_Y);
+            graph.getGraphic(stationNode).relocate(x * this.scale + STATION_FIX_X, y * this.scale + STATION_FIX_Y);
         });
     }
 

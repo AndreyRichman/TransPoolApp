@@ -48,8 +48,13 @@ public class newXmlLoadController {
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
+        this.mainWindowController.updateMap(); //TODO: a temp workaround
+        this.mainWindowController.updateRidesList();    //TODO do this on add new Ride
+        this.mainWindowController.updateTrempsList();   //TODO do this on add new tremp
+
         stage.close();
     }
+
 
     @FXML
     void onClickClearButton(ActionEvent event) {

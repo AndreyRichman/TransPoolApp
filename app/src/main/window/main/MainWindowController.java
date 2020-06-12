@@ -28,6 +28,7 @@ package main.window.main;
         import java.util.List;
         import java.util.stream.Collectors;
 
+
 public class MainWindowController {
 
     private LogicHandler logicHandler;
@@ -80,14 +81,26 @@ public class MainWindowController {
     }
 
     @FXML
-    void onNewRideBtnClick(ActionEvent event) {
+    void onNewRideBtnClick(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        URL resource = getClass().getResource("../newride/newRideWindow.fxml");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(resource);
+        Parent root = loader.load();
+        newRideController controller = loader.getController();
+        controller.setMainController(this);
+        controller.setStage(stage);
+        controller.setLogicHandler(logicHandler);
+        Scene scene = new Scene(root, 500, 700);
 
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
-    void onQuitBtnClick(ActionEvent event) {
-        primaryStage.close();
-    }
+    void onQuitBtnClick(ActionEvent event) { primaryStage.close(); }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;

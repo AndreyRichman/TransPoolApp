@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane hgap="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="654.0" prefWidth="503.0" stylesheets="@../../../style/mainStyle1.css" vgap="2.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.main.sub.map.DynamicMapController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="484.0" minHeight="420.0" prefHeight="420.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="82.0" minHeight="10.0" prefHeight="44.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="82.0" minHeight="10.0" prefHeight="44.0" vgrow="NEVER" />
+      <RowConstraints fillHeight="false" maxHeight="59.0" minHeight="27.0" prefHeight="48.0" vgrow="NEVER" />
+    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <ScrollPane id="scrollpaneContainer" fx:id="mapScrollPane" prefHeight="435.0" prefWidth="477.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+         <children>
+            <Label prefHeight="39.0" prefWidth="86.0" styleClass="field-title" text="Live Map" textAlignment="CENTER" />
+            <ToggleButton fx:id="liveStatusToggle" mnemonicParsing="false" onAction="#onLiveStatusToggle" prefHeight="40.0" prefWidth="106.0" text="ToggleButton" />
+            <Label prefHeight="39.0" prefWidth="126.0" styleClass="field-title" textAlignment="CENTER" />
+            <Label alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="75.0" styleClass="field-title" text="Zoom:" textAlignment="CENTER" />
+            <Button fx:id="zoomPlusButton" mnemonicParsing="false" onAction="#onZoomPlusBtnClick" prefHeight="48.0" prefWidth="49.0" styleClass="menu-btn" text="+" />
+            <Button fx:id="zoomMinusButton" mnemonicParsing="false" onAction="#onZoomMinusBtnClick" prefHeight="53.0" prefWidth="47.0" styleClass="menu-btn" text="-" />
+         </children>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <Label alignment="CENTER" prefHeight="39.0" prefWidth="61.0" styleClass="field-title" text="Day:" textAlignment="CENTER" />
+            <Label fx:id="dayTextField" alignment="CENTER" prefHeight="39.0" prefWidth="47.0" styleClass="field-title" text="1" textAlignment="CENTER" />
+            <Label prefHeight="39.0" prefWidth="115.0" styleClass="field-title" textAlignment="CENTER" />
+            <Button fx:id="addSubBtn" mnemonicParsing="false" onAction="#onClickAddSubBtn" prefHeight="40.0" prefWidth="79.0" styleClass="menu-btn" text="ADD(+)" />
+            <Button fx:id="timeQuantityBtn" mnemonicParsing="false" onAction="#onClickTimeQuantity" prefHeight="39.0" prefWidth="79.0" styleClass="menu-btn" text="5 min" />
+            <Button fx:id="applyTimeChangeBtn" mnemonicParsing="false" onAction="#onClickApplyTimeChangeBtn" prefHeight="41.0" prefWidth="84.0" styleClass="menu-btn" text="Apply" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <children>
+            <Label prefHeight="39.0" prefWidth="58.0" styleClass="field-title" text="Time:" textAlignment="CENTER" />
+            <Label fx:id="timeTextField" prefHeight="39.0" prefWidth="63.0" styleClass="field-title" text="10:00" textAlignment="CENTER" />
+         </children>
+      </HBox>
+   </children>
+</GridPane>

@@ -48,6 +48,7 @@ public class newXmlLoadController {
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
+        //TODO: Matan - those need to be called AFTER the XML loaded
         this.mainWindowController.updateMap(); //TODO: a temp workaround
         this.mainWindowController.updateRidesList();    //TODO do this on add new Ride
         this.mainWindowController.updateTrempsList();   //TODO do this on add new tremp

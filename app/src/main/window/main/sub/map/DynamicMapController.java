@@ -6,8 +6,7 @@ import com.fxgraph.graph.PannableCanvas;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import main.window.main.MainWindowController;
 import main.window.map.component.coordinate.CoordinateNode;
@@ -24,16 +23,12 @@ import transpool.logic.map.structure.Station;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
-
-
 
 public class DynamicMapController {
 
     private final int MIN_BOARD_SCALE = 10;
     private final int MAX_BOARD_SCALE = 100;
-    private int currentBoardScale = 30;
+    private int currentBoardScale = 25;
 
     MainWindowController mainController;
     private Graph graphMap;
@@ -43,6 +38,14 @@ public class DynamicMapController {
     private List<ArrowedEdge>  markedEdges;
 
     Map<Road, ArrowedEdge> road2Edge;
+
+    private String[] addSubOptions = {"Add(+)", "Sub(-)"};
+    private int addSubIndex = 0;
+    private String[] timeOptions = {"5 min", "30 min", "1 hour", "2 hours", "1 day"};
+    private Integer[] timeMinutesOptions = {5, 30, 60, 120, 1440};
+    private int timeOptionIndex = 0;
+    private boolean isLiveMap = true;
+
 
 
     @FXML
@@ -55,22 +58,44 @@ public class DynamicMapController {
     private Button zoomMinusButton;
 
     @FXML
-    private TextField timeNumberToAddTextBox;
+    private ToggleButton liveStatusToggle;
 
     @FXML
-    private ChoiceBox<?> addTimeTypeChooseBox;
+    private Label dayTextField;
 
     @FXML
-    private Button updateMapBtn;
+    private Button addSubBtn;
 
     @FXML
-    void onTimeTypeSelected(MouseEvent event) {
+    private Button timeQuantityBtn;
+
+    @FXML
+    private Button applyTimeChangeBtn;
+
+    @FXML
+    private Label timeTextField;
+
+    @FXML
+    void onClickAddSubBtn(ActionEvent event) {
+        updateAddSubBtn(this.addSubIndex + 1);
+    }
+
+    @FXML
+    void onClickApplyTimeChangeBtn(ActionEvent event) {
 
     }
+
     @FXML
-    void onClickUpdateMapBtn(ActionEvent event) {
+    void onClickTimeQuantity(ActionEvent event) {
+        updateTimeBtn(this.timeOptionIndex + 1);
+    }
+
+    @FXML
+    void onLiveStatusToggle(ActionEvent event) {
 
     }
+
+
     @FXML
     void onZoomMinusBtnClick(ActionEvent event) {
         updateVisualMapByScale(-5);
@@ -85,6 +110,25 @@ public class DynamicMapController {
         this.mainController = mainController;
 
     }
+
+    @FXML
+    public void initialize(){
+        updateAddSubBtn(0);
+        updateTimeBtn(0);
+    }
+
+    private void updateAddSubBtn(int index){
+        index = index % this.addSubOptions.length;
+        this.addSubBtn.setText(this.addSubOptions[index]);
+        this.addSubIndex = index;
+    }
+
+    private void updateTimeBtn(int index){
+        index = index % this.timeOptions.length;
+        this.timeQuantityBtn.setText(this.timeOptions[index]);
+        this.timeOptionIndex = index;
+    }
+
 
 
     public void initVisualMap(WorldMap worldMap) {

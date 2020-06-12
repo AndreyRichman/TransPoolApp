@@ -127,24 +127,41 @@ public class newRideController {
         this.addStationChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldStation, newStation) ->
         {
 
-            //set Path label
-            path.add(newStation);
-            pathProperty.set(String.join("->", path));
+            if (newStation != null) {
+                //set Path label
+                path.add(newStation);
+                this.removeStationChoiceBox.getItems().add(newStation);
+                pathProperty.set(String.join("->", path));
 
-            //get all the stations with road from newStation
-            //TODO: I NEED YOUR HELP HERE. need to get all station( as List<String> ) with road from newStation
-            //stationsNamesWithRoad.addAll(logicHandler.getRoadsFromStationsNames(Arrays.asList(newStation)).stream().map(Road::getEndStation).map(Station::getName).collect(Collectors.toList()));
+                //get all the stations with road from newStation
+                updateAddStationChoiceBoxAccordingToStationName(newStation);
 
-            this.addStationChoiceBox.getItems().clear();
-            this.addStationChoiceBox.getItems().addAll(stationsNamesWithRoad);
+                this.addStationChoiceBox.getItems().clear();
+                this.addStationChoiceBox.getItems().addAll(stationsNamesWithRoad);
+            }
         });
 
         this.removeStationChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) ->
         {
             path.remove(newValue);
             pathProperty.set(String.join("->", path));
+            this.removeStationChoiceBox.getItems().remove(newValue);
+            String lastStation = path.size() > 0 ? path.get(0) : null;
+
+            if (lastStation != null)
+                updateAddStationChoiceBoxAccordingToStationName(lastStation);
+            else
+                addAllAvailableStationsToAddChoiceBox();
         });
 
+    }
+
+    private void updateAddStationChoiceBoxAccordingToStationName(String fromStationName){
+        stationsNamesWithRoad = logicHandler.getStationFromName(fromStationName).getStationsAccessedFromCurrentStation()
+                .stream()
+                .map(Station::getName)
+                .filter(stationName -> !this.path.contains(stationName))
+                .collect(Collectors.toList());
     }
 
     public newRideController(){
@@ -197,12 +214,15 @@ public class newRideController {
     }
 
     private void initStations() {
-        stationsNames.addAll(logicHandler.getAllStations().stream().map(Station::getName).collect(Collectors.toList()));
 
-        this.addStationChoiceBox.getItems().addAll(stationsNames);
-        this.removeStationChoiceBox.getItems().addAll(stationsNames);
+        addAllAvailableStationsToAddChoiceBox();
 
         addStationChoiceBoxListener();
+    }
+
+    private void addAllAvailableStationsToAddChoiceBox() {
+        List<String> allStationsNames = logicHandler.getAllStations().stream().map(Station::getName).collect(Collectors.toList());
+        this.addStationChoiceBox.getItems().addAll(allStationsNames);
     }
 
     public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }

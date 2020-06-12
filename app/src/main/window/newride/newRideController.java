@@ -1,8 +1,10 @@
 package main.window.newride;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -11,9 +13,9 @@ import main.window.main.MainWindowController;
 import transpool.logic.handler.LogicHandler;
 import transpool.logic.map.structure.Station;
 import transpool.ui.request.type.NewRideRequest;
-import transpool.ui.request.type.NewTrempRequest;
-
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class newRideController {
@@ -23,7 +25,8 @@ public class newRideController {
     private LogicHandler logicHandler;
     private NewRideRequest request;
     private ObservableList stationsNames;
-    private ObservableList path;
+    private List<String> path;
+    private SimpleStringProperty selectedFileProperty;
 
 
     @FXML
@@ -31,6 +34,9 @@ public class newRideController {
 
     @FXML
     private Button cancelBtn;
+
+    @FXML
+    private TextArea pathTextArea;
 
     @FXML
     private Label Reputabel;
@@ -63,6 +69,9 @@ public class newRideController {
     private ChoiceBox<?> reputabelChoiceBox;
 
     @FXML
+    private Label pathLabel;
+
+    @FXML
     void onClickCancelButton(ActionEvent event) {
         stage.close();
     }
@@ -82,16 +91,35 @@ public class newRideController {
 
     }
 
+    public void updateStationList(){
+        this.addStationChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) ->
+        {
+            path.add(newValue);
+            selectedFileProperty.set(String.join("->", path));
+        });
+
+        this.removeStationChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) ->
+        {
+            path.remove(newValue);
+            selectedFileProperty.set(String.join("->", path));
+        });
+
+    }
+
     public newRideController(){
         request = new NewRideRequest();
         addStationChoiceBox = new ChoiceBox<>();
         removeStationChoiceBox = new ChoiceBox<>();
         stationsNames = FXCollections.observableArrayList();
+        selectedFileProperty = new SimpleStringProperty();
+        path = new ArrayList<>();
     }
 
     @FXML
     public void initialize() {
         Platform.runLater(this::initStations);
+
+        pathLabel.textProperty().bind(selectedFileProperty);
 
         initdaySpinner();
 
@@ -118,6 +146,8 @@ public class newRideController {
         stationsNames.addAll(logicHandler.getAllStations().stream().map(Station::getName).collect(Collectors.toList()));
         this.addStationChoiceBox.getItems().addAll(stationsNames);
         this.removeStationChoiceBox.getItems().addAll(stationsNames);
+
+        updateStationList();
     }
 
     public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }

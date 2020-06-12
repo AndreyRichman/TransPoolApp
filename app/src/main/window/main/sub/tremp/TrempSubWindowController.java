@@ -11,6 +11,7 @@ import main.window.main.MainWindowController;
 import transpool.logic.traffic.item.Ride;
 import transpool.logic.traffic.item.TrempRequest;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,22 @@ public class TrempSubWindowController {
 
     @FXML
     private ListView<String> trempsListView;
+
+    @FXML
+    private Button createNewTrempBtn;
+
+    @FXML
+    private Button matchRideBtn;
+
+    @FXML
+    void onClickCreateNewTrempBtn(ActionEvent event) throws IOException {
+        this.mainController.createNewTremp();
+    }
+
+    @FXML
+    void onClickMatchRideBtn(ActionEvent event) {
+
+    }
 
     @FXML
     void onClickShowTrempDetails(ActionEvent event) {

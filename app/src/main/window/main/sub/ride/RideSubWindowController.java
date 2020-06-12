@@ -1,12 +1,15 @@
 package main.window.main.sub.ride;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import main.window.main.MainWindowController;
 import transpool.logic.traffic.item.Ride;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +52,15 @@ public class RideSubWindowController {
     @FXML
     private ListView<String> ridesListView;
 
+
+    @FXML
+    private Button addNewRideBtn;
+
+    @FXML
+    void onAddNewRideBtnClick(ActionEvent event) throws IOException {
+        this.mainController.createNewRide();
+
+    }
     public void setMainController(MainWindowController mainController) {
         this.mainController = mainController;
     }

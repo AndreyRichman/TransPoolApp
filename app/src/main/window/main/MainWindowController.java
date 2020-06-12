@@ -14,6 +14,7 @@ package main.window.main;
         import main.window.main.sub.map.DynamicMapController;
         import main.window.main.sub.ride.RideSubWindowController;
         import main.window.main.sub.tremp.TrempSubWindowController;
+        import main.window.newride.newRideController;
         import main.window.newtremp.CreateTrempController;
         import main.window.newxmlload.newXmlLoadController;
         import transpool.logic.handler.LogicHandler;
@@ -36,7 +37,7 @@ public class MainWindowController {
 
     @FXML private Pane rideComponent;
     @FXML private Pane trempComponent;
-    @FXML private GridPane mapComponent;
+    @FXML private Pane mapComponent;
     @FXML private RideSubWindowController rideComponentController;
     @FXML private TrempSubWindowController trempComponentController;
     @FXML private DynamicMapController mapComponentController;
@@ -58,6 +59,10 @@ public class MainWindowController {
 
     @FXML
     void onLoadXmlBtnClick(ActionEvent event) throws IOException {
+        loadXmlFile();
+    }
+
+    public void loadXmlFile() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
         URL resource = getClass().getResource("../newxmlload/newXmlLoadWindow.fxml");
@@ -75,13 +80,8 @@ public class MainWindowController {
         stage.show();
     }
 
-    @FXML
-    void onMatchBtnClick(ActionEvent event) {
 
-    }
-
-    @FXML
-    void onNewRideBtnClick(ActionEvent event) throws IOException {
+    public void createNewRide() throws IOException{
         Stage stage = new Stage();
         stage.setResizable(false);
         URL resource = getClass().getResource("../newride/newRideWindow.fxml");
@@ -113,7 +113,7 @@ public class MainWindowController {
         if (rideComponentController != null && this.trempComponentController != null && mapComponentController != null){
             this.rideComponentController.setMainController(this);
             this.trempComponentController.setMainController(this);
-            mapComponentController.setMainController(this);
+            this.mapComponentController.setMainController(this);
         }
     }
 
@@ -144,9 +144,7 @@ public class MainWindowController {
         this.trempComponentController.updateRidesList();
     }
 
-
-    @FXML
-    void onNewTrempBtnClick(ActionEvent event) throws IOException, FaildLoadingXMLFileException {
+    public void createNewTremp() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
         URL resource = getClass().getResource("../newtremp/newTrempWindow.fxml");
@@ -163,6 +161,8 @@ public class MainWindowController {
         stage.setScene(scene);
         stage.show();
     }
+
+
 
 
     public List<Ride> getAllRides() {

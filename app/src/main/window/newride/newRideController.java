@@ -20,7 +20,6 @@ import transpool.ui.request.type.NewRideRequest;
 import java.awt.event.MouseEvent;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,16 +83,20 @@ public class newRideController {
 
     @FXML
     void onClickCreateBtn(ActionEvent event) throws NoRoadBetweenStationsException {
+
+        initNewRideRequest();
+
+        logicHandler.addRide(createNewRideFromRequest(request));
+
+    }
+
+    private void initNewRideRequest() {
         request.setCarCapacity(Integer.parseInt(capacityTextField.getText()));
         request.setPricePerKilometer(Integer.parseInt(ppkTextField.getText()));
         request.setStations(path);
         request.setUserName(userNameTextField.getText());
         request.setRepeatType(reputabelChoiceBox.getValue());
         request.setStartTime(LocalTime.of(hourChoiceBox.getValue(), minutesChoiceBox.getValue()));
-
-        Ride newRide = createNewRideFromRequest(request);
-        logicHandler.addRide(newRide);
-
     }
 
     @FXML
@@ -123,14 +126,16 @@ public class newRideController {
 
         this.addStationChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldStation, newStation) ->
         {
+
             //set Path label
             path.add(newStation);
             pathProperty.set(String.join("->", path));
 
+            //get all the stations with road from newStation
             //TODO: I NEED YOUR HELP HERE. need to get all station( as List<String> ) with road from newStation
             //stationsNamesWithRoad.addAll(logicHandler.getRoadsFromStationsNames(Arrays.asList(newStation)).stream().map(Road::getEndStation).map(Station::getName).collect(Collectors.toList()));
 
-            this.addStationChoiceBox.getItems().removeAll();
+            this.addStationChoiceBox.getItems().clear();
             this.addStationChoiceBox.getItems().addAll(stationsNamesWithRoad);
         });
 

@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import main.window.main.MainWindowController;
 import main.window.map.component.coordinate.CoordinateNode;
 import main.window.map.component.coordinate.CoordinatesManager;
@@ -46,7 +45,7 @@ public class DynamicMapController {
     private String[] timeOptions = {"5 min", "30 min", "1 hour", "2 hours", "1 day"};
     private Integer[] timeMinutesOptions = {5, 30, 60, 120, 1440};
     private int timeOptionIndex = 0;
-    private boolean isLiveMap = true;
+    private boolean isLiveMapOn = false;
 
     private LocalDateTime currentDateTime;
 
@@ -97,6 +96,8 @@ public class DynamicMapController {
                 Schedule.minDateTime.plusDays(1): newDateTime;
 
         updateDateTimeTextFieldsAccordingToTime(this.currentDateTime);
+        this.mainController.switchLiveMapOn();
+//        updateMapWithLiveTraffic();
     }
 
     private void updateDateTimeTextFieldsAccordingToTime(LocalDateTime dateTime){
@@ -111,16 +112,44 @@ public class DynamicMapController {
 
     @FXML
     void onClickLiveToggleBtn(ActionEvent event) {
-        if (this.isLiveMap){
-            this.isLiveMap = false;
-            this.liveToggleBtn.getStyleClass().remove("toggle-on");
-            this.liveToggleBtn.getStyleClass().add("toggle-of");
+        this.isLiveMapOn = !this.isLiveMapOn;
+        applyLiveToggle();
+    }
+
+    public void applyLiveToggle(){
+        if (this.isLiveMapOn){
+            this.mainController.switchLiveMapOn();
+//            toggleLiveMapOff();
         }
         else{
-            this.isLiveMap = true;
-            this.liveToggleBtn.getStyleClass().remove("toggle-of");
-            this.liveToggleBtn.getStyleClass().add("toggle-on");
+            this.mainController.switchLiveMapOff();
+
+//            toggleLiveMapOn();
         }
+    }
+
+    public void toggleLiveMapOn() {
+        this.isLiveMapOn = true;
+        this.liveToggleBtn.getStyleClass().clear();
+        this.liveToggleBtn.getStyleClass().add("toggle-on");
+        this.liveToggleBtn.getStyleClass().add("menu-toggle");
+        updateMapWithLiveTraffic();
+    }
+
+    public void toggleLiveMapOff() {
+        this.isLiveMapOn = false;
+        this.liveToggleBtn.getStyleClass().clear();
+        this.liveToggleBtn.getStyleClass().add("toggle-of");
+        this.liveToggleBtn.getStyleClass().add("menu-toggle");
+
+        updateMapWithLiveTraffic();
+    }
+
+    private void updateMapWithLiveTraffic() {
+        if (this.isLiveMapOn)
+            this.mainController.updateMapWithRidesRunningOn(this.currentDateTime);
+        else
+            unMarkAllMarkedEdges();
     }
 
 
@@ -145,8 +174,7 @@ public class DynamicMapController {
         updateTimeBtn(0);
         this.currentDateTime = Schedule.minDateTime.plusDays(1).plusHours(8);
         updateDateTimeTextFieldsAccordingToTime(this.currentDateTime);
-
-        //this.liveStatusToggle.getStyleClass()
+        toggleLiveMapOff();
     }
 
     private void updateAddSubBtn(int index){
@@ -180,7 +208,9 @@ public class DynamicMapController {
         this.coordinatesManager = new CoordinatesManager(CoordinateNode::new);// createCoordinates(graphModel);
         this.allEdges = createEdges(this.coordinatesManager, worldMap.getAllRoads());
         this.allEdges.forEach(graphModel::addEdge);
-        updateEdgesWithClass(this.allEdges, "road-line", "transparent-arrow-head");
+        showRegularLines(this.allEdges);
+        hideArrow(this.allEdges);
+//        updateEdgesWithClass(this.allEdges, "road-line", "transparent-arrow-head");
 //        updateEdgesUIStyle(this.allEdges);
 
         this.graphMap.endUpdate();
@@ -205,26 +235,28 @@ public class DynamicMapController {
         });
     }
 
-    private void updateEdgesUIStyle(List<ArrowedEdge> edges) {
-        Platform.runLater(() -> {
-            edges.forEach(edge -> {
-                edge.getLine().getStyleClass().clear();
-                edge.getLine().getStyleClass().add("road-line");
-                //edge.getText().getStyleClass().add("edge-text");
-            });
-        });
-    }
+//    private void updateEdgesUIStyle(List<ArrowedEdge> edges) {
+//        Platform.runLater(() -> {
+//            edges.forEach(edge -> {
+//                edge.getLine().getStyleClass().clear();
+//                edge.getLine().getStyleClass().add("road-line");
+//                //edge.getText().getStyleClass().add("edge-text");
+//            });
+//        });
+//    }
 
     private void updateEdgesWithSelectedStyle(List<ArrowedEdge> specialEdges) {
         if (this.markedEdges != null) {
-            updateEdgesWithClass(this.markedEdges, "road-line", "transparent-arrow-head");
+            unMarkAllMarkedEdges();
+//            updateEdgesWithClass(this.markedEdges, "road-line", "transparent-arrow-head");
             //updateEdgesUIStyle(this.allEdges);
         }
             //updateEdgesUIStyle(this.markedEdges);
 
         this.markedEdges = specialEdges;
-
-        updateEdgesWithClass(specialEdges, "selected-road-line", "red-arrow-head");
+        showMarkedLines(specialEdges);
+        showArrow(specialEdges);
+//        updateEdgesWithClass(specialEdges, "selected-road-line", "red-arrow-head");
 //        Platform.runLater(() -> {
 //            specialEdges.forEach(edge -> {
 //                edge.getLine().getStyleClass().clear();
@@ -234,19 +266,19 @@ public class DynamicMapController {
 //        });
     }
 
-    private void updateEdgesWithClass(List<ArrowedEdge> specialEdges, String lineStyleClass, String arrowStyleClass){
-        Platform.runLater(() -> {
-            specialEdges.forEach(edge -> {
-                edge.getLine().getStyleClass().clear();
-                edge.getLine().getStyleClass().add(lineStyleClass);
-                if (arrowStyleClass != null) {
-                    edge.getArrowHead().getStyleClass().clear();
-                    edge.getArrowHead().getStyleClass().add(arrowStyleClass);
-                }
-
-            });
-        });
-    }
+//    private void updateEdgesWithClass(List<ArrowedEdge> specialEdges, String lineStyleClass, String arrowStyleClass){
+//        Platform.runLater(() -> {
+//            specialEdges.forEach(edge -> {
+//                edge.getLine().getStyleClass().clear();
+//                edge.getLine().getStyleClass().add(lineStyleClass);
+//                if (arrowStyleClass != null) {
+//                    edge.getArrowHead().getStyleClass().clear();
+//                    edge.getArrowHead().getStyleClass().add(arrowStyleClass);
+//                }
+//
+//            });
+//        });
+//    }
 
     private StationManager loadStations(Model graphModel, List<Station> allStations) {
         StationManager stationManager = new StationManager(StationNode::new);
@@ -309,6 +341,59 @@ public class DynamicMapController {
         List<ArrowedEdge>  edgesToHide = roadsToHide.stream()
                 .map(rode -> this.road2Edge.get(rode))
                 .collect(Collectors.toList());
-        updateEdgesWithClass(edgesToHide, "hidden-road", "transparent-arrow-head");
+//        convertLinesAndArrowsToTransparent(edgesToHide);
+        hideArrow(edgesToHide);
+        hideLines(edgesToHide);
+    }
+
+    public void unMarkAllMarkedEdges() {
+        if (this.markedEdges != null) {
+            hideArrow(this.markedEdges);
+            showRegularLines(this.markedEdges);
+            this.markedEdges = null;
+//            convertLinesAndArrowsToTransparent(this.markedEdges);
+        }
+    }
+
+    public void convertLinesAndArrowsToTransparent(List<ArrowedEdge> linesToHide){
+        hideArrow(linesToHide);
+        hideLines(linesToHide);
+//        updateEdgesWithClass(linesToHide, "hidden-road", "transparent-arrow-head");
+    }
+
+    public void showArrow(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getArrowHead().getStyleClass().clear();
+            line.getArrowHead().getStyleClass().add("red-arrow-head");
+        }));
+    }
+
+    public void hideArrow(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getArrowHead().getStyleClass().clear();
+            line.getArrowHead().getStyleClass().add("transparent-arrow-head");
+        }));
+    }
+
+    public void showRegularLines(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("road-line");
+        }));
+    }
+    public void showMarkedLines(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("selected-road-line");
+        }));
+    }
+
+    public void hideLines(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("hidden-road");
+        }));
     }
 }
+/*
+* updateEdgesWithClass(this.markedEdges, "road-line", "transparent-arrow-head");*/

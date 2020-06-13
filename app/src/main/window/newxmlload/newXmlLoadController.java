@@ -13,7 +13,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
 import transpool.logic.handler.LogicHandler;
-import transpool.ui.request.type.LoadXMLRequest;
 
 import java.io.File;
 
@@ -49,10 +48,10 @@ public class newXmlLoadController {
     @FXML
     void onClickCancelButton(ActionEvent event) {
         //TODO: Matan - those need to be called AFTER the XML loaded
-        this.mainWindowController.updateMap(); //TODO: a temp workaround
+        this.mainWindowController.updateMapWithStationsAndRoads(); //TODO: a temp workaround
         this.mainWindowController.updateRidesList();    //TODO do this on add new Ride
         this.mainWindowController.updateTrempsList();   //TODO do this on add new tremp
-
+        this.mainWindowController.switchLiveMapOn();
         stage.close();
     }
 

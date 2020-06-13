@@ -1,13 +1,11 @@
 package main.window.main;
 
-        import exception.FaildLoadingXMLFileException;
         import javafx.event.ActionEvent;
         import javafx.fxml.FXML;
         import javafx.fxml.FXMLLoader;
         import javafx.scene.Parent;
         import javafx.scene.Scene;
         import javafx.scene.control.Button;
-        import javafx.scene.layout.GridPane;
         import javafx.scene.layout.Pane;
         import javafx.stage.Modality;
         import javafx.stage.Stage;
@@ -25,6 +23,7 @@ package main.window.main;
 
         import java.io.IOException;
         import java.net.URL;
+        import java.time.LocalDateTime;
         import java.util.LinkedList;
         import java.util.List;
         import java.util.stream.Collectors;
@@ -117,27 +116,9 @@ public class MainWindowController {
         }
     }
 
-    public void updateMap(){
-        mapComponentController.initVisualMap(this.logicHandler.getMap());
-    }
 
     public void updateRidesList(){
         this.rideComponentController.updateRidesList();
-    }
-
-    public void updateMapWithRide(Ride ride){
-        List<Road> roadsToMark = ride.getPartsOfRide().stream().map(PartOfRide::getRoad).collect(Collectors.toList());
-        this.mapComponentController.markRoads(roadsToMark); //markRoads()
-
-        List<Road> roadsToHide = new LinkedList<>();
-        for (Road toHide: this.logicHandler.getAllRoads()){
-            for (Road toMark: roadsToMark){
-                if (toHide.sharesOppositeStations(toMark))
-                    roadsToHide.add(toHide);
-            }
-        }
-
-        this.mapComponentController.hideRoads(roadsToHide);
     }
 
     public void updateTrempsList(){
@@ -171,5 +152,60 @@ public class MainWindowController {
 
     public List<TrempRequest> getAllTrempRequests(){
         return this.logicHandler.getAllTrempRequests();
+    }
+
+    public void updateMapWithStationsAndRoads(){
+        mapComponentController.initVisualMap(this.logicHandler.getMap());
+    }
+    public void updateMapWithRide(Ride ride){
+        List<Road> roadsToMark = ride.getPartsOfRide().stream().map(PartOfRide::getRoad).collect(Collectors.toList());
+        this.mapComponentController.markRoads(roadsToMark); //markRoads()
+
+        List<Road> roadsToHide = new LinkedList<>();
+        for (Road toMark: roadsToMark){
+            for (Road toHide: this.logicHandler.getAllRoads()){
+                if (!roadsToMark.contains(toHide) && toHide.sharesOppositeStations(toMark))
+                    roadsToHide.add(toHide);
+            }
+        }
+
+        this.mapComponentController.hideRoads(roadsToHide);
+    }
+
+    private void updateMapWithRides(List<Ride> rides){
+        List<Road> allRoadsToMark = rides.stream().map(Ride::getAllRoads).flatMap(List::stream).collect(Collectors.toList());
+
+        this.mapComponentController.markRoads(allRoadsToMark);
+
+        List<Road> roadsToHide = new LinkedList<>();
+        List<Road> leftRoads = this.logicHandler.getAllRoads().stream().filter(rode -> !allRoadsToMark.contains(rode)).collect(Collectors.toList());
+        for (Road toHide: leftRoads){
+            for (Road toMark: allRoadsToMark){
+                if (!allRoadsToMark.contains(toHide) && toHide.sharesOppositeStations(toMark))
+                    roadsToHide.add(toHide);
+            }
+        }
+        this.mapComponentController.hideRoads(roadsToHide);
+    }
+
+    public void updateMapWithRidesRunningOn(LocalDateTime currentDateTime) {
+        List<Ride> ridesRunningNow = this.logicHandler.getRidesRunningOn(currentDateTime);
+        this.mapComponentController.unMarkAllMarkedEdges();
+        updateMapWithRides(ridesRunningNow);
+//        ridesRunningNow.forEach(this::updateMapWithRide);
+
+
+//        mapComponentController.updateMapWithRides(this.logicHandler.getAllRides)
+    }
+
+    public void switchLiveMapOn() {
+        this.rideComponentController.clearSelection();
+        this.trempComponentController.clearSelection();
+        this.mapComponentController.toggleLiveMapOn();
+    }
+
+    public void switchLiveMapOff() {
+        this.mapComponentController.toggleLiveMapOff();
+
     }
 }

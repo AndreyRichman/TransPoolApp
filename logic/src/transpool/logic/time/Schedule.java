@@ -4,6 +4,7 @@ import enums.DesiredTimeType;
 import enums.RepeatType;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -152,16 +153,51 @@ public class Schedule {
         return newSchedule;
     }
 
-    public boolean hasInstanceAfterDateTime(LocalDateTime dateTime){
+    public boolean hasInstanceStartsAfterDateTime(LocalDateTime dateTime){  //this can show options days after
         return (this.getStartDateTime().isEqual(dateTime) || this.getStartDateTime().isAfter(dateTime))
                 ||
                 (this.getRepeatType() != RepeatType.ONE_TIME && this.getRepeatType() != RepeatType.UNDEFINED);
     }
 
+//    public boolean hasInstanceEndsAfterDateTime(LocalDateTime dateTime){    //this will show after according mainly time
+//        return (this.getEndDateTime().isEqual(dateTime) || this.getEndDateTime().isAfter(dateTime))
+//                ||
+//                (this.getRepeatType() != RepeatType.ONE_TIME && this.getRepeatType() != RepeatType.UNDEFINED);
+//    }
 
-    public boolean hasInstanceBeforeDateTime(LocalDateTime dateTime){
+    public boolean hasInstanceContainingDateTime(LocalDateTime dateTime){
+        return this.getRepeatType() == RepeatType.ONE_TIME ?
+                this.getStartDateTime().isBefore(dateTime) && this.getEndDateTime().isAfter(dateTime)
+                :
+                currentDaysContainsDayOf(dateTime)
+                &&
+                currentTimesContainsTimeOf(dateTime);
+    }
+
+    private boolean currentTimesContainsTimeOf(LocalDateTime dateTime) {
+        LocalTime timeToCheck = dateTime.toLocalTime();
+
+        boolean timeIsAfterStart = timeToCheck.equals(this.getStartTime()) || timeToCheck.isAfter(this.getStartTime());
+        boolean timeIsBeforeEnd = timeToCheck.equals(this.getEndTime()) || timeToCheck.isBefore(this.getEndTime());
+
+        return this.getStartDay() == this.getEndDay() ?
+                   timeIsAfterStart && timeIsBeforeEnd : timeIsAfterStart || timeIsBeforeEnd;
+    }
+
+    private boolean currentDaysContainsDayOf(LocalDateTime dateTime) {
+        return daysRangeContainsDay(this.getStartDay(), getDayOfDateTime(dateTime))
+                ||
+                daysRangeContainsDay(this.getEndDay(), getDayOfDateTime(dateTime));
+    }
+
+
+    public boolean hasInstanceEndsBeforeDateTime(LocalDateTime dateTime){
         return this.getEndDateTime().isEqual(dateTime) || this.getEndDateTime().isBefore(dateTime);
     }
+
+//    public boolean hasInstanceStartsBeforeDateTime(LocalDateTime dateTime){
+//        return this.getStartDateTime().isEqual(dateTime) || this.getStartDateTime().isBefore(dateTime);
+//    }
 
 
     public LocalDateTime getClosestDateTimeAfter(LocalDateTime dateTime, LocalDateTime originalDateTime){

@@ -12,3 +12,25 @@
 .station-container {
     -fx-cursor: HAND;
 }
+
+.start-station{
+    -fx-fill: #3377FF;
+    -fx-border-color: WHITE;
+}
+.end-station{
+    /*-fx-fill: #FFC133;*/
+    -fx-fill: #ff7369;
+    -fx-border-color: WHITE;
+}
+
+.start-station:hover{
+    -fx-fill: #ff7369;
+    -fx-border-width: 5px;
+    -fx-border-radius: 5px;
+}
+
+.end-station:hover{
+    -fx-fill: #ff7369;
+    -fx-border-width: 5px;
+    -fx-border-radius: 5px;
+}

@@ -31,6 +31,12 @@ public class ArrowedEdge extends Edge {
     public EdgeGraphic getGraphic(Graph graph) {
         if (edgeGraphic == null) {
             edgeGraphic = super.getGraphic(graph);
+//            edgeGraphic.getStyleClass().clear();
+//            edgeGraphic.getStyleClass().add("start-station");
+//            edgeGraphic.getChildren().forEach(station -> {
+//                station.getStyleClass().clear();
+//                station.getStyleClass().add("start-station");
+//            });
             addArrowShape(edgeGraphic.getLine()); //TODO uncomment to have a heady arrow
             edgeGraphic.getStylesheets().add(edgeStyleSheet);
         }

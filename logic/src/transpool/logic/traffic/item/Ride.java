@@ -250,6 +250,10 @@ public class Ride {
         return this.allStations;
     }
 
+    public List<Road> getAllRoads(){
+        return this.partsOfRide.stream().map(PartOfRide::getRoad).collect(Collectors.toList());
+    }
+
     public List<Station> getAllStationsAfter(Station fromStation){
         List<Station> stationsAfterStation = new LinkedList<>();
         this.allStations.stream().forEach(station -> {

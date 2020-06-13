@@ -13,12 +13,18 @@ public class CoordinateController {
 
     @FXML
     private VBox container;
+
+
     
     public void setLocation(int x, int y) {
         String value = x + " | " + y;
         Tooltip tooltip = new Tooltip(value);
         hackTooltipStartTiming(tooltip);
         Tooltip.install(container, tooltip);
+    }
+
+    public VBox getContainer() {
+        return container;
     }
 
     private void hackTooltipStartTiming(Tooltip tooltip) {

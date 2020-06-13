@@ -99,4 +99,8 @@ public class TrempSubWindowController {
 
         this.trempsListView.getItems().addAll(trempRepr);
     }
+
+    public void clearSelection() {
+        this.trempsListView.getSelectionModel().clearSelection();
+    }
 }

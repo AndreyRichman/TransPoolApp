@@ -20,6 +20,8 @@
     -fx-stroke-width: 3px;
 }
 
+
+
 .transparent-arrow-head{
     -fx-stroke: TRANSPARENT;
     -fx-fill: TRANSPARENT;
@@ -48,15 +50,26 @@
 
 /*}*/
 
-.selected-road-line {
+.red-road-line {
     -fx-stroke: #ff7369;
     -fx-stroke-width: 6px;
 }
 
+.blue-arrow-head{
+    -fx-stroke: #3377FF;
+    -fx-fill: #3377FF;
+    -fx-stroke-width: 1px;
+}
+.blue-road-line{
+    -fx-stroke: #3377FF;
+    -fx-stroke-width: 6px;
+}
+
+
 .edge-text {
     -fx-fill: RED;
     -fx-font-weight: BOLD;
-    -fx-underline: true;
+    /*-fx-underline: true;*/
 }
 
 

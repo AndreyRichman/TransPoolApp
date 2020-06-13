@@ -42,7 +42,7 @@ public class CoordinateNode extends AbstractCell {
             VBox root = fxmlLoader.load(url.openStream());
 
             CoordinateController controller = fxmlLoader.getController();
-//            VBox v = controller.getContainer();
+//            VBox v = controller.getContainer(); //TODO: andrey -you might change the stations colors here
 //            v.getChildren().forEach(station -> {
 //                        station.getStyleClass().clear();
 //                        station.getStyleClass().add("start-station");

@@ -11,6 +11,7 @@ import transpool.logic.traffic.item.Ride;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ public class RideSubWindowController {
             int index = this.ridesListView.getSelectionModel().getSelectedIndex();
             Ride selectedRide = this.ridesVisibleInView.get(index);
             this.mainController.switchLiveMapOff();
-            this.mainController.updateMapWithRide(selectedRide);
+            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
         }
     }
 

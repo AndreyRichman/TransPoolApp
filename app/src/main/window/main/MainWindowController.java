@@ -24,8 +24,7 @@ package main.window.main;
         import java.io.IOException;
         import java.net.URL;
         import java.time.LocalDateTime;
-        import java.util.LinkedList;
-        import java.util.List;
+        import java.util.*;
         import java.util.stream.Collectors;
 
 
@@ -157,25 +156,26 @@ public class MainWindowController {
     public void updateMapWithStationsAndRoads(){
         mapComponentController.initVisualMap(this.logicHandler.getMap());
     }
-    public void updateMapWithRide(Ride ride){
-        List<Road> roadsToMark = ride.getPartsOfRide().stream().map(PartOfRide::getRoad).collect(Collectors.toList());
-        this.mapComponentController.markRoads(roadsToMark); //markRoads()
 
-        List<Road> roadsToHide = new LinkedList<>();
-        for (Road toMark: roadsToMark){
-            for (Road toHide: this.logicHandler.getAllRoads()){
-                if (!roadsToMark.contains(toHide) && toHide.sharesOppositeStations(toMark))
-                    roadsToHide.add(toHide);
-            }
-        }
+//    public void updateMapWithRide(Ride ride, LocalDateTime currentDateTime){
+//        List<Road> roadsToMark = ride.getPartsOfRide().stream().map(PartOfRide::getRoad).collect(Collectors.toList());
+//        this.mapComponentController.markRoads(roadsToMark); //markRoads()
+//
+//        List<Road> roadsToHide = new LinkedList<>();
+//        for (Road toMark: roadsToMark){
+//            for (Road toHide: this.logicHandler.getAllRoads()){
+//                if (!roadsToMark.contains(toHide) && toHide.sharesOppositeStations(toMark))
+//                    roadsToHide.add(toHide);
+//            }
+//        }
+//
+//        this.mapComponentController.hideRoads(roadsToHide);
+//    }
 
-        this.mapComponentController.hideRoads(roadsToHide);
-    }
-
-    private void updateMapWithRides(List<Ride> rides){
+    public void updateMapRoadsByRides(List<Ride> rides){
         List<Road> allRoadsToMark = rides.stream().map(Ride::getAllRoads).flatMap(List::stream).collect(Collectors.toList());
 
-        this.mapComponentController.markRoads(allRoadsToMark);
+        this.mapComponentController.markRoadsInRed(allRoadsToMark);
 
         List<Road> roadsToHide = new LinkedList<>();
         List<Road> leftRoads = this.logicHandler.getAllRoads().stream().filter(rode -> !allRoadsToMark.contains(rode)).collect(Collectors.toList());
@@ -190,12 +190,55 @@ public class MainWindowController {
 
     public void updateMapWithRidesRunningOn(LocalDateTime currentDateTime) {
         List<Ride> ridesRunningNow = this.logicHandler.getRidesRunningOn(currentDateTime);
-        this.mapComponentController.unMarkAllMarkedEdges();
-        updateMapWithRides(ridesRunningNow);
-//        ridesRunningNow.forEach(this::updateMapWithRide);
+        this.mapComponentController.unMarkRedMarkedEdges();
+        this.mapComponentController.unMarkBlueMarkedEdges();
+        this.mapComponentController.removeTextFromEdges();
 
+        updateMapRoadsByRides(ridesRunningNow);
+        updateMapWithRideStatus(ridesRunningNow, currentDateTime);
+        updateMapRoadsTextByRides(ridesRunningNow, currentDateTime);
+    }
 
-//        mapComponentController.updateMapWithRides(this.logicHandler.getAllRides)
+    private void updateMapWithRideStatus(List<Ride> ridesRunningNow, LocalDateTime currentDateTime) {
+        List<Road> progressRoadsToMark = new LinkedList<>();
+
+        for (Ride ride: ridesRunningNow){
+            for(PartOfRide partOfRide: ride.getPartsOfRide()){
+                progressRoadsToMark.add(partOfRide.getRoad());
+                if(partOfRide.getSchedule().hasInstanceContainingDateTime(currentDateTime)) {
+                    break;
+                }
+            }
+        }
+
+        this.mapComponentController.markRoadsInBlue(progressRoadsToMark); //mark with different color
+        hideOppositeRoads(progressRoadsToMark);
+
+    }
+
+    //TODO this code was duplicated in other function, use this instead
+    private void updateMapRoadsTextByRides(List<Ride> ridesRunningNow, LocalDateTime currentDateTime) {
+        Map<Road, String> roads2Messages  = ridesRunningNow.stream()
+                .map(Ride::getPartsOfRide)
+                .flatMap(Collection::stream)
+                .filter(partOfRide -> partOfRide.getSchedule().hasInstanceContainingDateTime(currentDateTime))
+                .collect(Collectors.toMap(
+                        PartOfRide::getRoad,
+                        partOfRide -> String.format("%d", partOfRide.getTrempistsManager().getAllTrempists().size())
+                ));
+        this.mapComponentController.updateEdgesWithTexts(roads2Messages);
+    }
+
+    private void hideOppositeRoads(List<Road> roadsToColor){
+        List<Road> roadsToHide = new LinkedList<>();
+        List<Road> leftRoads = this.logicHandler.getAllRoads().stream().filter(rode -> !roadsToColor.contains(rode)).collect(Collectors.toList());
+        for (Road toHide: leftRoads){
+            for (Road toMark: roadsToColor){
+                if (!roadsToColor.contains(toHide) && toHide.sharesOppositeStations(toMark))
+                    roadsToHide.add(toHide);
+            }
+        }
+        this.mapComponentController.hideRoads(roadsToHide);
     }
 
     public void switchLiveMapOn() {
@@ -206,6 +249,5 @@ public class MainWindowController {
 
     public void switchLiveMapOff() {
         this.mapComponentController.toggleLiveMapOff();
-
     }
 }

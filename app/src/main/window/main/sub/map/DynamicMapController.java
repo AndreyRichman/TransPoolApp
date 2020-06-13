@@ -36,7 +36,9 @@ public class DynamicMapController {
     private CoordinatesManager coordinatesManager;
     private StationManager stationManager;
     private List<ArrowedEdge>  allEdges;
-    private List<ArrowedEdge>  markedEdges;
+    private List<ArrowedEdge> markedRedEdges;
+    private List<ArrowedEdge> edgesWithText;
+    private List<ArrowedEdge> markedBlueEdges;
 
     Map<Road, ArrowedEdge> road2Edge;
 
@@ -117,15 +119,10 @@ public class DynamicMapController {
     }
 
     public void applyLiveToggle(){
-        if (this.isLiveMapOn){
+        if (this.isLiveMapOn)
             this.mainController.switchLiveMapOn();
-//            toggleLiveMapOff();
-        }
-        else{
+        else
             this.mainController.switchLiveMapOff();
-
-//            toggleLiveMapOn();
-        }
     }
 
     public void toggleLiveMapOn() {
@@ -148,8 +145,10 @@ public class DynamicMapController {
     private void updateMapWithLiveTraffic() {
         if (this.isLiveMapOn)
             this.mainController.updateMapWithRidesRunningOn(this.currentDateTime);
-        else
-            unMarkAllMarkedEdges();
+        else {
+            unMarkRedMarkedEdges();
+            removeTextFromEdges();
+        }
     }
 
 
@@ -189,13 +188,9 @@ public class DynamicMapController {
         this.timeOptionIndex = index;
     }
 
-
-
     public void initVisualMap(WorldMap worldMap) {
-
         this.graphMap = new Graph();
         initializeMapWithLogicMap(worldMap);
-
         updateVisualMapByScale(0);
     }
 
@@ -210,11 +205,7 @@ public class DynamicMapController {
         this.allEdges.forEach(graphModel::addEdge);
         showRegularLines(this.allEdges);
         hideArrow(this.allEdges);
-//        updateEdgesWithClass(this.allEdges, "road-line", "transparent-arrow-head");
-//        updateEdgesUIStyle(this.allEdges);
-
         this.graphMap.endUpdate();
-//        graph.layout(new MapGridLayout(coordinatesManager, stationManager));
     }
 
     private void updateVisualMapByScale(int scaleDiff){
@@ -223,11 +214,8 @@ public class DynamicMapController {
                 Math.min(newScale, MAX_BOARD_SCALE);
 
         this.currentBoardScale = newScale;
-
         this.graphMap.layout(new MapGridLayout(coordinatesManager, stationManager, newScale));
-
         PannableCanvas canvas = graphMap.getCanvas();
-
         this.mapScrollPane.setContent(canvas);
         Platform.runLater(() -> {
             graphMap.getUseViewportGestures().set(false);
@@ -235,50 +223,28 @@ public class DynamicMapController {
         });
     }
 
-//    private void updateEdgesUIStyle(List<ArrowedEdge> edges) {
-//        Platform.runLater(() -> {
-//            edges.forEach(edge -> {
-//                edge.getLine().getStyleClass().clear();
-//                edge.getLine().getStyleClass().add("road-line");
-//                //edge.getText().getStyleClass().add("edge-text");
-//            });
-//        });
-//    }
-
     private void updateEdgesWithSelectedStyle(List<ArrowedEdge> specialEdges) {
-        if (this.markedEdges != null) {
-            unMarkAllMarkedEdges();
-//            updateEdgesWithClass(this.markedEdges, "road-line", "transparent-arrow-head");
-            //updateEdgesUIStyle(this.allEdges);
+        if (this.markedRedEdges != null) {
+            unMarkRedMarkedEdges();
+            removeTextFromEdges();
         }
-            //updateEdgesUIStyle(this.markedEdges);
 
-        this.markedEdges = specialEdges;
-        showMarkedLines(specialEdges);
+        this.markedRedEdges = specialEdges;
+        markEdgesInRed(specialEdges);
         showArrow(specialEdges);
-//        updateEdgesWithClass(specialEdges, "selected-road-line", "red-arrow-head");
-//        Platform.runLater(() -> {
-//            specialEdges.forEach(edge -> {
-//                edge.getLine().getStyleClass().clear();
-//                edge.getLine().getStyleClass().add("selected-road-line");
-//                //edge.getText().getStyleClass().add("edge-text");    //TODO show number of trempists
-//            });
-//        });
     }
 
-//    private void updateEdgesWithClass(List<ArrowedEdge> specialEdges, String lineStyleClass, String arrowStyleClass){
-//        Platform.runLater(() -> {
-//            specialEdges.forEach(edge -> {
-//                edge.getLine().getStyleClass().clear();
-//                edge.getLine().getStyleClass().add(lineStyleClass);
-//                if (arrowStyleClass != null) {
-//                    edge.getArrowHead().getStyleClass().clear();
-//                    edge.getArrowHead().getStyleClass().add(arrowStyleClass);
-//                }
-//
-//            });
-//        });
-//    }
+
+    private void updateEdgesWithBlueColor(List<ArrowedEdge> edgesToBlue) {
+        if (this.markedBlueEdges != null) {
+            unMarkBlueMarkedEdges();
+            removeTextFromEdges();
+        }
+
+        this.markedBlueEdges = edgesToBlue;
+        markEdgesInBlue(edgesToBlue);
+        showArrow(edgesToBlue); //showBlueArrow
+    }
 
     private StationManager loadStations(Model graphModel, List<Station> allStations) {
         StationManager stationManager = new StationManager(StationNode::new);
@@ -303,9 +269,7 @@ public class DynamicMapController {
 
     private List<ArrowedEdge> createEdges(CoordinatesManager coordinatesManager, List<Road> roads) {
         List<ArrowedEdge> edges = new LinkedList<>();
-
         this.road2Edge = new HashMap<>();
-
         roads.forEach(road -> {
             int fromX = road.getStartStation().getCoordinate().getX();
             int fromY = road.getStartStation().getCoordinate().getY();
@@ -323,48 +287,57 @@ public class DynamicMapController {
 
     }
 
-    public void updateTextOfEdge(ArrowedEdge edgeToUpdate, String setText){
-        edgeToUpdate.textProperty().set(setText);
-    }
 
-
-    public void markRoads(List<Road> roadsToMark){
+    public void markRoadsInRed(List<Road> roadsToMark){
         List<ArrowedEdge>  edgesToMark = roadsToMark.stream()
                 .map(rode -> this.road2Edge.get(rode))
                 .collect(Collectors.toList());
-        ;//createEdges(this.coordinatesManager, roadsToMark);
         updateEdgesWithSelectedStyle(edgesToMark);
+    }
 
+    public void markRoadsInBlue(List<Road> roadsToMark){
+        List<ArrowedEdge>  edgesToMark = roadsToMark.stream()
+                .map(rode -> this.road2Edge.get(rode))
+                .collect(Collectors.toList());
+
+        updateEdgesWithBlueColor(edgesToMark);
     }
 
     public void hideRoads(List<Road> roadsToHide){
         List<ArrowedEdge>  edgesToHide = roadsToHide.stream()
                 .map(rode -> this.road2Edge.get(rode))
                 .collect(Collectors.toList());
-//        convertLinesAndArrowsToTransparent(edgesToHide);
         hideArrow(edgesToHide);
         hideLines(edgesToHide);
     }
 
-    public void unMarkAllMarkedEdges() {
-        if (this.markedEdges != null) {
-            hideArrow(this.markedEdges);
-            showRegularLines(this.markedEdges);
-            this.markedEdges = null;
-//            convertLinesAndArrowsToTransparent(this.markedEdges);
+    public void unMarkRedMarkedEdges() {
+        if (this.markedRedEdges != null) {
+            hideArrow(this.markedRedEdges);
+            showRegularLines(this.markedRedEdges);
+            this.markedRedEdges = null;
         }
     }
 
-    public void convertLinesAndArrowsToTransparent(List<ArrowedEdge> linesToHide){
-        hideArrow(linesToHide);
-        hideLines(linesToHide);
-//        updateEdgesWithClass(linesToHide, "hidden-road", "transparent-arrow-head");
+    public void unMarkBlueMarkedEdges() {
+        if (this.markedBlueEdges != null) {
+            hideArrow(this.markedBlueEdges);
+            showRegularLines(this.markedBlueEdges);
+            this.markedBlueEdges = null;
+        }
     }
 
     public void showArrow(List<ArrowedEdge> lines){
         Platform.runLater(() -> lines.forEach(line -> {
             line.getArrowHead().getStyleClass().clear();
             line.getArrowHead().getStyleClass().add("red-arrow-head");
+        }));
+    }
+
+    public void showBlueArrow(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getArrowHead().getStyleClass().clear();
+            line.getArrowHead().getStyleClass().add("blue-arrow-head");
         }));
     }
 
@@ -381,10 +354,17 @@ public class DynamicMapController {
             line.getLine().getStyleClass().add("road-line");
         }));
     }
-    public void showMarkedLines(List<ArrowedEdge> lines){
+    public void markEdgesInRed(List<ArrowedEdge> lines){
         Platform.runLater(() -> lines.forEach(line -> {
             line.getLine().getStyleClass().clear();
-            line.getLine().getStyleClass().add("selected-road-line");
+            line.getLine().getStyleClass().add("red-road-line");
+        }));
+    }
+
+    public void markEdgesInBlue(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("blue-road-line");
         }));
     }
 
@@ -394,6 +374,22 @@ public class DynamicMapController {
             line.getLine().getStyleClass().add("hidden-road");
         }));
     }
+
+    public void removeTextFromEdges(){
+        if (this.edgesWithText != null) {
+            this.edgesWithText.forEach(edge -> edge.textProperty().set(null));
+            this.edgesWithText = null;
+        }
+    }
+    public void updateEdgesWithTexts(Map<Road, String> roadsWithStatus) {
+        roadsWithStatus.forEach(((road, s) -> setTextToEdge(this.road2Edge.get(road), s)));
+    }
+
+    private void setTextToEdge(ArrowedEdge edgeToUpdate, String s) {
+        if (this.edgesWithText == null)
+            this.edgesWithText = new LinkedList<>();
+
+        edgeToUpdate.textProperty().set(s);
+        this.edgesWithText.add(edgeToUpdate);
+    }
 }
-/*
-* updateEdgesWithClass(this.markedEdges, "road-line", "transparent-arrow-head");*/

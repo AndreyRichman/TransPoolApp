@@ -167,7 +167,9 @@ public class Schedule {
 
     public boolean hasInstanceContainingDateTime(LocalDateTime dateTime){
         return this.getRepeatType() == RepeatType.ONE_TIME ?
-                this.getStartDateTime().isBefore(dateTime) && this.getEndDateTime().isAfter(dateTime)
+                (this.getStartDateTime().equals(dateTime) || this.getStartDateTime().isBefore(dateTime))
+                        &&
+                (this.getEndDateTime().equals(dateTime) || this.getEndDateTime().isAfter(dateTime))
                 :
                 currentDaysContainsDayOf(dateTime)
                 &&

@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 public class Schedule {
     private RepeatType repeatType;
-    private static LocalDateTime minDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
+    public static LocalDateTime minDateTime = LocalDateTime.of(1970, 1, 1, 0, 0);
     protected LocalDateTime startDateTime;
     protected LocalDateTime endDateTime;
 

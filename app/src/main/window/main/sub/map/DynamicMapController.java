@@ -19,7 +19,9 @@ import main.window.map.layout.MapGridLayout;
 import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
+import transpool.logic.time.Schedule;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,8 @@ public class DynamicMapController {
     private int timeOptionIndex = 0;
     private boolean isLiveMap = true;
 
+    private LocalDateTime currentDateTime;
+
 
 
     @FXML
@@ -58,7 +62,8 @@ public class DynamicMapController {
     private Button zoomMinusButton;
 
     @FXML
-    private ToggleButton liveStatusToggle;
+    private Button liveToggleBtn;
+
 
     @FXML
     private Label dayTextField;
@@ -82,7 +87,21 @@ public class DynamicMapController {
 
     @FXML
     void onClickApplyTimeChangeBtn(ActionEvent event) {
+        LocalDateTime newDateTime;
+        if (this.addSubIndex == 0)  //add
+            newDateTime =  this.currentDateTime.plusMinutes(this.timeMinutesOptions[this.timeOptionIndex]);
+        else    //sub
+            newDateTime = this.currentDateTime.minusMinutes(this.timeMinutesOptions[this.timeOptionIndex]);
 
+        this.currentDateTime = newDateTime.isBefore(Schedule.minDateTime.plusDays(1)) ?
+                Schedule.minDateTime.plusDays(1): newDateTime;
+
+        updateDateTimeTextFieldsAccordingToTime(this.currentDateTime);
+    }
+
+    private void updateDateTimeTextFieldsAccordingToTime(LocalDateTime dateTime){
+        this.dayTextField.textProperty().set(String.format("%d", Schedule.getDayOfDateTime(dateTime)));
+        this.timeTextField.textProperty().set(dateTime.toLocalTime().toString());
     }
 
     @FXML
@@ -91,8 +110,17 @@ public class DynamicMapController {
     }
 
     @FXML
-    void onLiveStatusToggle(ActionEvent event) {
-
+    void onClickLiveToggleBtn(ActionEvent event) {
+        if (this.isLiveMap){
+            this.isLiveMap = false;
+            this.liveToggleBtn.getStyleClass().remove("toggle-on");
+            this.liveToggleBtn.getStyleClass().add("toggle-of");
+        }
+        else{
+            this.isLiveMap = true;
+            this.liveToggleBtn.getStyleClass().remove("toggle-of");
+            this.liveToggleBtn.getStyleClass().add("toggle-on");
+        }
     }
 
 
@@ -115,6 +143,10 @@ public class DynamicMapController {
     public void initialize(){
         updateAddSubBtn(0);
         updateTimeBtn(0);
+        this.currentDateTime = Schedule.minDateTime.plusDays(1).plusHours(8);
+        updateDateTimeTextFieldsAccordingToTime(this.currentDateTime);
+
+        //this.liveStatusToggle.getStyleClass()
     }
 
     private void updateAddSubBtn(int index){

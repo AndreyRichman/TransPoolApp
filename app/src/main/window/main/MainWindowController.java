@@ -121,7 +121,7 @@ public class MainWindowController {
     }
 
     public void updateTrempsList(){
-        this.trempComponentController.updateRidesList();
+        this.trempComponentController.updateTrempsList();
     }
 
     public void createNewTremp() throws IOException {
@@ -249,5 +249,9 @@ public class MainWindowController {
 
     public void switchLiveMapOff() {
         this.mapComponentController.toggleLiveMapOff();
+    }
+
+    public void updateMapWithTrempStations(TrempRequest selectedTremp) {
+
     }
 }

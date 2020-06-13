@@ -48,7 +48,7 @@
       </VBox>
       <Label styleClass="mid-title" text="Tremps" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Button fx:id="showTrempDetails" mnemonicParsing="false" onAction="#onClickShowTrempDetails" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Show Details" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-      <ListView fx:id="trempsListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <ListView fx:id="trempsListView" onMouseClicked="#onTrempSelected" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Button fx:id="createNewTrempBtn" mnemonicParsing="false" onAction="#onClickCreateNewTrempBtn" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Add Tremp" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Button fx:id="matchRideBtn" mnemonicParsing="false" onAction="#onClickMatchRideBtn" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Match" GridPane.columnIndex="5" GridPane.rowIndex="3" />
    </children>

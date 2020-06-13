@@ -71,7 +71,9 @@ public class CreateTrempController {
     void onClickCreateBtn(ActionEvent event) {
         //set request attributes
         request.setUserName(userNameTextField.getText());
-        request.setChosenTime(String.format(hourChoiceBox.getValue().toString()+":"+ minutesChoiceBox.getValue().toString()));
+        String minutes = minutesChoiceBox.getValue() < 10 ? String.format("0%d", minutesChoiceBox.getValue()) : minutesChoiceBox.getValue().toString();
+        String hours = hourChoiceBox.getValue() < 10 ? String.format("0%d", hourChoiceBox.getValue()) : hourChoiceBox.getValue().toString();
+        request.setChosenTime(String.format("%s:%s", hours, minutes));
         request.setFromStation(fromStationChoiceBox.getValue());
         request.setToStation(toStationChoiceBox.getValue());
         request.setDepartDay(daySpinner.getValue());
@@ -79,6 +81,8 @@ public class CreateTrempController {
         else { request.setDesiredTimeType(DesiredTimeType.ARRIVE.toString());  }
 
         addNewTrempFromRequest(request);
+        this.mainController.updateTrempsList();
+        this.stage.close();
     }
 
     @FXML
@@ -111,8 +115,8 @@ public class CreateTrempController {
         ObservableList min = FXCollections.observableArrayList();
         ObservableList hour = FXCollections.observableArrayList();
 
-        for(int i=5; i<=60; i+=5) {min.add(i);}
-        for(int i=1; i<=24; i++) {hour.add(i);}
+        for(int i=0; i<=60; i+=5) {min.add(i);}
+        for(int i=0; i<=23; i++) {hour.add(i);}
 
         hourChoiceBox.getItems().addAll(hour);
         minutesChoiceBox.getItems().addAll(min);

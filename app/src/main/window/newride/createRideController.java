@@ -96,6 +96,8 @@ public class createRideController {
         initNewRideRequest();
 
         logicHandler.addRide(createNewRideFromRequest(request));
+        this.mainController.updateRidesList();
+        this.stage.close();
 
     }
 

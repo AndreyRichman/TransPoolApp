@@ -93,7 +93,8 @@ public class RideSubWindowController {
             int index = this.ridesListView.getSelectionModel().getSelectedIndex();
             Ride selectedRide = this.ridesVisibleInView.get(index);
             this.mainController.switchLiveMapOff();
-            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
+            if (selectedRide != null)
+                this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
         }
     }
 

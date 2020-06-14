@@ -286,4 +286,13 @@ public class Ride {
                 .filter(Trempist::notRankedRide)
                 .collect(Collectors.toList());
     }
+
+    public Station getStartStation(){
+        return this.allStations.get(0);
+    }
+    public Station getEndStation(){
+        return this.allStations.get(this.allStations.size() - 1);
+    }
+
+
 }

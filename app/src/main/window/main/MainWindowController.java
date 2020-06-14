@@ -171,6 +171,8 @@ public class MainWindowController {
     public void updateMapRoadsByRides(List<Ride> rides){
         List<Road> allRoadsToMark = rides.stream().map(Ride::getAllRoads).flatMap(List::stream).collect(Collectors.toList());
 
+
+        rides.forEach(ride -> mapComponentController.markStations(ride.getStartStation(), ride.getEndStation()));
         this.mapComponentController.markRoadsInRed(allRoadsToMark);
 
         List<Road> roadsToHide = new LinkedList<>();
@@ -189,10 +191,16 @@ public class MainWindowController {
         this.mapComponentController.unMarkRedMarkedEdges();
         this.mapComponentController.unMarkBlueMarkedEdges();
         this.mapComponentController.removeTextFromEdges();
+        this.mapComponentController.unMarkAllStations();
 
+        markRidesStations(ridesRunningNow);
         updateMapRoadsByRides(ridesRunningNow);
         updateMapWithRideStatus(ridesRunningNow, currentDateTime);
         updateMapRoadsTextByRides(ridesRunningNow, currentDateTime);
+    }
+
+    private void markRidesStations(List<Ride> ridesRunningNow) {
+        ridesRunningNow.forEach(ride -> this.mapComponentController.markStations(ride.getStartStation(), ride.getEndStation()));
     }
 
     private void updateMapWithRideStatus(List<Ride> ridesRunningNow, LocalDateTime currentDateTime) {
@@ -240,14 +248,19 @@ public class MainWindowController {
     public void switchLiveMapOn() {
         this.rideComponentController.clearSelection();
         this.trempComponentController.clearSelection();
+        this.mapComponentController.unMarkAllStations();
+
         this.mapComponentController.toggleLiveMapOn();
     }
 
     public void switchLiveMapOff() {
         this.mapComponentController.toggleLiveMapOff();
+        this.mapComponentController.unMarkAllStations();
     }
 
-    public void updateMapWithTrempStations(TrempRequest selectedTremp) {
+    public void updateMapWithTrempRequest(TrempRequest selectedTremp) {
+        this.mapComponentController.unMarkAllStations();
+        this.mapComponentController.markStations(selectedTremp.getStartStation(), selectedTremp.getEndStation());
 
     }
 }

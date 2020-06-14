@@ -69,6 +69,7 @@ public class RideSubWindowController {
     public void updateRidesList(){
         this.ridesVisibleInView = new HashMap<>();
         int index = 0;
+        this.ridesListView.getItems().clear();
         List<Ride> allRides = this.mainController.getAllRides();
         for(Ride ride : allRides) {
             String toSHow = String.format("%d - %s",

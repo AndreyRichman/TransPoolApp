@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class newRideController {
+public class createRideController {
 
     private Stage stage;
     MainWindowController mainController;
@@ -96,6 +96,8 @@ public class newRideController {
         initNewRideRequest();
 
         logicHandler.addRide(createNewRideFromRequest(request));
+        this.mainController.updateRidesList();
+        this.stage.close();
 
     }
 
@@ -106,6 +108,7 @@ public class newRideController {
         request.setUserName(userNameTextField.getText());
         request.setRepeatType(reputabelChoiceBox.getValue());
         request.setStartTime(LocalTime.of(hourChoiceBox.getValue(), minutesChoiceBox.getValue()));
+        request.setDay(daySpinner.getValue());
     }
 
     @FXML
@@ -173,7 +176,7 @@ public class newRideController {
                 .collect(Collectors.toList());
     }
 
-    public newRideController(){
+    public createRideController(){
         request = new NewRideRequest();
         addStationChoiceBox = new ChoiceBox<>();
         removeStationChoiceBox = new ChoiceBox<>();

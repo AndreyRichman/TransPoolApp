@@ -1,31 +1,31 @@
 package main.window.main;
 
-        import javafx.event.ActionEvent;
-        import javafx.fxml.FXML;
-        import javafx.fxml.FXMLLoader;
-        import javafx.scene.Parent;
-        import javafx.scene.Scene;
-        import javafx.scene.control.Button;
-        import javafx.scene.layout.Pane;
-        import javafx.stage.Modality;
-        import javafx.stage.Stage;
-        import main.window.main.sub.map.DynamicMapController;
-        import main.window.main.sub.ride.RideSubWindowController;
-        import main.window.main.sub.tremp.TrempSubWindowController;
-        import main.window.newride.newRideController;
-        import main.window.newtremp.CreateTrempController;
-        import main.window.newxmlload.newXmlLoadController;
-        import transpool.logic.handler.LogicHandler;
-        import transpool.logic.map.structure.Road;
-        import transpool.logic.traffic.item.PartOfRide;
-        import transpool.logic.traffic.item.Ride;
-        import transpool.logic.traffic.item.TrempRequest;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import main.window.main.sub.map.DynamicMapController;
+import main.window.main.sub.ride.RideSubWindowController;
+import main.window.main.sub.tremp.TrempSubWindowController;
+import main.window.newride.createRideController;
+import main.window.newtremp.CreateTrempController;
+import main.window.newxmlload.newXmlLoadController;
+import transpool.logic.handler.LogicHandler;
+import transpool.logic.map.structure.Road;
+import transpool.logic.traffic.item.PartOfRide;
+import transpool.logic.traffic.item.Ride;
+import transpool.logic.traffic.item.TrempRequest;
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
-        import java.io.IOException;
-        import java.net.URL;
-        import java.time.LocalDateTime;
-        import java.util.*;
-        import java.util.stream.Collectors;
 
 
 public class MainWindowController {
@@ -86,7 +86,7 @@ public class MainWindowController {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
-        newRideController controller = loader.getController();
+        createRideController controller = loader.getController();
         controller.setMainController(this);
         controller.setStage(stage);
         controller.setLogicHandler(logicHandler);
@@ -115,7 +115,6 @@ public class MainWindowController {
         }
     }
 
-
     public void updateRidesList(){
         this.rideComponentController.updateRidesList();
     }
@@ -141,9 +140,6 @@ public class MainWindowController {
         stage.setScene(scene);
         stage.show();
     }
-
-
-
 
     public List<Ride> getAllRides() {
         return this.logicHandler.getAllRides();
@@ -255,6 +251,11 @@ public class MainWindowController {
         this.mapComponentController.unMarkAllStations();
 
         this.mapComponentController.toggleLiveMapOn();
+    }
+
+    public void clearView(){
+        this.rideComponentController.clear();
+        this.trempComponentController.clear();
     }
 
     public void switchLiveMapOff() {

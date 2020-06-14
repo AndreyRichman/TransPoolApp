@@ -45,13 +45,15 @@ public class LogicHandler {
     public void collectMetadata(SimpleStringProperty fileName, newXmlLoadController XmlLoadController){
 
         //creates new task to load xml file
-        currentRunningTask = new loadXmlFileTask(fileName.get(), this);
+        currentRunningTask = new loadXmlFileTask(fileName.get(), this, XmlLoadController);
 
         //bind task to UI
         XmlLoadController.bindTaskToUIComponents(currentRunningTask);
 
         //run the task in background thread
         new Thread(currentRunningTask).start();
+
+
     }
 
     public void fetchFile(String pathToFile) throws FaildLoadingXMLFileException {
@@ -269,8 +271,9 @@ public class LogicHandler {
         return "Logic was initialized";
     }
 
-    public void cleanOldResults() {
-        //TODO: clean old result function
+    public void clearOldResults() {
+        trafficManager = new TrafficManager();
+        usersNameToObject = new HashMap<>();
     }
 
     public WorldMap getMap() {

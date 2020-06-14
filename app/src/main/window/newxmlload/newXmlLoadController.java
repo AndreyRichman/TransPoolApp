@@ -47,12 +47,15 @@ public class newXmlLoadController {
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
-        //TODO: Matan - those need to be called AFTER the XML loaded
+        stage.close();
+    }
+
+    public void updateLiveMap()
+    {
         this.mainWindowController.updateMapWithStationsAndRoads(); //TODO: a temp workaround
         this.mainWindowController.updateRidesList();    //TODO do this on add new Ride
         this.mainWindowController.updateTrempsList();   //TODO do this on add new tremp
         this.mainWindowController.switchLiveMapOn();
-        stage.close();
     }
 
 
@@ -68,8 +71,10 @@ public class newXmlLoadController {
         //disable Load & clear
         isFileSelected.set(false);
 
+        mainWindowController.clearView();
+
         //clear old metadata
-        logicHandler.cleanOldResults();
+        logicHandler.clearOldResults();
     }
 
     @FXML

@@ -23,6 +23,8 @@ public class StationNode extends AbstractCell {
     private int y;
     private String name;
     private Supplier<StationDetailsDTO> detailsSupplier;
+    StationController controller;
+    HBox root;
     public StationNode(int x, int y) {
         this.x = x;
         this.y = y;
@@ -44,6 +46,8 @@ public class StationNode extends AbstractCell {
         return y;
     }
 
+
+
     @Override
     /*
     Creates the graphical representation of the station.
@@ -55,9 +59,11 @@ public class StationNode extends AbstractCell {
             URL url = getClass().getResource("visual/StationView.fxml");
             fxmlLoader.setLocation(url);
             HBox root = fxmlLoader.load(url.openStream());
+            this.root = root;
 
             // updates information on the actual node's controller
             StationController controller = fxmlLoader.getController();
+            this.controller = controller;
             controller.setX(x);
             controller.setY(y);
             controller.setName(name);
@@ -69,4 +75,11 @@ public class StationNode extends AbstractCell {
         }
     }
 
+    public StationController getController() {
+        return controller;
+    }
+
+    public HBox getRoot() {
+        return root;
+    }
 }

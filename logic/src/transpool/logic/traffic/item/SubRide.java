@@ -134,4 +134,8 @@ public class SubRide {
 //                .allMatch(partOfRide -> partOfRide.canAddTrempist(this.schedule.getStartDay()));
     }
 
+    public boolean hasNotRankedUsers(){
+        return this.originalRide.isNotRankedBySomeTrempists();
+    }
+
 }

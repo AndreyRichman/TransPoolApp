@@ -1,6 +1,8 @@
 package transpool.logic.user;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Driver {
 
@@ -8,12 +10,14 @@ public class Driver {
     private List<Rank> ranks;
     private int totalScore = 0;
     private float averageScore = 0;
+    private Map<User, Rank> allRanks;
 
 
     public static class Rank {
         private int score;
         private String comment;
         private User user;
+
 
         public Rank(User user, int score) {
             this.score = score;
@@ -35,6 +39,7 @@ public class Driver {
 
     public Driver(User user) {
         this.user = user;
+        this.allRanks = new HashMap<>();
     }
 
     public User getUser() {
@@ -42,6 +47,7 @@ public class Driver {
     }
 
     public void addRank(Rank rank){
+        this.allRanks.put(rank.user, rank);
         this.ranks.add(rank);
         this.totalScore += rank.score;
         this.averageScore = (float) totalScore / this.ranks.size();

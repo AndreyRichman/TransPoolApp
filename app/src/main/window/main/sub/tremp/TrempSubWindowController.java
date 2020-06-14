@@ -8,15 +8,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import main.window.main.MainWindowController;
-import transpool.logic.traffic.item.Ride;
 import transpool.logic.traffic.item.TrempRequest;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TrempSubWindowController {
 
@@ -89,9 +86,17 @@ public class TrempSubWindowController {
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
             TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
             this.mainController.switchLiveMapOff();
-            this.mainController.updateMapWithTrempStations(selectedTremp);
+            this.mainController.updateMapWithTrempRequest(selectedTremp);
+
+            if (selectedTremp.isNotAssignedToRides())
+            {
+                this.matchRideBtn.setText("Find a Match!");
+            } else
+                this.matchRideBtn.setText("Rank your tremp!");
 //            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
         }
+
+
     }
 
     public void setMainController(MainWindowController mainController) {
@@ -99,10 +104,11 @@ public class TrempSubWindowController {
     }
 
     private Map<Integer, TrempRequest> trempsVisibleInView;
+
     public void updateTrempsList(){
         this.trempsVisibleInView = new HashMap<>();
 
-        List<TrempRequest> allTremps = this.mainController.getAllTrempRequests();
+        this.trempsListView.getItems().clear();
         int index = 0;
         for (TrempRequest tremp: this.mainController.getAllTrempRequests()) {
                String trempRepr = String.format("%d - %s", tremp.getID(), tremp.getUser().getName());

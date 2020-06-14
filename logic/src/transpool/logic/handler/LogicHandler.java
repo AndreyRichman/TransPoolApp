@@ -270,7 +270,8 @@ public class LogicHandler {
     }
 
     public void cleanOldResults() {
-        //TODO: clean old result function
+        trafficManager = new TrafficManager();
+        usersNameToObject = new HashMap<>();
     }
 
     public WorldMap getMap() {

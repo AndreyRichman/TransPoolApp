@@ -90,4 +90,13 @@ public class TrempRequest {
     public RequestSchedule getDesiredSchedule(){
         return this.schedule;
     }
+
+    public boolean rankedAssignedRide(){
+        boolean ranked = false;
+        if (this.selectedRide != null){
+            ranked = this.selectedRide.isRankedByUser(this.user);
+        }
+
+        return  ranked;
+    }
 }

@@ -22,9 +22,11 @@ public class loadXmlFileTask extends Task<Boolean> {
 
 
     @Override
-    protected Boolean call() throws Exception {
+    protected Boolean call() throws InterruptedException {
 
         updateProgress(0,5);
+
+        try {
 
         logicHandler.fetchFile(fileName);
         updateProgress(1,5);
@@ -45,6 +47,10 @@ public class loadXmlFileTask extends Task<Boolean> {
         logicHandler.loadRides();
         updateProgress(5,5);
         Thread.sleep(SLEEP_TIME);
+
+        } catch (FaildLoadingXMLFileException e) {
+            updateMessage(e.getReason());
+        }
 
         Platform.runLater(() ->xmlLoadController.updateLiveMap());
 

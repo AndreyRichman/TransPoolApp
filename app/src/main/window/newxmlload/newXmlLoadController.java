@@ -74,6 +74,9 @@ public class newXmlLoadController {
         progressBar.setProgress(0);
         progressIndicator.progressProperty().unbind();
         progressIndicator.setProgress(0);
+        exceptionValueLabel.textProperty().unbind();
+        exceptionValueLabel.setText("");
+
 
         //disable Load & clear
         isFileSelected.set(false);
@@ -126,8 +129,6 @@ public class newXmlLoadController {
         FilePathLabel.textProperty().bind(selectedFileProperty);
         LoadFileButton.disableProperty().bind(isFileSelected.not());
         clearButton.disableProperty().bind(isFileSelected.not());
-        exceptionLabel.disableProperty().bind(isExceptionCatch.not());
-        exceptionValueLabel.disableProperty().bind(isExceptionCatch.not());
     }
 
 
@@ -137,6 +138,9 @@ public class newXmlLoadController {
 
         //task progress Indicator
         progressIndicator.progressProperty().bind(task.progressProperty());
+
+        //task message Property
+        exceptionValueLabel.textProperty().bind(task.messageProperty());
     }
 
     // TODO: Needs to show that there is XML file in the System and massge to Clear first or just Clear befor loading

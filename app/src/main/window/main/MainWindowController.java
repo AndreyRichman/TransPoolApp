@@ -71,7 +71,7 @@ public class MainWindowController {
         controller.setMainController(this);
         controller.setStage(stage);
         controller.setLogicHandler(logicHandler);
-        Scene scene = new Scene(root, 400, 390);
+        Scene scene = new Scene(root, 500, 500);
 
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);

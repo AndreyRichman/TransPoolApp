@@ -68,7 +68,15 @@ public class newXmlLoadController {
 
     @FXML
     void onClickClearButton(ActionEvent event) {
-        //clear buttons & labels
+
+        clearOldView();
+
+        //clear old metadata
+        clearOldResults();
+    }
+
+    public void clearOldView(){
+
         selectedFileProperty.set("");
         progressBar.progressProperty().unbind();
         progressBar.setProgress(0);
@@ -77,17 +85,12 @@ public class newXmlLoadController {
         exceptionValueLabel.textProperty().unbind();
         exceptionValueLabel.setText("");
 
-
         //disable Load & clear
         isFileSelected.set(false);
-
-        mainWindowController.clearView();
-
-        //clear old metadata
-        clearOldResults();
     }
 
     private void clearOldResults() {
+        mainWindowController.clearView();
         logicHandler = new LogicHandler();
     }
 
@@ -102,6 +105,8 @@ public class newXmlLoadController {
 
     @FXML
     void onClickOpenFileButton(ActionEvent event) {
+        clearOldView();
+        clearOldResults();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select XML file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.XML"));

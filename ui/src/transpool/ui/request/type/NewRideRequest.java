@@ -23,6 +23,10 @@ public class NewRideRequest implements UserRequest {
         return RequestType.NEW_RIDE;
     }
 
+    public void setDay(int day) {
+        this.day = day;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }

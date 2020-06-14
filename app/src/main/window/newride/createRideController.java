@@ -106,6 +106,7 @@ public class createRideController {
         request.setUserName(userNameTextField.getText());
         request.setRepeatType(reputabelChoiceBox.getValue());
         request.setStartTime(LocalTime.of(hourChoiceBox.getValue(), minutesChoiceBox.getValue()));
+        request.setDay(daySpinner.getValue());
     }
 
     @FXML

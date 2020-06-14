@@ -59,10 +59,10 @@
          </children>
       </HBox>
       <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-      <HBox disable="true" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5">
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5">
          <children>
-            <Label fx:id="exception" styleClass="field-title" text="exception:" />
-            <Label fx:id="exceptionValue" />
+            <Label fx:id="exceptionLabel" styleClass="field-title" text="exception:" />
+            <Label fx:id="exceptionValueLabel" styleClass="field-title" />
          </children>
       </HBox>
    </children>

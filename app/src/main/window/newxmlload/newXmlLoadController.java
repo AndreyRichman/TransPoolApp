@@ -23,6 +23,7 @@ public class newXmlLoadController {
     private MainWindowController mainWindowController;
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
+    private SimpleBooleanProperty isExceptionCatch;
 
     @FXML
     private Button openFileButton;
@@ -44,6 +45,12 @@ public class newXmlLoadController {
 
     @FXML
     private ProgressIndicator progressIndicator;
+
+    @FXML
+    private Label exceptionLabel;
+
+    @FXML
+    private Label exceptionValueLabel;
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
@@ -111,6 +118,7 @@ public class newXmlLoadController {
     public newXmlLoadController(){
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
+        isExceptionCatch =  new SimpleBooleanProperty(false);
     }
 
     @FXML
@@ -118,6 +126,8 @@ public class newXmlLoadController {
         FilePathLabel.textProperty().bind(selectedFileProperty);
         LoadFileButton.disableProperty().bind(isFileSelected.not());
         clearButton.disableProperty().bind(isFileSelected.not());
+        exceptionLabel.disableProperty().bind(isExceptionCatch.not());
+        exceptionValueLabel.disableProperty().bind(isExceptionCatch.not());
     }
 
 

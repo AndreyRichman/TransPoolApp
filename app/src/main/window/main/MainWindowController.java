@@ -253,6 +253,11 @@ public class MainWindowController {
         this.mapComponentController.toggleLiveMapOn();
     }
 
+    public void clearView(){
+        this.rideComponentController.clear();
+        this.trempComponentController.clear();
+    }
+
     public void switchLiveMapOff() {
         this.mapComponentController.toggleLiveMapOff();
         this.mapComponentController.unMarkAllStations();

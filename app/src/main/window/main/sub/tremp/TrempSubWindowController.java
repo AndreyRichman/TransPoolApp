@@ -134,4 +134,8 @@ public class TrempSubWindowController {
     public void clearSelection() {
         this.trempsListView.getSelectionModel().clearSelection();
     }
+
+    public void clear() {
+        this.trempsListView.getItems().clear();
+    }
 }

@@ -271,7 +271,7 @@ public class LogicHandler {
         return "Logic was initialized";
     }
 
-    public void cleanOldResults() {
+    public void clearOldResults() {
         trafficManager = new TrafficManager();
         usersNameToObject = new HashMap<>();
     }

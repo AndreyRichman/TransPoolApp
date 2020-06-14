@@ -71,8 +71,10 @@ public class newXmlLoadController {
         //disable Load & clear
         isFileSelected.set(false);
 
+        mainWindowController.clearView();
+
         //clear old metadata
-        logicHandler.cleanOldResults();
+        logicHandler.clearOldResults();
     }
 
     @FXML

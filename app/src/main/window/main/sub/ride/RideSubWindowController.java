@@ -98,7 +98,9 @@ public class RideSubWindowController {
                 this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
         }
     }
-
+    public void clear(){
+        this.ridesListView.getItems().clear();
+    }
     public void clearSelection() {
         this.ridesListView.getSelectionModel().clearSelection();
     }

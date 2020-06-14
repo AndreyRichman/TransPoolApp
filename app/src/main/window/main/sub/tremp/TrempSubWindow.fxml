@@ -11,45 +11,39 @@
 <GridPane hgap="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="328.0" prefWidth="446.0" stylesheets="@../../../style/mainStyle1.css" vgap="2.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.main.sub.tremp.TrempSubWindowController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="20.0" prefWidth="160.0" />
-      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="52.0" minWidth="14.0" prefWidth="19.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="104.0" prefWidth="123.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="12.0" prefWidth="12.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="131.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="20.0" prefWidth="179.0" />
+      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="52.0" minWidth="14.0" prefWidth="16.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="83.0" prefWidth="105.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="108.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
     <RowConstraints fillHeight="false" maxHeight="53.0" minHeight="35.0" prefHeight="35.0" vgrow="NEVER" />
-      <RowConstraints maxHeight="294.0" minHeight="10.0" prefHeight="224.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="51.0" minHeight="35.0" prefHeight="41.0" vgrow="NEVER" />
-    <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="294.0" minHeight="3.0" prefHeight="199.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="262.0" minHeight="35.0" prefHeight="44.0" vgrow="NEVER" />
+    <RowConstraints maxHeight="32.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <children>
             <Label fx:id="userTitle" styleClass="field-title" text="User Name:" />
-            <Label fx:id="fromStationTitle" prefHeight="39.0" prefWidth="114.0" styleClass="field-title" text="From Station:" />
-            <Label fx:id="toStationTitle" styleClass="field-title" text="To Station:" />
             <Label fx:id="wantToTitle" styleClass="field-title" text="Want to:" />
             <Label fx:id="atTimeTitle" styleClass="field-title" text="At:" />
             <Label fx:id="statusTitle" styleClass="field-title" text="Status:" />
          </children>
       </VBox>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
          <children>
-            <Label fx:id="userValue" styleClass="field-title" text="Moshe" />
-            <Label fx:id="fromStationTitle" styleClass="field-title" text="Station A" />
-            <Label fx:id="toStationValue" styleClass="field-title" text="Station B" />
-            <Label fx:id="wantToValue" styleClass="field-title" text="Depart" />
-            <Label fx:id="atTimeValue" styleClass="field-title" text="10:00" />
-            <Label fx:id="statusValue" styleClass="field-title" text="Fuel Value" />
+            <Label fx:id="userValue" styleClass="field-title" />
+            <Label fx:id="wantToValue" styleClass="field-title" />
+            <Label fx:id="atTimeValue" styleClass="field-title" />
+            <Label fx:id="statusValue" styleClass="field-title" />
          </children>
       </VBox>
-      <Label styleClass="mid-title" text="Tremps" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Button fx:id="showTrempDetails" mnemonicParsing="false" onAction="#onClickShowTrempDetails" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Show Details" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="612.0" styleClass="mid-title" text="Tremps" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="1" />
       <ListView fx:id="trempsListView" onMouseClicked="#onTrempSelected" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Button fx:id="createNewTrempBtn" mnemonicParsing="false" onAction="#onClickCreateNewTrempBtn" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Add Tremp" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <Button fx:id="matchRideBtn" mnemonicParsing="false" onAction="#onClickMatchRideBtn" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Match" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+      <Button fx:id="matchRideBtn" mnemonicParsing="false" onAction="#onClickMatchRideBtn" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Match" GridPane.columnIndex="4" GridPane.rowIndex="3" />
    </children>
 </GridPane>

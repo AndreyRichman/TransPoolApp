@@ -1,19 +1,18 @@
 package main.window.main;
 
-        import exception.FaildLoadingXMLFileException;
         import javafx.event.ActionEvent;
         import javafx.fxml.FXML;
         import javafx.fxml.FXMLLoader;
         import javafx.scene.Parent;
         import javafx.scene.Scene;
         import javafx.scene.control.Button;
-        import javafx.scene.layout.GridPane;
         import javafx.scene.layout.Pane;
         import javafx.stage.Modality;
         import javafx.stage.Stage;
         import main.window.main.sub.map.DynamicMapController;
         import main.window.main.sub.ride.RideSubWindowController;
         import main.window.main.sub.tremp.TrempSubWindowController;
+        import main.window.newride.newRideController;
         import main.window.newtremp.CreateTrempController;
         import main.window.newxmlload.newXmlLoadController;
         import transpool.logic.handler.LogicHandler;
@@ -24,8 +23,8 @@ package main.window.main;
 
         import java.io.IOException;
         import java.net.URL;
-        import java.util.LinkedList;
-        import java.util.List;
+        import java.time.LocalDateTime;
+        import java.util.*;
         import java.util.stream.Collectors;
 
 
@@ -36,7 +35,7 @@ public class MainWindowController {
 
     @FXML private Pane rideComponent;
     @FXML private Pane trempComponent;
-    @FXML private GridPane mapComponent;
+    @FXML private Pane mapComponent;
     @FXML private RideSubWindowController rideComponentController;
     @FXML private TrempSubWindowController trempComponentController;
     @FXML private DynamicMapController mapComponentController;
@@ -58,6 +57,10 @@ public class MainWindowController {
 
     @FXML
     void onLoadXmlBtnClick(ActionEvent event) throws IOException {
+        loadXmlFile();
+    }
+
+    public void loadXmlFile() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
         URL resource = getClass().getResource("../newxmlload/newXmlLoadWindow.fxml");
@@ -75,13 +78,8 @@ public class MainWindowController {
         stage.show();
     }
 
-    @FXML
-    void onMatchBtnClick(ActionEvent event) {
 
-    }
-
-    @FXML
-    void onNewRideBtnClick(ActionEvent event) throws IOException {
+    public void createNewRide() throws IOException{
         Stage stage = new Stage();
         stage.setResizable(false);
         URL resource = getClass().getResource("../newride/newRideWindow.fxml");
@@ -113,40 +111,20 @@ public class MainWindowController {
         if (rideComponentController != null && this.trempComponentController != null && mapComponentController != null){
             this.rideComponentController.setMainController(this);
             this.trempComponentController.setMainController(this);
-            mapComponentController.setMainController(this);
+            this.mapComponentController.setMainController(this);
         }
     }
 
-    public void updateMap(){
-        mapComponentController.initVisualMap(this.logicHandler.getMap());
-    }
 
     public void updateRidesList(){
         this.rideComponentController.updateRidesList();
     }
 
-    public void updateMapWithRide(Ride ride){
-        List<Road> roadsToMark = ride.getPartsOfRide().stream().map(PartOfRide::getRoad).collect(Collectors.toList());
-        this.mapComponentController.markRoads(roadsToMark); //markRoads()
-
-        List<Road> roadsToHide = new LinkedList<>();
-        for (Road toHide: this.logicHandler.getAllRoads()){
-            for (Road toMark: roadsToMark){
-                if (toHide.sharesOppositeStations(toMark))
-                    roadsToHide.add(toHide);
-            }
-        }
-
-        this.mapComponentController.hideRoads(roadsToHide);
-    }
-
     public void updateTrempsList(){
-        this.trempComponentController.updateRidesList();
+        this.trempComponentController.updateTrempsList();
     }
 
-
-    @FXML
-    void onNewTrempBtnClick(ActionEvent event) throws IOException, FaildLoadingXMLFileException {
+    public void createNewTremp() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
         URL resource = getClass().getResource("../newtremp/newTrempWindow.fxml");
@@ -165,11 +143,115 @@ public class MainWindowController {
     }
 
 
+
+
     public List<Ride> getAllRides() {
         return this.logicHandler.getAllRides();
     }
 
     public List<TrempRequest> getAllTrempRequests(){
         return this.logicHandler.getAllTrempRequests();
+    }
+
+    public void updateMapWithStationsAndRoads(){
+        mapComponentController.initVisualMap(this.logicHandler.getMap());
+    }
+
+//    public void updateMapWithRide(Ride ride, LocalDateTime currentDateTime){
+//        List<Road> roadsToMark = ride.getPartsOfRide().stream().map(PartOfRide::getRoad).collect(Collectors.toList());
+//        this.mapComponentController.markRoads(roadsToMark); //markRoads()
+//
+//        List<Road> roadsToHide = new LinkedList<>();
+//        for (Road toMark: roadsToMark){
+//            for (Road toHide: this.logicHandler.getAllRoads()){
+//                if (!roadsToMark.contains(toHide) && toHide.sharesOppositeStations(toMark))
+//                    roadsToHide.add(toHide);
+//            }
+//        }
+//
+//        this.mapComponentController.hideRoads(roadsToHide);
+//    }
+
+    public void updateMapRoadsByRides(List<Ride> rides){
+        List<Road> allRoadsToMark = rides.stream().map(Ride::getAllRoads).flatMap(List::stream).collect(Collectors.toList());
+
+        this.mapComponentController.markRoadsInRed(allRoadsToMark);
+
+        List<Road> roadsToHide = new LinkedList<>();
+        List<Road> leftRoads = this.logicHandler.getAllRoads().stream().filter(rode -> !allRoadsToMark.contains(rode)).collect(Collectors.toList());
+        for (Road toHide: leftRoads){
+            for (Road toMark: allRoadsToMark){
+                if (!allRoadsToMark.contains(toHide) && toHide.sharesOppositeStations(toMark))
+                    roadsToHide.add(toHide);
+            }
+        }
+        this.mapComponentController.hideRoads(roadsToHide);
+    }
+
+    public void updateMapWithRidesRunningOn(LocalDateTime currentDateTime) {
+        List<Ride> ridesRunningNow = this.logicHandler.getRidesRunningOn(currentDateTime);
+        this.mapComponentController.unMarkRedMarkedEdges();
+        this.mapComponentController.unMarkBlueMarkedEdges();
+        this.mapComponentController.removeTextFromEdges();
+
+        updateMapRoadsByRides(ridesRunningNow);
+        updateMapWithRideStatus(ridesRunningNow, currentDateTime);
+        updateMapRoadsTextByRides(ridesRunningNow, currentDateTime);
+    }
+
+    private void updateMapWithRideStatus(List<Ride> ridesRunningNow, LocalDateTime currentDateTime) {
+        List<Road> progressRoadsToMark = new LinkedList<>();
+
+        for (Ride ride: ridesRunningNow){
+            for(PartOfRide partOfRide: ride.getPartsOfRide()){
+                progressRoadsToMark.add(partOfRide.getRoad());
+                if(partOfRide.getSchedule().hasInstanceContainingDateTime(currentDateTime)) {
+                    break;
+                }
+            }
+        }
+
+        this.mapComponentController.markRoadsInBlue(progressRoadsToMark); //mark with different color
+        hideOppositeRoads(progressRoadsToMark);
+
+    }
+
+    //TODO this code was duplicated in other function, use this instead
+    private void updateMapRoadsTextByRides(List<Ride> ridesRunningNow, LocalDateTime currentDateTime) {
+        Map<Road, String> roads2Messages  = ridesRunningNow.stream()
+                .map(Ride::getPartsOfRide)
+                .flatMap(Collection::stream)
+                .filter(partOfRide -> partOfRide.getSchedule().hasInstanceContainingDateTime(currentDateTime))
+                .collect(Collectors.toMap(
+                        PartOfRide::getRoad,
+                        partOfRide -> String.format("%d", partOfRide.getTrempistsManager().getAllTrempists().size())
+                ));
+        this.mapComponentController.updateEdgesWithTexts(roads2Messages);
+    }
+
+    private void hideOppositeRoads(List<Road> roadsToColor){
+        List<Road> roadsToHide = new LinkedList<>();
+        List<Road> leftRoads = this.logicHandler.getAllRoads().stream().filter(rode -> !roadsToColor.contains(rode)).collect(Collectors.toList());
+        for (Road toHide: leftRoads){
+            for (Road toMark: roadsToColor){
+                if (!roadsToColor.contains(toHide) && toHide.sharesOppositeStations(toMark))
+                    roadsToHide.add(toHide);
+            }
+        }
+        this.mapComponentController.hideRoads(roadsToHide);
+    }
+
+    public void switchLiveMapOn() {
+        this.rideComponentController.clearSelection();
+        this.trempComponentController.clearSelection();
+        this.mapComponentController.toggleLiveMapOn();
+    }
+
+    public void switchLiveMapOff() {
+        this.mapComponentController.toggleLiveMapOff();
+    }
+
+    public void updateMapWithTrempStations(TrempRequest selectedTremp) {
+
     }
 }

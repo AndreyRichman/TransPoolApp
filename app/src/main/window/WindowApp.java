@@ -31,7 +31,7 @@ public class WindowApp extends Application implements Runnable{
         controller.setPrimaryStage(primaryStage);
 
         // set stage
-        Scene scene = new Scene(root, 1000, 700);
+        Scene scene = new Scene(root, 1050, 780);
         primaryStage.setScene(scene);
         primaryStage.show();
 

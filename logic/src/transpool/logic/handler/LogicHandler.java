@@ -276,4 +276,8 @@ public class LogicHandler {
     public WorldMap getMap() {
         return map;
     }
+
+    public List<Ride> getRidesRunningOn(LocalDateTime currentDateTime) {
+        return this.trafficManager.getAllRidesRunningOn(currentDateTime);
+    }
 }

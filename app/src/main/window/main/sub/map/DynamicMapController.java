@@ -6,9 +6,7 @@ import com.fxgraph.graph.PannableCanvas;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import main.window.main.MainWindowController;
 import main.window.map.component.coordinate.CoordinateNode;
 import main.window.map.component.coordinate.CoordinatesManager;
@@ -20,29 +18,39 @@ import main.window.map.layout.MapGridLayout;
 import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
+import transpool.logic.time.Schedule;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
-
 
 
 public class DynamicMapController {
 
     private final int MIN_BOARD_SCALE = 10;
     private final int MAX_BOARD_SCALE = 100;
-    private int currentBoardScale = 30;
+    private int currentBoardScale = 25;
 
     MainWindowController mainController;
     private Graph graphMap;
     private CoordinatesManager coordinatesManager;
     private StationManager stationManager;
     private List<ArrowedEdge>  allEdges;
-    private List<ArrowedEdge>  markedEdges;
+    private List<ArrowedEdge> markedRedEdges;
+    private List<ArrowedEdge> edgesWithText;
+    private List<ArrowedEdge> markedBlueEdges;
 
     Map<Road, ArrowedEdge> road2Edge;
+
+    private String[] addSubOptions = {"Add(+)", "Sub(-)"};
+    private int addSubIndex = 0;
+    private String[] timeOptions = {"5 min", "30 min", "1 hour", "2 hours", "1 day"};
+    private Integer[] timeMinutesOptions = {5, 30, 60, 120, 1440};
+    private int timeOptionIndex = 0;
+    private boolean isLiveMapOn = false;
+
+    private LocalDateTime currentDateTime;
+
 
 
     @FXML
@@ -55,22 +63,95 @@ public class DynamicMapController {
     private Button zoomMinusButton;
 
     @FXML
-    private TextField timeNumberToAddTextBox;
+    private Button liveToggleBtn;
+
 
     @FXML
-    private ChoiceBox<?> addTimeTypeChooseBox;
+    private Label dayTextField;
 
     @FXML
-    private Button updateMapBtn;
+    private Button addSubBtn;
 
     @FXML
-    void onTimeTypeSelected(MouseEvent event) {
+    private Button timeQuantityBtn;
 
+    @FXML
+    private Button applyTimeChangeBtn;
+
+    @FXML
+    private Label timeTextField;
+
+    @FXML
+    void onClickAddSubBtn(ActionEvent event) {
+        updateAddSubBtn(this.addSubIndex + 1);
     }
-    @FXML
-    void onClickUpdateMapBtn(ActionEvent event) {
 
+    @FXML
+    void onClickApplyTimeChangeBtn(ActionEvent event) {
+        LocalDateTime newDateTime;
+        if (this.addSubIndex == 0)  //add
+            newDateTime =  this.currentDateTime.plusMinutes(this.timeMinutesOptions[this.timeOptionIndex]);
+        else    //sub
+            newDateTime = this.currentDateTime.minusMinutes(this.timeMinutesOptions[this.timeOptionIndex]);
+
+        this.currentDateTime = newDateTime.isBefore(Schedule.minDateTime.plusDays(1)) ?
+                Schedule.minDateTime.plusDays(1): newDateTime;
+
+        updateDateTimeTextFieldsAccordingToTime(this.currentDateTime);
+        this.mainController.switchLiveMapOn();
+//        updateMapWithLiveTraffic();
     }
+
+    private void updateDateTimeTextFieldsAccordingToTime(LocalDateTime dateTime){
+        this.dayTextField.textProperty().set(String.format("%d", Schedule.getDayOfDateTime(dateTime)));
+        this.timeTextField.textProperty().set(dateTime.toLocalTime().toString());
+    }
+
+    @FXML
+    void onClickTimeQuantity(ActionEvent event) {
+        updateTimeBtn(this.timeOptionIndex + 1);
+    }
+
+    @FXML
+    void onClickLiveToggleBtn(ActionEvent event) {
+        this.isLiveMapOn = !this.isLiveMapOn;
+        applyLiveToggle();
+    }
+
+    public void applyLiveToggle(){
+        if (this.isLiveMapOn)
+            this.mainController.switchLiveMapOn();
+        else
+            this.mainController.switchLiveMapOff();
+    }
+
+    public void toggleLiveMapOn() {
+        this.isLiveMapOn = true;
+        this.liveToggleBtn.getStyleClass().clear();
+        this.liveToggleBtn.getStyleClass().add("toggle-on");
+        this.liveToggleBtn.getStyleClass().add("menu-toggle");
+        updateMapWithLiveTraffic();
+    }
+
+    public void toggleLiveMapOff() {
+        this.isLiveMapOn = false;
+        this.liveToggleBtn.getStyleClass().clear();
+        this.liveToggleBtn.getStyleClass().add("toggle-of");
+        this.liveToggleBtn.getStyleClass().add("menu-toggle");
+
+        updateMapWithLiveTraffic();
+    }
+
+    private void updateMapWithLiveTraffic() {
+        if (this.isLiveMapOn)
+            this.mainController.updateMapWithRidesRunningOn(this.currentDateTime);
+        else {
+            unMarkRedMarkedEdges();
+            removeTextFromEdges();
+        }
+    }
+
+
     @FXML
     void onZoomMinusBtnClick(ActionEvent event) {
         updateVisualMapByScale(-5);
@@ -86,12 +167,30 @@ public class DynamicMapController {
 
     }
 
+    @FXML
+    public void initialize(){
+        updateAddSubBtn(0);
+        updateTimeBtn(0);
+        this.currentDateTime = Schedule.minDateTime.plusDays(1).plusHours(8);
+        updateDateTimeTextFieldsAccordingToTime(this.currentDateTime);
+        toggleLiveMapOff();
+    }
+
+    private void updateAddSubBtn(int index){
+        index = index % this.addSubOptions.length;
+        this.addSubBtn.setText(this.addSubOptions[index]);
+        this.addSubIndex = index;
+    }
+
+    private void updateTimeBtn(int index){
+        index = index % this.timeOptions.length;
+        this.timeQuantityBtn.setText(this.timeOptions[index]);
+        this.timeOptionIndex = index;
+    }
 
     public void initVisualMap(WorldMap worldMap) {
-
         this.graphMap = new Graph();
         initializeMapWithLogicMap(worldMap);
-
         updateVisualMapByScale(0);
     }
 
@@ -104,11 +203,9 @@ public class DynamicMapController {
         this.coordinatesManager = new CoordinatesManager(CoordinateNode::new);// createCoordinates(graphModel);
         this.allEdges = createEdges(this.coordinatesManager, worldMap.getAllRoads());
         this.allEdges.forEach(graphModel::addEdge);
-        updateEdgesWithClass(this.allEdges, "road-line", "transparent-arrow-head");
-//        updateEdgesUIStyle(this.allEdges);
-
+        showRegularLines(this.allEdges);
+        hideArrow(this.allEdges);
         this.graphMap.endUpdate();
-//        graph.layout(new MapGridLayout(coordinatesManager, stationManager));
     }
 
     private void updateVisualMapByScale(int scaleDiff){
@@ -117,11 +214,8 @@ public class DynamicMapController {
                 Math.min(newScale, MAX_BOARD_SCALE);
 
         this.currentBoardScale = newScale;
-
         this.graphMap.layout(new MapGridLayout(coordinatesManager, stationManager, newScale));
-
         PannableCanvas canvas = graphMap.getCanvas();
-
         this.mapScrollPane.setContent(canvas);
         Platform.runLater(() -> {
             graphMap.getUseViewportGestures().set(false);
@@ -129,47 +223,27 @@ public class DynamicMapController {
         });
     }
 
-    private void updateEdgesUIStyle(List<ArrowedEdge> edges) {
-        Platform.runLater(() -> {
-            edges.forEach(edge -> {
-                edge.getLine().getStyleClass().clear();
-                edge.getLine().getStyleClass().add("road-line");
-                //edge.getText().getStyleClass().add("edge-text");
-            });
-        });
-    }
-
     private void updateEdgesWithSelectedStyle(List<ArrowedEdge> specialEdges) {
-        if (this.markedEdges != null) {
-            updateEdgesWithClass(this.markedEdges, "road-line", "transparent-arrow-head");
-            //updateEdgesUIStyle(this.allEdges);
+        if (this.markedRedEdges != null) {
+            unMarkRedMarkedEdges();
+            removeTextFromEdges();
         }
-            //updateEdgesUIStyle(this.markedEdges);
 
-        this.markedEdges = specialEdges;
-
-        updateEdgesWithClass(specialEdges, "selected-road-line", "red-arrow-head");
-//        Platform.runLater(() -> {
-//            specialEdges.forEach(edge -> {
-//                edge.getLine().getStyleClass().clear();
-//                edge.getLine().getStyleClass().add("selected-road-line");
-//                //edge.getText().getStyleClass().add("edge-text");    //TODO show number of trempists
-//            });
-//        });
+        this.markedRedEdges = specialEdges;
+        markEdgesInRed(specialEdges);
+        showArrow(specialEdges);
     }
 
-    private void updateEdgesWithClass(List<ArrowedEdge> specialEdges, String lineStyleClass, String arrowStyleClass){
-        Platform.runLater(() -> {
-            specialEdges.forEach(edge -> {
-                edge.getLine().getStyleClass().clear();
-                edge.getLine().getStyleClass().add(lineStyleClass);
-                if (arrowStyleClass != null) {
-                    edge.getArrowHead().getStyleClass().clear();
-                    edge.getArrowHead().getStyleClass().add(arrowStyleClass);
-                }
 
-            });
-        });
+    private void updateEdgesWithBlueColor(List<ArrowedEdge> edgesToBlue) {
+        if (this.markedBlueEdges != null) {
+            unMarkBlueMarkedEdges();
+            removeTextFromEdges();
+        }
+
+        this.markedBlueEdges = edgesToBlue;
+        markEdgesInBlue(edgesToBlue);
+        showArrow(edgesToBlue); //showBlueArrow
     }
 
     private StationManager loadStations(Model graphModel, List<Station> allStations) {
@@ -195,9 +269,7 @@ public class DynamicMapController {
 
     private List<ArrowedEdge> createEdges(CoordinatesManager coordinatesManager, List<Road> roads) {
         List<ArrowedEdge> edges = new LinkedList<>();
-
         this.road2Edge = new HashMap<>();
-
         roads.forEach(road -> {
             int fromX = road.getStartStation().getCoordinate().getX();
             int fromY = road.getStartStation().getCoordinate().getY();
@@ -215,24 +287,109 @@ public class DynamicMapController {
 
     }
 
-    public void updateTextOfEdge(ArrowedEdge edgeToUpdate, String setText){
-        edgeToUpdate.textProperty().set(setText);
-    }
 
-
-    public void markRoads(List<Road> roadsToMark){
+    public void markRoadsInRed(List<Road> roadsToMark){
         List<ArrowedEdge>  edgesToMark = roadsToMark.stream()
                 .map(rode -> this.road2Edge.get(rode))
                 .collect(Collectors.toList());
-        ;//createEdges(this.coordinatesManager, roadsToMark);
         updateEdgesWithSelectedStyle(edgesToMark);
+    }
 
+    public void markRoadsInBlue(List<Road> roadsToMark){
+        List<ArrowedEdge>  edgesToMark = roadsToMark.stream()
+                .map(rode -> this.road2Edge.get(rode))
+                .collect(Collectors.toList());
+
+        updateEdgesWithBlueColor(edgesToMark);
     }
 
     public void hideRoads(List<Road> roadsToHide){
         List<ArrowedEdge>  edgesToHide = roadsToHide.stream()
                 .map(rode -> this.road2Edge.get(rode))
                 .collect(Collectors.toList());
-        updateEdgesWithClass(edgesToHide, "hidden-road", "transparent-arrow-head");
+        hideArrow(edgesToHide);
+        hideLines(edgesToHide);
+    }
+
+    public void unMarkRedMarkedEdges() {
+        if (this.markedRedEdges != null) {
+            hideArrow(this.markedRedEdges);
+            showRegularLines(this.markedRedEdges);
+            this.markedRedEdges = null;
+        }
+    }
+
+    public void unMarkBlueMarkedEdges() {
+        if (this.markedBlueEdges != null) {
+            hideArrow(this.markedBlueEdges);
+            showRegularLines(this.markedBlueEdges);
+            this.markedBlueEdges = null;
+        }
+    }
+
+    public void showArrow(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getArrowHead().getStyleClass().clear();
+            line.getArrowHead().getStyleClass().add("red-arrow-head");
+        }));
+    }
+
+    public void showBlueArrow(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getArrowHead().getStyleClass().clear();
+            line.getArrowHead().getStyleClass().add("blue-arrow-head");
+        }));
+    }
+
+    public void hideArrow(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getArrowHead().getStyleClass().clear();
+            line.getArrowHead().getStyleClass().add("transparent-arrow-head");
+        }));
+    }
+
+    public void showRegularLines(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("road-line");
+        }));
+    }
+    public void markEdgesInRed(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("red-road-line");
+        }));
+    }
+
+    public void markEdgesInBlue(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("blue-road-line");
+        }));
+    }
+
+    public void hideLines(List<ArrowedEdge> lines){
+        Platform.runLater(() -> lines.forEach(line -> {
+            line.getLine().getStyleClass().clear();
+            line.getLine().getStyleClass().add("hidden-road");
+        }));
+    }
+
+    public void removeTextFromEdges(){
+        if (this.edgesWithText != null) {
+            this.edgesWithText.forEach(edge -> edge.textProperty().set(null));
+            this.edgesWithText = null;
+        }
+    }
+    public void updateEdgesWithTexts(Map<Road, String> roadsWithStatus) {
+        roadsWithStatus.forEach(((road, s) -> setTextToEdge(this.road2Edge.get(road), s)));
+    }
+
+    private void setTextToEdge(ArrowedEdge edgeToUpdate, String s) {
+        if (this.edgesWithText == null)
+            this.edgesWithText = new LinkedList<>();
+
+        edgeToUpdate.textProperty().set(s);
+        this.edgesWithText.add(edgeToUpdate);
     }
 }

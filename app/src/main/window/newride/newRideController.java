@@ -18,6 +18,7 @@ import transpool.logic.traffic.item.Ride;
 import transpool.logic.user.User;
 import transpool.ui.request.type.NewRideRequest;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,14 @@ public class newRideController {
 
     @FXML
     private Label pathLabel;
+
+    @FXML
+    private Button addNewRideBtn;
+
+    @FXML
+    void onAddNewRideBtnClick(ActionEvent event) throws IOException {
+        this.mainController.createNewRide();
+    }
 
     @FXML
     void onClickCancelButton(ActionEvent event) {

@@ -11,7 +11,11 @@ import main.window.main.MainWindowController;
 import transpool.logic.traffic.item.Ride;
 import transpool.logic.traffic.item.TrempRequest;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TrempSubWindowController {
@@ -60,26 +64,54 @@ public class TrempSubWindowController {
     private ListView<String> trempsListView;
 
     @FXML
+    private Button createNewTrempBtn;
+
+    @FXML
+    private Button matchRideBtn;
+
+    @FXML
+    void onClickCreateNewTrempBtn(ActionEvent event) throws IOException {
+        this.mainController.createNewTremp();
+    }
+
+    @FXML
+    void onClickMatchRideBtn(ActionEvent event) {
+
+    }
+
+    @FXML
     void onClickShowTrempDetails(ActionEvent event) {
     }
 
     @FXML
-    void onMouseClickedScrollPane(MouseEvent event) {
-
+    void onTrempSelected(MouseEvent event) {
+        if (this.mainController != null){
+            int index = this.trempsListView.getSelectionModel().getSelectedIndex();
+            TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+            this.mainController.switchLiveMapOff();
+            this.mainController.updateMapWithTrempStations(selectedTremp);
+//            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
+        }
     }
 
     public void setMainController(MainWindowController mainController) {
         this.mainController = mainController;
     }
 
-    public void updateRidesList(){
-        List<TrempRequest> allTremps = this.mainController.getAllTrempRequests();
-        List<String> trempRepr = allTremps.stream()
-                .map(tremp -> String.format("%d - %s",
-                        tremp.getID(),
-                        tremp.getUser().getName()))
-                .collect(Collectors.toList());
+    private Map<Integer, TrempRequest> trempsVisibleInView;
+    public void updateTrempsList(){
+        this.trempsVisibleInView = new HashMap<>();
 
-        this.trempsListView.getItems().addAll(trempRepr);
+        List<TrempRequest> allTremps = this.mainController.getAllTrempRequests();
+        int index = 0;
+        for (TrempRequest tremp: this.mainController.getAllTrempRequests()) {
+               String trempRepr = String.format("%d - %s", tremp.getID(), tremp.getUser().getName());
+               this.trempsListView.getItems().add(trempRepr);
+               this.trempsVisibleInView.put(index++, tremp);
+        }
+    }
+
+    public void clearSelection() {
+        this.trempsListView.getSelectionModel().clearSelection();
     }
 }

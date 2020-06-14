@@ -225,7 +225,7 @@ public class TrafficManager {
         while(isRelevant && scheduleIterator.hasPrevious()){
             Schedule currentSchedule = scheduleIterator.previous();
 
-            if(currentSchedule.hasInstanceBeforeDateTime(relevantDateTime)){
+            if(currentSchedule.hasInstanceEndsBeforeDateTime(relevantDateTime)){
                 Duration scheduleDuration = Duration.between(currentSchedule.getStartDateTime(), currentSchedule.getEndDateTime()).abs();
                 LocalDateTime newEndDateTime = currentSchedule.getClosestDateTimeBefore(relevantDateTime, currentSchedule.getEndDateTime());
                 currentSchedule.setEndDateTime(newEndDateTime);
@@ -247,7 +247,7 @@ public class TrafficManager {
         if (isRelevant) {
             LocalDateTime relevantDateTime = requestSchedule.getDesiredDateTimeAccordingToTimeType();
             for (Schedule currentSchedule : schedules) {
-                if (currentSchedule.hasInstanceAfterDateTime(relevantDateTime)) {
+                if (currentSchedule.hasInstanceStartsAfterDateTime(relevantDateTime)) {
                     Duration scheduleDuration = Duration.between(currentSchedule.getStartDateTime(), currentSchedule.getEndDateTime()).abs();
                     LocalDateTime newStartDateTime = currentSchedule.getClosestDateTimeAfter(relevantDateTime, currentSchedule.getStartDateTime());
                     currentSchedule.setStartDateTime(newStartDateTime);
@@ -420,10 +420,8 @@ public class TrafficManager {
 
     public List<RideForTremp> getAllPossibleTrempsForTrempRequest(TrempRequest trempRequest){
 
-
-        //TODO Andrey instead of sending the day of leave or arrive - make sure to send object with both
 //        List<RideForTremp> relevantByRouteOptions = getRideOptions(maxNumberOfConnections, start, end, dayOfTrempRequest);
-                List<RideForTremp> relevantByRouteOptions = getAllRideOptions(trempRequest);//getRideOptions(trempRequest);
+        List<RideForTremp> relevantByRouteOptions = getAllRideOptions(trempRequest);//getRideOptions(trempRequest);
         relevantByRouteOptions.sort(Comparator.comparingInt(RideForTremp::getNumOfParts));
 
 
@@ -434,5 +432,13 @@ public class TrafficManager {
 //                .filter(rideForTremp -> rideCorrectTimeGetter.apply(rideForTremp).equals(trempRequest.getDesiredTime()))
 //                .collect(Collectors.toList());
         return relevantByRouteOptions;
+    }
+
+    public List<Ride> getAllRidesRunningOn(LocalDateTime currentDateTime) {
+        return this.getAllRides()
+                .stream()
+                .filter(ride -> ride.getSchedule().hasInstanceContainingDateTime(currentDateTime))
+                .collect(Collectors.toList());
+
     }
 }

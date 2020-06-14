@@ -113,3 +113,26 @@
     -fx-background-insets: 5px;
     -fx-padding: 10px;
 }
+
+.toggle-on{
+    -fx-background-image: url("icons8-toggle-on-48.png");
+    -fx-background-repeat: stretch;
+    -fx-background-position: center center;
+}
+.toggle-of{
+    -fx-background-image: url("icons8-toggle-off-48.png");
+    -fx-background-repeat: stretch;
+    -fx-background-position: center center;
+}
+
+.menu-toggle {
+    -fx-background-color: #2dc5b3;
+    -fx-text-fill: white;
+    -fx-border-color: #2dc5b3;
+    -fx-padding: 5px;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 12px;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-end-margin: 30px;
+}

@@ -1,11 +1,13 @@
 package main.window.main.sub.map;
 
 import com.fxgraph.graph.Graph;
+import com.fxgraph.graph.ICell;
 import com.fxgraph.graph.Model;
 import com.fxgraph.graph.PannableCanvas;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import main.window.main.MainWindowController;
 import main.window.map.component.coordinate.CoordinateNode;
@@ -391,5 +393,34 @@ public class DynamicMapController {
 
         edgeToUpdate.textProperty().set(s);
         this.edgesWithText.add(edgeToUpdate);
+    }
+
+    public void markStations(Station startStation, Station endStation) {
+        markStation(startStation, "start-station");
+        markStation(endStation, "end-station");
+    }
+    private List<Node> markedStations;
+
+    private void markStation(Station station, String styleClass){
+        StationNode stationNode = this.stationManager.getOrCreate(station.getCoordinate().getX(), station.getCoordinate().getY());
+        Node node = stationNode.getRoot().getChildren().get(0);
+        node.getStyleClass().clear();
+        node.getStyleClass().add(styleClass);
+        if(markedStations == null)
+            markedStations = new LinkedList<>();
+
+        this.markedStations.add(node);
+    }
+
+    private void unMarkNode(Node node){
+        node.getStyleClass().clear();
+        node.getStyleClass().add("station-circle");
+    }
+    public void unMarkAllStations(){
+        if(this.markedStations != null) {
+            this.markedStations.forEach(this::unMarkNode);
+            this.markedStations = null;
+        }
+
     }
 }

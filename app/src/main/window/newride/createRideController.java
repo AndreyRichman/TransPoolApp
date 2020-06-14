@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class newRideController {
+public class createRideController {
 
     private Stage stage;
     MainWindowController mainController;
@@ -173,7 +173,7 @@ public class newRideController {
                 .collect(Collectors.toList());
     }
 
-    public newRideController(){
+    public createRideController(){
         request = new NewRideRequest();
         addStationChoiceBox = new ChoiceBox<>();
         removeStationChoiceBox = new ChoiceBox<>();

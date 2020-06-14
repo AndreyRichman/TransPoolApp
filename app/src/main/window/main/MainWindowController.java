@@ -12,7 +12,7 @@ package main.window.main;
         import main.window.main.sub.map.DynamicMapController;
         import main.window.main.sub.ride.RideSubWindowController;
         import main.window.main.sub.tremp.TrempSubWindowController;
-        import main.window.newride.newRideController;
+        import main.window.newride.createRideController;
         import main.window.newtremp.CreateTrempController;
         import main.window.newxmlload.newXmlLoadController;
         import transpool.logic.handler.LogicHandler;
@@ -86,7 +86,7 @@ public class MainWindowController {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
-        newRideController controller = loader.getController();
+        createRideController controller = loader.getController();
         controller.setMainController(this);
         controller.setStage(stage);
         controller.setLogicHandler(logicHandler);

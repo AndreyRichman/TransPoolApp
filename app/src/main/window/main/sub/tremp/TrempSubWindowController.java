@@ -73,13 +73,16 @@ public class TrempSubWindowController {
 
     @FXML
     void onClickMatchRideBtn(ActionEvent event) {
-
+        //TODO either open rank window or show tremp options in rides list:
+        // lastSelectedIsAssigned = true -> rank window
+        // lastSelectedIsAssigned = false -> show tremp options
     }
 
     @FXML
     void onClickShowTrempDetails(ActionEvent event) {
     }
 
+    private boolean lastSelectedIsAssigned = false;
     @FXML
     void onTrempSelected(MouseEvent event) {
         if (this.mainController != null){
@@ -90,9 +93,20 @@ public class TrempSubWindowController {
 
             if (selectedTremp.isNotAssignedToRides())
             {
+                lastSelectedIsAssigned = false;
+                this.matchRideBtn.setVisible(true);
                 this.matchRideBtn.setText("Find a Match!");
-            } else
+            }
+            else if (selectedTremp.rankedAssignedRide()){
+                this.matchRideBtn.setVisible(false);
+                lastSelectedIsAssigned = true;
+            } else {
+                lastSelectedIsAssigned = true;
+                this.matchRideBtn.setVisible(true);
                 this.matchRideBtn.setText("Rank your tremp!");
+            }
+
+            //TODO: add functionality according to status
 //            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
         }
 

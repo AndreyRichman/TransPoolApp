@@ -2,7 +2,9 @@ package tasks.loadFile;
 
 import exception.FaildLoadingXMLFileException;
 import exception.InvalidMapBoundariesException;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
+import main.window.newxmlload.newXmlLoadController;
 import transpool.logic.handler.LogicHandler;
 import transpool.logic.handler.XMLHandler;
 
@@ -16,6 +18,7 @@ public class loadXmlFileTask extends Task<Boolean> {
     private String fileName;
     private LogicHandler logicHandler;
     private final int SLEEP_TIME = 100;
+    private newXmlLoadController xmlLoadController;
 
 
     @Override
@@ -43,13 +46,16 @@ public class loadXmlFileTask extends Task<Boolean> {
         updateProgress(5,5);
         Thread.sleep(SLEEP_TIME);
 
-        return Boolean.TRUE;
+        Platform.runLater(() ->xmlLoadController.updateLiveMap());
 
+        return Boolean.TRUE;
+    //TODO:
     }
 
-    public loadXmlFileTask(String fileName, LogicHandler logicHandler ) {
+    public loadXmlFileTask(String fileName, LogicHandler logicHandler, newXmlLoadController xmlLoadController) {
         this.fileName = fileName;
         this.logicHandler = logicHandler;
+        this.xmlLoadController = xmlLoadController;
     }
 }
 

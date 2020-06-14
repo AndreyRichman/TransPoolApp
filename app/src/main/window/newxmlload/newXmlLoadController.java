@@ -84,7 +84,11 @@ public class newXmlLoadController {
         mainWindowController.clearView();
 
         //clear old metadata
-        logicHandler.clearOldResults();
+        clearOldResults();
+    }
+
+    private void clearOldResults() {
+        logicHandler = new LogicHandler();
     }
 
     @FXML
@@ -93,6 +97,7 @@ public class newXmlLoadController {
 //        LoadXMLRequest req = new LoadXMLRequest();
 //        req.setFileDirectory(selectedFileProperty.get());
         logicHandler.collectMetadata(selectedFileProperty, this);
+        mainWindowController.setLogic(logicHandler);
     }
 
     @FXML
@@ -116,12 +121,13 @@ public class newXmlLoadController {
         this.stage = stage;
     }
 
-    public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }
+    //public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }
 
     public newXmlLoadController(){
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
         isExceptionCatch =  new SimpleBooleanProperty(false);
+        logicHandler = new LogicHandler();
     }
 
     @FXML

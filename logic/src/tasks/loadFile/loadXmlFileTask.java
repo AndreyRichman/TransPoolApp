@@ -48,11 +48,13 @@ public class loadXmlFileTask extends Task<Boolean> {
         updateProgress(5,5);
         Thread.sleep(SLEEP_TIME);
 
+        Platform.runLater(() ->xmlLoadController.updateLiveMap());
+
         } catch (FaildLoadingXMLFileException e) {
             updateMessage(e.getReason());
         }
 
-        Platform.runLater(() ->xmlLoadController.updateLiveMap());
+
 
         return Boolean.TRUE;
     //TODO:

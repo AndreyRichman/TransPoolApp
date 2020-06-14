@@ -27,7 +27,7 @@ public class WindowApp extends Application implements Runnable{
 
         // wire up controller
         MainWindowController controller = loader.getController();
-        controller.setLogic(new LogicHandler());
+        //controller.setLogic(new LogicHandler());
         controller.setPrimaryStage(primaryStage);
 
         // set stage

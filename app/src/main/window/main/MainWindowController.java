@@ -70,7 +70,7 @@ public class MainWindowController {
         newXmlLoadController controller = loader.getController();
         controller.setMainController(this);
         controller.setStage(stage);
-        controller.setLogicHandler(logicHandler);
+        //controller.setLogicHandler(logicHandler);
         Scene scene = new Scene(root, 500, 500);
 
         stage.initModality(Modality.APPLICATION_MODAL);

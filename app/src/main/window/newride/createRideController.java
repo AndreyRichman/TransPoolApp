@@ -1,7 +1,10 @@
 package main.window.newride;
 
+import com.sun.javaws.exceptions.CacheAccessException;
 import enums.RepeatType;
+import exception.CapacityException;
 import exception.NoRoadBetweenStationsException;
+import exception.PricePerKilometerException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -9,6 +12,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
 import transpool.logic.handler.LogicHandler;
@@ -27,7 +32,7 @@ import java.util.stream.Collectors;
 public class createRideController {
 
     private Stage stage;
-    MainWindowController mainController;
+    private MainWindowController mainController;
     private LogicHandler logicHandler;
     private NewRideRequest request;
     private ObservableList stationsNames;
@@ -78,7 +83,16 @@ public class createRideController {
     private Label pathLabel;
 
     @FXML
+    private Label exceptionLabel;
+
+    @FXML
     private Button addNewRideBtn;
+
+    @FXML
+    private Label CapacityLabel;
+
+    @FXML
+    private Label PPKLabel;
 
     @FXML
     void onAddNewRideBtnClick(ActionEvent event) throws IOException {
@@ -92,24 +106,62 @@ public class createRideController {
 
     @FXML
     void onClickCreateBtn(ActionEvent event) throws NoRoadBetweenStationsException {
+        exceptionLabel.setText("");
+        CapacityLabel.setTextFill(Color.WHITE);
+        PPKLabel.setTextFill(Color.WHITE);
 
-        initNewRideRequest();
+        try{
+            initNewRideRequest();
+            logicHandler.addRide(createNewRideFromRequest(request));
+            this.mainController.updateRidesList();
+            this.stage.close();
+        }catch(NumberFormatException e){
 
-        logicHandler.addRide(createNewRideFromRequest(request));
-        this.mainController.updateRidesList();
-        this.stage.close();
-
+        } catch (PricePerKilometerException e) {
+            exceptionLabel.setText(e.getMgs());
+            PPKLabel.setTextFill(Color.RED);
+        } catch (CapacityException e) {
+            exceptionLabel.setText(e.getMgs());
+            CapacityLabel.setTextFill(Color.RED);
+        }
     }
 
-    private void initNewRideRequest() {
-        request.setCarCapacity(Integer.parseInt(capacityTextField.getText()));
-        request.setPricePerKilometer(Integer.parseInt(ppkTextField.getText()));
+    private void initNewRideRequest() throws NumberFormatException, PricePerKilometerException, CapacityException {
+
+        setCarCapacity();
+        setPricePerKilometer();
         request.setStations(path);
         request.setUserName(userNameTextField.getText());
         request.setRepeatType(reputabelChoiceBox.getValue());
         request.setStartTime(LocalTime.of(hourChoiceBox.getValue(), minutesChoiceBox.getValue()));
         request.setDay(daySpinner.getValue());
     }
+
+    private void setPricePerKilometer() throws PricePerKilometerException {
+        try{
+            if(Integer.parseInt(ppkTextField.getText()) < 0) {
+                throw new PricePerKilometerException("Please Enter PPK > 0");
+            }
+
+        } catch (NumberFormatException e){
+            throw new PricePerKilometerException("Please Enter PPK as Numbers only");
+        }
+        request.setPricePerKilometer(Integer.parseInt(ppkTextField.getText()));
+    }
+
+    private void setCarCapacity() throws CapacityException {
+        try{
+            if(Integer.parseInt(capacityTextField.getText()) < 0) {
+                throw new CapacityException("Please Enter Car Capacity > 0");
+            }
+
+        } catch (NumberFormatException e){
+            throw new CapacityException("Please Enter Car Capacity as Numbers only");
+        }
+
+        request.setCarCapacity(Integer.parseInt(capacityTextField.getText()));
+    }
+
 
     @FXML
     void onFromStationSelected(MouseEvent event) {
@@ -126,7 +178,6 @@ public class createRideController {
         User user = logicHandler.getUserByName(request.getUserName());
         Ride newRide = logicHandler.createNewEmptyRide(user, roads, request.getCarCapacity());
 
-        //TODO: get day from user (default = 1)
         newRide.setSchedule(request.getStartTime(), request.getDay(), request.getRepeatType());
         newRide.setPricePerKilometer(request.getPricePerKilometer());
 

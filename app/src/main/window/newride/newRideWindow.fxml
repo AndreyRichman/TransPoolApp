@@ -28,6 +28,7 @@
       <RowConstraints fillHeight="false" maxHeight="537.0" minHeight="0.0" prefHeight="394.0" vgrow="NEVER" />
       <RowConstraints maxHeight="129.0" minHeight="10.0" prefHeight="127.0" vgrow="NEVER" />
       <RowConstraints maxHeight="41.0" minHeight="10.0" prefHeight="41.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="41.0" minHeight="10.0" prefHeight="41.0" vgrow="NEVER" />
       <RowConstraints maxHeight="20.0" minHeight="9.0" prefHeight="9.0" vgrow="NEVER" />
    </rowConstraints>
    <children>
@@ -36,8 +37,8 @@
       <Font size="18.0" />
     </font>
   </Label>
-      <Button fx:id="createBtn" mnemonicParsing="false" onAction="#onClickCreateBtn" prefHeight="31.0" prefWidth="299.0" styleClass="menu-btn" text="Create" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <Button id="quitBtn" fx:id="cancelBtn" mnemonicParsing="false" onAction="#onClickCancelButton" prefHeight="31.0" prefWidth="253.0" styleClass="menu-btn" text="Cancel" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+      <Button fx:id="createBtn" mnemonicParsing="false" onAction="#onClickCreateBtn" prefHeight="31.0" prefWidth="299.0" styleClass="menu-btn" text="Create" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <Button id="quitBtn" fx:id="cancelBtn" mnemonicParsing="false" onAction="#onClickCancelButton" prefHeight="31.0" prefWidth="253.0" styleClass="menu-btn" text="Cancel" GridPane.columnIndex="3" GridPane.rowIndex="5" />
       <VBox fillWidth="false" prefHeight="492.0" prefWidth="214.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
             <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="Name:" textAlignment="CENTER" />
@@ -46,8 +47,8 @@
             <Label styleClass="field-title" text="Day: " />
             <Label styleClass="field-title" text="Hour:" />
             <Label styleClass="field-title" text="Minutes:" />
-            <Label styleClass="field-title" text="PPK:" />
-            <Label styleClass="field-title" text="Capacity:" />
+            <Label fx:id="PPKLabel" styleClass="field-title" text="PPK:" />
+            <Label fx:id="CapacityLabel" styleClass="field-title" text="Capacity:" />
             <Label fx:id="Reputabel" styleClass="field-title" text="Reputabel?" />
          </children>
       </VBox>
@@ -84,5 +85,6 @@
             <Label fx:id="pathLabel" styleClass="field-title" wrapText="true" />
          </children>
       </HBox>
+      <Label fx:id="exceptionLabel" styleClass="field-title" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
    </children>
 </GridPane>

@@ -2,22 +2,20 @@ package main.window.main.sub.tremp;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import main.window.main.MainWindowController;
 import transpool.logic.traffic.item.TrempRequest;
-
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TrempSubWindowController {
 
     MainWindowController mainController;
+    private boolean lastSelectedIsAssigned = false;
+
     @FXML
     private Label userTitle;
 
@@ -64,7 +62,17 @@ public class TrempSubWindowController {
     private Button createNewTrempBtn;
 
     @FXML
+    private Button RankRiderBtn;
+
+    @FXML
     private Button matchRideBtn;
+
+    @FXML
+    private TextField maxOfffersTextField;
+
+    @FXML
+    private ChoiceBox<?> directChoiceBox;
+
 
     @FXML
     void onClickCreateNewTrempBtn(ActionEvent event) throws IOException {
@@ -72,7 +80,14 @@ public class TrempSubWindowController {
     }
 
     @FXML
+    void onClickRankRiderBtn(ActionEvent event) {
+
+    }
+
+    @FXML
     void onClickMatchRideBtn(ActionEvent event) {
+
+
         //TODO either open rank window or show tremp options in rides list:
         // lastSelectedIsAssigned = true -> rank window
         // lastSelectedIsAssigned = false -> show tremp options
@@ -82,7 +97,7 @@ public class TrempSubWindowController {
     void onClickShowTrempDetails(ActionEvent event) {
     }
 
-    private boolean lastSelectedIsAssigned = false;
+
     @FXML
     void onTrempSelected(MouseEvent event) {
         if (this.mainController != null){

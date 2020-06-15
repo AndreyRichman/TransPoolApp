@@ -53,7 +53,6 @@ public class RideSubWindowController {
     @FXML
     private ListView<String> ridesListView;
 
-
     @FXML
     private Button addNewRideBtn;
 
@@ -93,11 +92,21 @@ public class RideSubWindowController {
         if (this.mainController != null){
             int index = this.ridesListView.getSelectionModel().getSelectedIndex();
             Ride selectedRide = this.ridesVisibleInView.get(index);
+            initLabels(selectedRide);
             this.mainController.switchLiveMapOff();
             if (selectedRide != null)
                 this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
         }
     }
+
+    private void initLabels(Ride ride) {
+        userValue.setText(ride.getRideOwner().getUser().getName());
+        departValue.setText(String.valueOf(ride.getSchedule().getStartTime()));
+        arriveValue.setText(String.valueOf(ride.getSchedule().getEndTime()));
+        ppkValue.setText(String.valueOf(ride.getPricePerKilometer()));
+        fuelValue.setText(String.valueOf(ride.getAverageFuelUsage()));
+    }
+
     public void clear(){
         this.ridesListView.getItems().clear();
     }

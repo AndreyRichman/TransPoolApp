@@ -196,8 +196,6 @@ public class DynamicMapController {
         updateVisualMapByScale(0);
     }
 
-
-
     private void initializeMapWithLogicMap(WorldMap worldMap){
         Model graphModel = this.graphMap.getModel();
         this.graphMap.beginUpdate();

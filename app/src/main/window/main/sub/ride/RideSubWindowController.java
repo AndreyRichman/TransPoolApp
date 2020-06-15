@@ -101,6 +101,7 @@ public class RideSubWindowController {
     public void clear(){
         this.ridesListView.getItems().clear();
     }
+
     public void clearSelection() {
         this.ridesListView.getSelectionModel().clearSelection();
     }

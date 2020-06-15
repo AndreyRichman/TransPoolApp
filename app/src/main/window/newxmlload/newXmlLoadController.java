@@ -23,6 +23,7 @@ public class newXmlLoadController {
     private MainWindowController mainWindowController;
     private SimpleStringProperty selectedFileProperty;
     private SimpleBooleanProperty isFileSelected;
+    private SimpleBooleanProperty isExceptionCatch;
 
     @FXML
     private Button openFileButton;
@@ -46,6 +47,12 @@ public class newXmlLoadController {
     private ProgressIndicator progressIndicator;
 
     @FXML
+    private Label exceptionLabel;
+
+    @FXML
+    private Label exceptionValueLabel;
+
+    @FXML
     void onClickCancelButton(ActionEvent event) {
         stage.close();
     }
@@ -61,20 +68,30 @@ public class newXmlLoadController {
 
     @FXML
     void onClickClearButton(ActionEvent event) {
-        //clear buttons & labels
+
+        clearOldView();
+
+        //clear old metadata
+        clearOldResults();
+    }
+
+    public void clearOldView(){
+
         selectedFileProperty.set("");
         progressBar.progressProperty().unbind();
         progressBar.setProgress(0);
         progressIndicator.progressProperty().unbind();
         progressIndicator.setProgress(0);
+        exceptionValueLabel.textProperty().unbind();
+        exceptionValueLabel.setText("");
 
         //disable Load & clear
         isFileSelected.set(false);
+    }
 
+    private void clearOldResults() {
         mainWindowController.clearView();
-
-        //clear old metadata
-        logicHandler.clearOldResults();
+        logicHandler = new LogicHandler();
     }
 
     @FXML
@@ -83,10 +100,13 @@ public class newXmlLoadController {
 //        LoadXMLRequest req = new LoadXMLRequest();
 //        req.setFileDirectory(selectedFileProperty.get());
         logicHandler.collectMetadata(selectedFileProperty, this);
+        mainWindowController.setLogic(logicHandler);
     }
 
     @FXML
     void onClickOpenFileButton(ActionEvent event) {
+        clearOldView();
+        clearOldResults();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select XML file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.XML"));
@@ -106,11 +126,13 @@ public class newXmlLoadController {
         this.stage = stage;
     }
 
-    public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }
+    //public void setLogicHandler(LogicHandler logicHandler) { this.logicHandler = logicHandler;  }
 
     public newXmlLoadController(){
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
+        isExceptionCatch =  new SimpleBooleanProperty(false);
+        logicHandler = new LogicHandler();
     }
 
     @FXML
@@ -127,6 +149,9 @@ public class newXmlLoadController {
 
         //task progress Indicator
         progressIndicator.progressProperty().bind(task.progressProperty());
+
+        //task message Property
+        exceptionValueLabel.textProperty().bind(task.messageProperty());
     }
 
     // TODO: Needs to show that there is XML file in the System and massge to Clear first or just Clear befor loading

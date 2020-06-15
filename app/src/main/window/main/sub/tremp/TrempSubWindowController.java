@@ -1,5 +1,6 @@
 package main.window.main.sub.tremp;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,8 +14,8 @@ import java.util.Map;
 
 public class TrempSubWindowController {
 
-    MainWindowController mainController;
-    private boolean lastSelectedIsAssigned = false;
+    private MainWindowController mainController;
+    private SimpleBooleanProperty lastSelectedIsAssigned;
 
     @FXML
     private Label userTitle;
@@ -71,7 +72,7 @@ public class TrempSubWindowController {
     private TextField maxOfffersTextField;
 
     @FXML
-    private ChoiceBox<?> directChoiceBox;
+    private ChoiceBox<String> directChoiceBox;
 
 
     @FXML
@@ -108,15 +109,15 @@ public class TrempSubWindowController {
 
             if (selectedTremp.isNotAssignedToRides())
             {
-                lastSelectedIsAssigned = false;
+                lastSelectedIsAssigned.set(false);
                 this.matchRideBtn.setVisible(true);
                 this.matchRideBtn.setText("Find a Match!");
             }
             else if (selectedTremp.rankedAssignedRide()){
                 this.matchRideBtn.setVisible(false);
-                lastSelectedIsAssigned = true;
+                lastSelectedIsAssigned.set(true);
             } else {
-                lastSelectedIsAssigned = true;
+                lastSelectedIsAssigned.set(true);
                 this.matchRideBtn.setVisible(true);
                 this.matchRideBtn.setText("Rank your tremp!");
             }
@@ -164,4 +165,17 @@ public class TrempSubWindowController {
     public void clear() {
         this.trempsListView.getItems().clear();
     }
+
+    public TrempSubWindowController(){
+        lastSelectedIsAssigned = new SimpleBooleanProperty(false);
+    }
+
+    @FXML
+    public void initialize() {
+        directChoiceBox.getItems().add("YES");
+        directChoiceBox.getItems().add("NO");
+        RankRiderBtn.disableProperty().bind(lastSelectedIsAssigned.not());
+
+    }
+
 }

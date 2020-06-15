@@ -1,23 +1,22 @@
 package main.window.main.sub.tremp;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import main.window.main.MainWindowController;
 import transpool.logic.traffic.item.TrempRequest;
-
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TrempSubWindowController {
 
-    MainWindowController mainController;
+    private MainWindowController mainController;
+    private SimpleBooleanProperty lastSelectedIsAssigned;
+
     @FXML
     private Label userTitle;
 
@@ -64,7 +63,17 @@ public class TrempSubWindowController {
     private Button createNewTrempBtn;
 
     @FXML
+    private Button RankRiderBtn;
+
+    @FXML
     private Button matchRideBtn;
+
+    @FXML
+    private TextField maxOfffersTextField;
+
+    @FXML
+    private ChoiceBox<String> directChoiceBox;
+
 
     @FXML
     void onClickCreateNewTrempBtn(ActionEvent event) throws IOException {
@@ -72,39 +81,40 @@ public class TrempSubWindowController {
     }
 
     @FXML
+    void onClickRankRiderBtn(ActionEvent event) {
+
+    }
+
+    @FXML
     void onClickMatchRideBtn(ActionEvent event) {
-        //TODO either open rank window or show tremp options in rides list:
-        // lastSelectedIsAssigned = true -> rank window
-        // lastSelectedIsAssigned = false -> show tremp options
+
+        if(this.trempsVisibleInView.get(this.trempsListView.getSelectionModel().getSelectedIndex()) != null)
+        {
+
+        }
+
     }
 
     @FXML
     void onClickShowTrempDetails(ActionEvent event) {
     }
 
-    private boolean lastSelectedIsAssigned = false;
+
     @FXML
     void onTrempSelected(MouseEvent event) {
         if (this.mainController != null){
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
             TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+
             this.mainController.switchLiveMapOff();
             this.mainController.updateMapWithTrempRequest(selectedTremp);
 
             if (selectedTremp.isNotAssignedToRides())
-            {
-                lastSelectedIsAssigned = false;
-                this.matchRideBtn.setVisible(true);
-                this.matchRideBtn.setText("Find a Match!");
-            }
-            else if (selectedTremp.rankedAssignedRide()){
-                this.matchRideBtn.setVisible(false);
-                lastSelectedIsAssigned = true;
-            } else {
-                lastSelectedIsAssigned = true;
-                this.matchRideBtn.setVisible(true);
-                this.matchRideBtn.setText("Rank your tremp!");
-            }
+                lastSelectedIsAssigned.set(false);
+            if (selectedTremp.rankedAssignedRide())
+                lastSelectedIsAssigned.set(true);
+
+
             initTrempsLabel(selectedTremp);
             //TODO: add functionality according to status
 //            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
@@ -149,4 +159,18 @@ public class TrempSubWindowController {
     public void clear() {
         this.trempsListView.getItems().clear();
     }
+
+    public TrempSubWindowController(){
+        lastSelectedIsAssigned = new SimpleBooleanProperty(false);
+    }
+
+    @FXML
+    public void initialize() {
+        directChoiceBox.getItems().add("YES");
+        directChoiceBox.getItems().add("NO");
+        RankRiderBtn.disableProperty().bind(lastSelectedIsAssigned.not());
+        matchRideBtn.disableProperty().bind(lastSelectedIsAssigned);
+
+    }
+
 }

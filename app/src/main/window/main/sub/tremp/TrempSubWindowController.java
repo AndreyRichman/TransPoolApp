@@ -3,12 +3,20 @@ package main.window.main.sub.tremp;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import main.window.main.MainWindowController;
+import main.window.main.sub.rating.newRatingController;
 import transpool.logic.traffic.item.TrempRequest;
+
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,8 +89,21 @@ public class TrempSubWindowController {
     }
 
     @FXML
-    void onClickRankRiderBtn(ActionEvent event) {
+    void onClickRankRiderBtn(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        URL resource = getClass().getResource("../rating/ratingWindow.fxml");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(resource);
+        Parent root = loader.load();
+        newRatingController controller = loader.getController();
+        controller.setMainController(this);
+        controller.setStage(stage);
+        Scene scene = new Scene(root, 461, 241);
 
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML

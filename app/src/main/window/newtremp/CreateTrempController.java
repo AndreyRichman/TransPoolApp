@@ -1,6 +1,5 @@
 package main.window.newtremp;
 
-import com.sun.deploy.security.SelectableSecurityManager;
 import enums.DesiredTimeType;
 import exception.NoPathExistBetweenStationsException;
 import javafx.application.Platform;
@@ -9,12 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import transpool.logic.handler.LogicHandler;
 import transpool.logic.map.structure.Station;
 import transpool.logic.traffic.item.TrempRequest;
@@ -26,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class CreateTrempController {
 
-    MainWindowController mainController;
+    private MainWindowController mainController;
     private LogicHandler logicHandler;
     private NewTrempRequest request;
     private ObservableList stationsNames;

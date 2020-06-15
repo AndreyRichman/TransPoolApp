@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import org.controlsfx.control.Rating?>
+
+<GridPane hgap="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="241.0" prefWidth="461.0" stylesheets="@../../../style/mainStyle1.css" vgap="2.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.window.main.sub.rating.newRatingController">
+  <columnConstraints>
+      <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="52.0" minWidth="1.0" prefWidth="1.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="83.0" prefWidth="137.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="176.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="123.0" minWidth="20.0" prefWidth="113.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="20.0" prefWidth="37.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="39.0" vgrow="NEVER" />
+      <RowConstraints fillHeight="false" maxHeight="262.0" minHeight="35.0" prefHeight="41.0" vgrow="NEVER" />
+    <RowConstraints maxHeight="37.0" minHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="32.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="32.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="32.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Rating fx:id="ratingValue" rating="0.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Label alignment="CENTER" prefHeight="17.0" prefWidth="654.0" styleClass="mid-title" text="Add a review" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+      <Label styleClass="field-title" text="Leave a comment" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label styleClass="field-title" text="Rate your Driver" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="commentValue" prefHeight="258.0" prefWidth="310.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.rowSpan="3" />
+      <Button mnemonicParsing="false" onAction="#onClickSubmit" prefHeight="30.0" prefWidth="126.0" styleClass="menu-btn" text="Submit" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+   </children>
+</GridPane>

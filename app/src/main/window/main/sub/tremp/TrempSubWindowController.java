@@ -88,10 +88,11 @@ public class TrempSubWindowController {
     @FXML
     void onClickMatchRideBtn(ActionEvent event) {
 
+        if(this.trempsVisibleInView.get(this.trempsListView.getSelectionModel().getSelectedIndex()) != null)
+        {
 
-        //TODO either open rank window or show tremp options in rides list:
-        // lastSelectedIsAssigned = true -> rank window
-        // lastSelectedIsAssigned = false -> show tremp options
+        }
+
     }
 
     @FXML
@@ -104,23 +105,16 @@ public class TrempSubWindowController {
         if (this.mainController != null){
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
             TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+
             this.mainController.switchLiveMapOff();
             this.mainController.updateMapWithTrempRequest(selectedTremp);
 
             if (selectedTremp.isNotAssignedToRides())
-            {
                 lastSelectedIsAssigned.set(false);
-                this.matchRideBtn.setVisible(true);
-                this.matchRideBtn.setText("Find a Match!");
-            }
-            else if (selectedTremp.rankedAssignedRide()){
-                this.matchRideBtn.setVisible(false);
+            if (selectedTremp.rankedAssignedRide())
                 lastSelectedIsAssigned.set(true);
-            } else {
-                lastSelectedIsAssigned.set(true);
-                this.matchRideBtn.setVisible(true);
-                this.matchRideBtn.setText("Rank your tremp!");
-            }
+
+
             initTrempsLabel(selectedTremp);
             //TODO: add functionality according to status
 //            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
@@ -175,6 +169,7 @@ public class TrempSubWindowController {
         directChoiceBox.getItems().add("YES");
         directChoiceBox.getItems().add("NO");
         RankRiderBtn.disableProperty().bind(lastSelectedIsAssigned.not());
+        matchRideBtn.disableProperty().bind(lastSelectedIsAssigned);
 
     }
 

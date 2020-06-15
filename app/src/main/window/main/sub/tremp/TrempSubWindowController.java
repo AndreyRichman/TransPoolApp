@@ -109,11 +109,13 @@ public class TrempSubWindowController {
     @FXML
     void onClickMatchRideBtn(ActionEvent event) {
 
-        if(this.trempsVisibleInView.get(this.trempsListView.getSelectionModel().getSelectedIndex()) != null)
-        {
-
-        }
-
+//        if(this.trempsVisibleInView.get(this.trempsListView.getSelectionModel().getSelectedIndex()) != null)
+//        {
+//
+//        }
+        int index = this.trempsListView.getSelectionModel().getSelectedIndex();
+        TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+        this.mainController.showTremps(selectedTremp);
     }
 
     @FXML
@@ -123,7 +125,11 @@ public class TrempSubWindowController {
 
     @FXML
     void onTrempSelected(MouseEvent event) {
-        if (this.mainController != null){
+        updateAccordingToSelectedTremp();
+    }
+
+    public void updateAccordingToSelectedTremp(){
+        if (this.mainController != null && !this.trempsListView.getSelectionModel().isEmpty()){
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
             TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
 
@@ -137,11 +143,7 @@ public class TrempSubWindowController {
 
 
             initTrempsLabel(selectedTremp);
-            //TODO: add functionality according to status
-//            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
         }
-
-
     }
 
     private void initTrempsLabel(TrempRequest tremp) {

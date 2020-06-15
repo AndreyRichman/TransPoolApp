@@ -36,7 +36,7 @@
   </Label>
       <Button fx:id="createBtn" mnemonicParsing="false" onAction="#onClickCreateBtn" prefHeight="31.0" prefWidth="299.0" styleClass="menu-btn" text="Create" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Button id="quitBtn" fx:id="cancelBtn" mnemonicParsing="false" onAction="#onClickCancelButton" prefHeight="31.0" prefWidth="253.0" styleClass="menu-btn" text="Cancel" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-      <VBox prefHeight="308.0" prefWidth="214.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <VBox prefHeight="308.0" prefWidth="214.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
             <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="Name:" textAlignment="CENTER" />
             <Label prefHeight="20.0" prefWidth="154.0" styleClass="field-title" text="From:" textAlignment="CENTER" />
@@ -50,11 +50,11 @@
       <VBox prefHeight="296.0" prefWidth="152.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <children>
             <TextField fx:id="userNameTextField" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" styleClass="field-text-box" />
-            <ChoiceBox fx:id="fromStationChoiceBox" maxWidth="1.7976931348623157E308" onMouseClicked="#onFromStationSelected" prefWidth="150.0" styleClass="field-text-box">
+            <ChoiceBox fx:id="fromStationChoiceBox" maxWidth="1.7976931348623157E308" onMouseClicked="#onFromStationSelected" prefWidth="150.0" styleClass="menu-select">
                <rotationAxis>
                   <Point3D />
                </rotationAxis></ChoiceBox>
-            <ChoiceBox fx:id="toStationChoiceBox" maxWidth="1.7976931348623157E308" onMouseClicked="#onToStationSelected" prefWidth="150.0" styleClass="field-text-box" />
+            <ChoiceBox fx:id="toStationChoiceBox" maxWidth="1.7976931348623157E308" onMouseClicked="#onToStationSelected" prefWidth="150.0" styleClass="menu-select" />
             <Spinner fx:id="daySpinner" prefHeight="38.0" prefWidth="232.0" styleClass="menu-btn" />
             <GridPane prefHeight="89.0" prefWidth="206.0">
               <columnConstraints>
@@ -65,11 +65,11 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ChoiceBox fx:id="hourChoiceBox" prefWidth="249.0" styleClass="menu-btn" />
-                  <ChoiceBox fx:id="minutesChoiceBox" prefHeight="38.0" prefWidth="235.0" styleClass="menu-btn" GridPane.rowIndex="1" />
+                  <ChoiceBox fx:id="hourChoiceBox" prefWidth="249.0" styleClass="menu-select" />
+                  <ChoiceBox fx:id="minutesChoiceBox" prefHeight="38.0" prefWidth="235.0" styleClass="menu-select" GridPane.rowIndex="1" />
                </children>
             </GridPane>
-            <ChoiceBox fx:id="searchByChoiceBox" prefHeight="38.0" prefWidth="272.0" styleClass="menu-btn" />
+            <ChoiceBox fx:id="searchByChoiceBox" prefHeight="38.0" prefWidth="272.0" styleClass="menu-select" />
          </children>
       </VBox>
    </children>

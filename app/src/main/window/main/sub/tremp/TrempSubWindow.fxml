@@ -44,7 +44,7 @@
             <Label fx:id="atTimeValue" styleClass="field-title" />
             <Label fx:id="statusValue" styleClass="field-title" />
             <TextField fx:id="maxOfffersTextField" styleClass="field-text-box" />
-            <ChoiceBox fx:id="directChoiceBox" prefHeight="19.0" prefWidth="105.0" styleClass="menu-btn" />
+            <ChoiceBox fx:id="directChoiceBox" prefHeight="19.0" prefWidth="105.0" styleClass="menu-select" />
          </children>
       </VBox>
       <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="612.0" styleClass="mid-title" text="Tremps" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="1" />

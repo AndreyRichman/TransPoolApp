@@ -19,6 +19,7 @@ import transpool.logic.handler.LogicHandler;
 import transpool.logic.map.structure.Road;
 import transpool.logic.traffic.item.PartOfRide;
 import transpool.logic.traffic.item.Ride;
+import transpool.logic.traffic.item.RideForTremp;
 import transpool.logic.traffic.item.TrempRequest;
 import java.io.IOException;
 import java.net.URL;
@@ -248,6 +249,8 @@ public class MainWindowController {
     public void switchLiveMapOn() {
         this.rideComponentController.clearSelection();
         this.trempComponentController.clearSelection();
+        this.rideComponentController.updateRidesList();
+        this.trempComponentController.updateTrempsList();
         this.mapComponentController.unMarkAllStations();
 
         this.mapComponentController.toggleLiveMapOn();
@@ -266,6 +269,16 @@ public class MainWindowController {
     public void updateMapWithTrempRequest(TrempRequest selectedTremp) {
         this.mapComponentController.unMarkAllStations();
         this.mapComponentController.markStations(selectedTremp.getStartStation(), selectedTremp.getEndStation());
+
+    }
+
+    public void refreshTrempState(){
+        this.trempComponentController.updateAccordingToSelectedTremp();
+    }
+
+    public void showTremps(TrempRequest trempRequest) {
+        List<RideForTremp> tremps =  this.logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
+        this.rideComponentController.showTremps(tremps);
 
     }
 }

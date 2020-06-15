@@ -43,8 +43,10 @@
             <Label fx:id="fuelValue" styleClass="field-title" />
          </children>
       </VBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="579.0" styleClass="mid-title" text="Rides" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+      <Label fx:id="mainTitle" alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="579.0" styleClass="mid-title" text="Rides" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
       <ListView fx:id="ridesListView" onMouseClicked="#onRideSelected" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Button fx:id="addNewRideBtn" mnemonicParsing="false" onAction="#onAddNewRideBtnClick" prefHeight="31.0" prefWidth="229.0" styleClass="menu-btn" text="Add New Ride" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Button fx:id="assignTrempBtn" mnemonicParsing="false" onAction="#onClickAssignTrempBtn" prefHeight="31.0" prefWidth="229.0" styleClass="menu-btn" text="Assign Tremp" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+      <Button id="quitBtn" fx:id="cancelTrempsBtn" mnemonicParsing="false" onAction="#onClickCancelTrempBtn" prefHeight="31.0" prefWidth="229.0" styleClass="menu-btn" text="Cancel" GridPane.columnIndex="4" GridPane.rowIndex="3" />
    </children>
 </GridPane>

@@ -57,6 +57,9 @@ public class RideSubWindowController {
     private Button addNewRideBtn;
 
     @FXML
+    private Label rideDuration;
+
+    @FXML
     void onAddNewRideBtnClick(ActionEvent event) throws IOException {
         this.mainController.createNewRide();
 

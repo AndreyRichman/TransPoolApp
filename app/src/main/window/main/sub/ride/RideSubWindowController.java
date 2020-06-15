@@ -108,6 +108,7 @@ public class RideSubWindowController {
         arriveValue.setText(String.valueOf(ride.getSchedule().getEndTime()));
         ppkValue.setText(String.valueOf(ride.getPricePerKilometer()));
         fuelValue.setText(String.valueOf(ride.getAverageFuelUsage()));
+        rideDuration.setText(String.valueOf(ride.getTotalTimeOfRide()));
     }
 
     public void clear(){

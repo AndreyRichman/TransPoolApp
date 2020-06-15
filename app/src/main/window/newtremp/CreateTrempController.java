@@ -1,6 +1,5 @@
 package main.window.newtremp;
 
-import com.sun.deploy.security.SelectableSecurityManager;
 import enums.DesiredTimeType;
 import exception.NoPathExistBetweenStationsException;
 import javafx.application.Platform;
@@ -9,12 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import transpool.logic.handler.LogicHandler;
 import transpool.logic.map.structure.Station;
 import transpool.logic.traffic.item.TrempRequest;
@@ -26,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class CreateTrempController {
 
-    MainWindowController mainController;
+    private MainWindowController mainController;
     private LogicHandler logicHandler;
     private NewTrempRequest request;
     private ObservableList stationsNames;
@@ -57,10 +53,7 @@ public class CreateTrempController {
     private ChoiceBox<Integer> minutesChoiceBox;
 
     @FXML
-    private CheckBox deptatureCheckBox;
-
-    @FXML
-    private CheckBox arrivalCheckBox;
+    private ChoiceBox<String> searchByChoiceBox;
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
@@ -77,7 +70,7 @@ public class CreateTrempController {
         request.setFromStation(fromStationChoiceBox.getValue());
         request.setToStation(toStationChoiceBox.getValue());
         request.setDepartDay(daySpinner.getValue());
-        if (deptatureCheckBox.isSelected()) {  request.setDesiredTimeType(DesiredTimeType.DEPART.toString()); }
+        if (searchByChoiceBox.getValue().equals("DEPART")) {  request.setDesiredTimeType(DesiredTimeType.DEPART.toString()); }
         else { request.setDesiredTimeType(DesiredTimeType.ARRIVE.toString());  }
 
         addNewTrempFromRequest(request);
@@ -99,6 +92,7 @@ public class CreateTrempController {
         request = new NewTrempRequest();
         fromStationChoiceBox = new ChoiceBox<>();
         toStationChoiceBox = new ChoiceBox<>();
+        searchByChoiceBox = new ChoiceBox<>();
         stationsNames = FXCollections.observableArrayList();
     }
 
@@ -109,6 +103,13 @@ public class CreateTrempController {
         initdaySpinner();
 
         initHourAndMin();
+
+        initChoiceBox();
+    }
+
+    private void initChoiceBox() {
+        searchByChoiceBox.getItems().add("DEPART");
+        searchByChoiceBox.getItems().add("ARRIVE");
     }
 
     private void initHourAndMin() {

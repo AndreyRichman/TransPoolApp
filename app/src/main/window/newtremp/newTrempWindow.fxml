@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Point3D?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
@@ -70,19 +69,7 @@
                   <ChoiceBox fx:id="minutesChoiceBox" prefHeight="38.0" prefWidth="235.0" styleClass="menu-btn" GridPane.rowIndex="1" />
                </children>
             </GridPane>
-            <GridPane prefHeight="45.0" prefWidth="211.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <CheckBox fx:id="deptatureCheckBox" mnemonicParsing="false" onAction="#onClickDepChoise" prefHeight="40.0" prefWidth="163.0" styleClass="field-title" text="Departure" />
-                  <CheckBox fx:id="arrivalCheckBox" mnemonicParsing="false" onAction="#onClickArrChoise" prefHeight="40.0" prefWidth="143.0" styleClass="field-title" text="Arrival" GridPane.rowIndex="1" />
-               </children>
-            </GridPane>
+            <ChoiceBox fx:id="searchByChoiceBox" prefHeight="38.0" prefWidth="272.0" styleClass="menu-btn" />
          </children>
       </VBox>
    </children>

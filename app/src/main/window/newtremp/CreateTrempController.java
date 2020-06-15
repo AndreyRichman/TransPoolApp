@@ -53,10 +53,7 @@ public class CreateTrempController {
     private ChoiceBox<Integer> minutesChoiceBox;
 
     @FXML
-    private CheckBox deptatureCheckBox;
-
-    @FXML
-    private CheckBox arrivalCheckBox;
+    private ChoiceBox<String> searchByChoiceBox;
 
     @FXML
     void onClickCancelButton(ActionEvent event) {
@@ -73,7 +70,7 @@ public class CreateTrempController {
         request.setFromStation(fromStationChoiceBox.getValue());
         request.setToStation(toStationChoiceBox.getValue());
         request.setDepartDay(daySpinner.getValue());
-        if (deptatureCheckBox.isSelected()) {  request.setDesiredTimeType(DesiredTimeType.DEPART.toString()); }
+        if (searchByChoiceBox.getValue().equals("DEPART")) {  request.setDesiredTimeType(DesiredTimeType.DEPART.toString()); }
         else { request.setDesiredTimeType(DesiredTimeType.ARRIVE.toString());  }
 
         addNewTrempFromRequest(request);
@@ -95,6 +92,7 @@ public class CreateTrempController {
         request = new NewTrempRequest();
         fromStationChoiceBox = new ChoiceBox<>();
         toStationChoiceBox = new ChoiceBox<>();
+        searchByChoiceBox = new ChoiceBox<>();
         stationsNames = FXCollections.observableArrayList();
     }
 
@@ -105,6 +103,13 @@ public class CreateTrempController {
         initdaySpinner();
 
         initHourAndMin();
+
+        initChoiceBox();
+    }
+
+    private void initChoiceBox() {
+        searchByChoiceBox.getItems().add("DEPART");
+        searchByChoiceBox.getItems().add("ARRIVE");
     }
 
     private void initHourAndMin() {

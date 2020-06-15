@@ -105,12 +105,23 @@ public class TrempSubWindowController {
                 this.matchRideBtn.setVisible(true);
                 this.matchRideBtn.setText("Rank your tremp!");
             }
-
+            initTrempsLabel(selectedTremp);
             //TODO: add functionality according to status
 //            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
         }
 
 
+    }
+
+    private void initTrempsLabel(TrempRequest tremp) {
+        userValue.setText(tremp.getUser().getName());
+        wantToValue.setText(tremp.getSchedule().getDesiredTimeType().toString());
+        atTimeValue.setText(String.format(tremp.getSchedule().getDesiredDateTimeAccordingToTimeType().getHour() +":"+tremp.getSchedule().getDesiredDateTimeAccordingToTimeType().getMinute()));
+        if(tremp.isNotAssignedToRides())
+            statusValue.setText(String.format("NOT Assinged"));
+        else
+            statusValue.setText(String.format("Assigned" ));
+        //tremp.getSelectedRide().getSubRides().get(0).getOriginalRide().getID()
     }
 
     public void setMainController(MainWindowController mainController) {

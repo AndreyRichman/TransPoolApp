@@ -276,11 +276,10 @@ public class MainWindowController {
     }
 
     public void showTremps(TrempRequest trempRequest, int maxOptions) {
-        List<RideForTremp> allTremps =  this.logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
+        List<RideForTremp> tremps =  this.logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
 
-        List<RideForTremp> tremps = maxOptions < allTremps.size() ? allTremps.subList(0, maxOptions): allTremps;
+        tremps = tremps.stream().limit(maxOptions).collect(Collectors.toList());
         this.rideComponentController.showTremps(tremps);
-
 
         if (tremps.size() == 0) {
             //TODO: please enter delay here .... 4 seconds and then run

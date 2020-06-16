@@ -265,6 +265,10 @@ public class MainWindowController {
         this.mapComponentController.unMarkAllStations();
     }
 
+    public void clearMap(){
+        this.mapComponentController.clearMap();
+    }
+
     public void updateMapWithTrempRequest(TrempRequest selectedTremp) {
         this.mapComponentController.unMarkAllStations();
         this.mapComponentController.markStations(selectedTremp.getStartStation(), selectedTremp.getEndStation());
@@ -278,19 +282,25 @@ public class MainWindowController {
     public void showTremps(TrempRequest trempRequest, int maxOptions) {
         List<RideForTremp> tremps =  this.logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
 
-        tremps = tremps.stream().limit(maxOptions).collect(Collectors.toList());
-        this.rideComponentController.showTremps(tremps);
+        if (tremps.size() > 0) {
 
-        if (tremps.size() == 0) {
-            //TODO: please enter delay here .... 4 seconds and then run
+            tremps = tremps.stream().limit(maxOptions).collect(Collectors.toList());
+            this.rideComponentController.showTremps(tremps);
 
-            this.rideComponentController.showNoTrempsAvailableTitle();
-        try {
-            Thread.sleep(4000);
-        } catch(Exception ignore){}
-            this.rideComponentController.showRidesTitle();
-            this.rideComponentController.updateRidesList();
+//            if (tremps.size() == 0) {
+//
+//                this.rideComponentController.showNoTrempsAvailableTitle();
+//                try {
+//                    Thread.sleep(4000);
+//                } catch (Exception ignore) {
+//                }
+//                this.rideComponentController.showRidesTitle();
+//                this.rideComponentController.updateRidesList();
 
+//            }
+
+        } else{
+            trempComponentController.updateNoTrempsAvailable();
         }
 
 

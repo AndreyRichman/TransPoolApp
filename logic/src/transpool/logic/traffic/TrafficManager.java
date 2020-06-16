@@ -176,7 +176,8 @@ public class TrafficManager {
         int maxNumberOfConnections = trempRequest.getMaxNumberOfConnections();
 
         List<List<SubRide>> relevantRidesByLocation = recursivlyGetAllRideOptions(from, to, maxNumberOfConnections);
-        List<List<SubRide>> relevantRidesByTime = filterRidesBySchedule(relevantRidesByLocation, trempRequest.getSchedule());
+        List<List<SubRide>> relevantRidesByLocationWithCorrectConn = filterRidesWithNotCorrectConnections(relevantRidesByLocation);
+        List<List<SubRide>> relevantRidesByTime = filterRidesBySchedule(relevantRidesByLocationWithCorrectConn, trempRequest.getSchedule());
         List<List<SubRide>> relevantByFreeSpace = filterRIdesBySpace(relevantRidesByTime);
 
         List<RideForTremp> matchedRides = new LinkedList<>();
@@ -186,6 +187,23 @@ public class TrafficManager {
         });
 
         return matchedRides;
+    }
+
+    private List<List<SubRide>> filterRidesWithNotCorrectConnections(List<List<SubRide>> relevantRidesByLocation) {
+        List<List<SubRide>> subRidesToRemove = new LinkedList<>();
+        for(List<SubRide> subRideOption: relevantRidesByLocation){
+            SubRide firstSub = subRideOption.get(0);
+            Station current = firstSub.getEndStation();
+            for(SubRide subRide : subRideOption){
+                if (subRide != firstSub && subRide.getStartStation() != current){
+                    subRidesToRemove.add(subRideOption);
+                    break;
+                }
+                current = subRide.getEndStation();
+            }
+        }
+
+        return relevantRidesByLocation.stream().filter(option -> !subRidesToRemove.contains(option)).collect(Collectors.toList());
     }
 
     private List<List<SubRide>> filterRIdesBySpace(List<List<SubRide>> subRidesToCheckForFreeSpace) {
@@ -387,6 +405,7 @@ public class TrafficManager {
 
                     for (List<SubRide> subRidesList : matchedSubrides) {
                         if (subRidesList.size() > 0 && subRidesList.get(0).getOriginalRide() != starterRide) {
+
                             subRidesList.add(0, new SubRide(starterRide, from, stationForSwap));
                             options.add(subRidesList);
 

@@ -165,8 +165,18 @@ public class DynamicMapController {
             this.mainController.updateMapWithRidesRunningOn(this.currentDateTime);
         else {
             unMarkRedMarkedEdges();
+            unMarkBlueMarkedEdges();
             removeTextFromEdges();
         }
+    }
+
+    public void clearMap(){
+        unMarkRedMarkedEdges();
+        unMarkBlueMarkedEdges();
+        removeTextFromEdges();
+        unMarkAllStations();
+
+        this.mapScrollPane.setContent(null);
     }
 
 

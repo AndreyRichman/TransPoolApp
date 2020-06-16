@@ -73,6 +73,7 @@ public class newXmlLoadController {
 
         //clear old metadata
         clearOldResults();
+        this.mainWindowController.clearMap();
     }
 
     public void clearOldView(){
@@ -96,6 +97,7 @@ public class newXmlLoadController {
 
     @FXML
     void onClickLoadFileButton(ActionEvent event) {
+        this.mainWindowController.clearMap();
 //        not used due to progress bar load. might be used in future, right now its working with bypass.
 //        LoadXMLRequest req = new LoadXMLRequest();
 //        req.setFileDirectory(selectedFileProperty.get());

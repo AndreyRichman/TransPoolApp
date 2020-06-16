@@ -121,13 +121,26 @@ public class TrempSubWindowController {
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
             TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
 
-            if (this.directChoiceBox.getSelectionModel().getSelectedIndex() != 0)
-                selectedTremp.setMaxNumberOfConnections(10);
+            if (this.directChoiceBox.getSelectionModel().getSelectedIndex() == 0)
+                selectedTremp.setMaxNumberOfConnections(0);
+            else
+                selectedTremp.setMaxNumberOfConnections(5);
 
-            int maxOptions = Integer.parseInt(this.maxOfffersTextField.getText());
-            this.mainController.showTremps(selectedTremp, maxOptions);
+            int maxOffers = this.maxOfffersTextField.getText().equals("") ? 5 : Integer.parseInt(this.maxOfffersTextField.getText());
+
+            this.mainController.showTremps(selectedTremp, maxOffers);
         }
 
+    }
+
+    public void updateNoTrempsAvailable(){
+        this.matchRideBtn.setText("No Options");
+        this.matchRideBtn.setMinWidth(240);
+    }
+
+    private void updateMatchText(){
+        this.matchRideBtn.setMinWidth(50);
+        this.matchRideBtn.setText("Match");
     }
 
     private boolean validations() {
@@ -146,6 +159,7 @@ public class TrempSubWindowController {
 
     @FXML
     void onTrempSelected(MouseEvent event) {
+        updateMatchText();
         updateAccordingToSelectedTremp();
     }
 

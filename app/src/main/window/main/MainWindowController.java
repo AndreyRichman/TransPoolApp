@@ -1,5 +1,6 @@
 package main.window.main;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,9 +18,8 @@ import main.window.newtremp.CreateTrempController;
 import main.window.newxmlload.newXmlLoadController;
 import transpool.logic.handler.LogicHandler;
 import transpool.logic.map.structure.Road;
-import transpool.logic.traffic.item.PartOfRide;
-import transpool.logic.traffic.item.Ride;
-import transpool.logic.traffic.item.TrempRequest;
+import transpool.logic.traffic.item.*;
+
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -248,6 +248,8 @@ public class MainWindowController {
     public void switchLiveMapOn() {
         this.rideComponentController.clearSelection();
         this.trempComponentController.clearSelection();
+        this.rideComponentController.updateRidesList();
+        this.trempComponentController.updateTrempsList();
         this.mapComponentController.unMarkAllStations();
 
         this.mapComponentController.toggleLiveMapOn();
@@ -268,4 +270,91 @@ public class MainWindowController {
         this.mapComponentController.markStations(selectedTremp.getStartStation(), selectedTremp.getEndStation());
 
     }
+
+    public void refreshTrempState(){
+        this.trempComponentController.updateAccordingToSelectedTremp();
+    }
+
+    public void showTremps(TrempRequest trempRequest, int maxOptions) {
+        List<RideForTremp> tremps =  this.logicHandler.getAllPossibleTrempsForTrempRequest(trempRequest);
+
+        tremps = tremps.stream().limit(maxOptions).collect(Collectors.toList());
+        this.rideComponentController.showTremps(tremps);
+
+        if (tremps.size() == 0) {
+            //TODO: please enter delay here .... 4 seconds and then run
+
+            this.rideComponentController.showNoTrempsAvailableTitle();
+        try {
+            Thread.sleep(4000);
+        } catch(Exception ignore){}
+            this.rideComponentController.showRidesTitle();
+            this.rideComponentController.updateRidesList();
+
+        }
+
+
+    }
+
+    public void assignSelectedTrempRequestToRide() {
+        TrempRequest trempRequest = this.trempComponentController.getSelectedTrempRequest();
+        RideForTremp rideForTremp = this.rideComponentController.getSelectedTremp();
+
+        if(trempRequest != null && rideForTremp != null){
+            rideForTremp.assignTrempRequest(trempRequest);
+            trempRequest.assignRides(rideForTremp);
+        }
+
+        this.trempComponentController.updateTrempsList();
+        this.rideComponentController.updateRidesList();
+    }
+
+    public void showRideForTremp(RideForTremp selectedRide) {
+        this.mapComponentController.unMarkRedMarkedEdges();
+        this.mapComponentController.unMarkBlueMarkedEdges();
+        this.mapComponentController.removeTextFromEdges();
+//        this.mapComponentController.unMarkAllStations();
+        updateMapRoadsBySubRides(selectedRide.getSubRides());
+
+
+//
+//        markRidesStations(ridesRunningNow);
+//        updateMapRoadsByRides(new ArrayList<>(){{add(selectedRide.get)}});
+//        updateMapWithRideStatus(ridesRunningNow, currentDateTime);
+//        updateMapRoadsTextByRides(ridesRunningNow, currentDateTime);
+    }
+    public void updateMapRoadsBySubRides(List<SubRide> subRides){
+        boolean blue = true;
+        for (SubRide subRide : subRides){
+            List<Road> allRoadsToMark = subRide.getSelectedPartsOfRide().stream()
+                    .map(PartOfRide::getRoad).collect(Collectors.toList());
+            if (blue)
+                this.mapComponentController.markRoadsInBlue(allRoadsToMark);
+            else
+                this.mapComponentController.markRoadsInRed(allRoadsToMark);
+            hideRoads(allRoadsToMark);
+
+            blue = !blue;
+        }
+
+
+
+//        rides.forEach(ride -> mapComponentController.markStations(ride.getStartStation(), ride.getEndStation()));
+//        this.mapComponentController.markRoadsInRed(allRoadsToMark);
+
+
+    }
+
+    private void hideRoads(List<Road> roadsToMark){
+        List<Road> roadsToHide = new LinkedList<>();
+        List<Road> leftRoads = this.logicHandler.getAllRoads().stream().filter(rode -> !roadsToMark.contains(rode)).collect(Collectors.toList());
+        for (Road toHide: leftRoads){
+            for (Road toMark: roadsToMark){
+                if (!roadsToMark.contains(toHide) && toHide.sharesOppositeStations(toMark))
+                    roadsToHide.add(toHide);
+            }
+        }
+        this.mapComponentController.hideRoads(roadsToHide);
+    }
+
 }

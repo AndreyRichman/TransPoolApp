@@ -33,7 +33,7 @@
             <Label fx:id="wantToTitle" styleClass="field-title" text="Want to:" />
             <Label fx:id="atTimeTitle" styleClass="field-title" text="At:" />
             <Label fx:id="statusTitle" styleClass="field-title" text="Status:" />
-            <Label styleClass="field-title" text="max Offfers:" />
+            <Label fx:id="maxOfferLabel" styleClass="field-title" text="max Offfers:" />
             <Label styleClass="field-title" text="Direct:" />
          </children>
       </VBox>
@@ -44,7 +44,7 @@
             <Label fx:id="atTimeValue" styleClass="field-title" />
             <Label fx:id="statusValue" styleClass="field-title" />
             <TextField fx:id="maxOfffersTextField" styleClass="field-text-box" />
-            <ChoiceBox fx:id="directChoiceBox" prefHeight="19.0" prefWidth="105.0" styleClass="menu-btn" />
+            <ChoiceBox fx:id="directChoiceBox" prefHeight="19.0" prefWidth="105.0" styleClass="menu-select" />
          </children>
       </VBox>
       <Label alignment="CENTER" prefHeight="55.0" prefWidth="178.0" styleClass="mid-title" text="Tremps" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" />

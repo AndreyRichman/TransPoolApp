@@ -10,8 +10,8 @@ public class StationDetailsController {
     private final String STATION_NAME_FORMAT = "%s ( %s ; %s)";
 
     @FXML private Label stationNameLabel;
-    @FXML private Label visitingTripsLabel;
 
+    @FXML private Label visitingTripsLabel;
 
     @FXML
     private ListView<String> JoinRideListView;
@@ -20,10 +20,16 @@ public class StationDetailsController {
     private ListView<String> dropRideListView;
 
     @FXML
-    private Label stationName;
+    private ListView<String> passingRideListView;
 
     @FXML
-    private ListView<String> passingRideListView;
+    private Label stationName;
+
+    public StationDetailsController(){
+        JoinRideListView = new ListView<>();
+        dropRideListView = new ListView<>();
+        passingRideListView = new ListView<>();
+    }
 
 
     public void setData(StationDetailsDTO data) {

@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
@@ -82,6 +83,9 @@ public class TrempSubWindowController {
     @FXML
     private ChoiceBox<String> directChoiceBox;
 
+    @FXML
+    private Label maxOfferLabel;
+
 
     @FXML
     void onClickCreateNewTrempBtn(ActionEvent event) throws IOException {
@@ -109,11 +113,30 @@ public class TrempSubWindowController {
     @FXML
     void onClickMatchRideBtn(ActionEvent event) {
 
-        if(this.trempsVisibleInView.get(this.trempsListView.getSelectionModel().getSelectedIndex()) != null)
-        {
+        if(validations()){
 
+            maxOfferLabel.setTextFill(Color.WHITE);
+            maxOfffersTextField.setPromptText("");
+
+            int index = this.trempsListView.getSelectionModel().getSelectedIndex();
+            TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+
+            if (this.directChoiceBox.getSelectionModel().getSelectedIndex() != 0)
+                selectedTremp.setMaxNumberOfConnections(10);
+
+            int maxOptions = Integer.parseInt(this.maxOfffersTextField.getText());
+            this.mainController.showTremps(selectedTremp, maxOptions);
         }
 
+    }
+
+    private boolean validations() {
+        if (Integer.parseInt(this.maxOfffersTextField.getText() )< 1) {
+            maxOfferLabel.setTextFill(Color.RED);
+            maxOfffersTextField.setPromptText("number > 0");
+            return false;
+        }
+        return true;
     }
 
     @FXML
@@ -123,9 +146,14 @@ public class TrempSubWindowController {
 
     @FXML
     void onTrempSelected(MouseEvent event) {
-        if (this.mainController != null){
+        updateAccordingToSelectedTremp();
+    }
+
+    public void updateAccordingToSelectedTremp(){
+        if (this.mainController != null && !this.trempsListView.getSelectionModel().isEmpty()){
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
             TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+
 
             this.mainController.switchLiveMapOff();
             this.mainController.updateMapWithTrempRequest(selectedTremp);
@@ -137,11 +165,7 @@ public class TrempSubWindowController {
 
 
             initTrempsLabel(selectedTremp);
-            //TODO: add functionality according to status
-//            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedTremp);}});
         }
-
-
     }
 
     private void initTrempsLabel(TrempRequest tremp) {
@@ -153,6 +177,11 @@ public class TrempSubWindowController {
         else
             statusValue.setText(String.format("Assigned" ));
         //tremp.getSelectedRide().getSubRides().get(0).getOriginalRide().getID()
+    }
+
+    public TrempRequest getSelectedTrempRequest(){
+        int index = this.trempsListView.getSelectionModel().getSelectedIndex();
+        return this.trempsVisibleInView.get(index);
     }
 
     public void setMainController(MainWindowController mainController) {

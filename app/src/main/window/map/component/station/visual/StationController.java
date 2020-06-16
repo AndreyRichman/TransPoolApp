@@ -62,7 +62,7 @@ public class StationController {
             AnchorPane root = fxmlLoader.load(url.openStream());
 
             StationDetailsController controller = fxmlLoader.getController();
-            //controller.setData(stationDetailsDTO);
+            controller.setData(stationDetailsDTO);
 
             Stage details = new Stage();
             details.initModality(Modality.APPLICATION_MODAL);

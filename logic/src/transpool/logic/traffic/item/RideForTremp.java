@@ -7,6 +7,7 @@ import transpool.logic.user.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RideForTremp {
 
@@ -14,8 +15,12 @@ public class RideForTremp {
     Schedule schedule;
 
     private Map<User, Driver.Rank> allRanks;
+    private int id;
+
+    private static int unique_id = 700;
 
     public RideForTremp(List<SubRide> subRides) {
+        this.id = unique_id++;
         this.subRides = subRides;
         this.schedule = initScheduleAccordingToRides(subRides);
         this.allRanks = new HashMap<>();
@@ -81,5 +86,13 @@ public class RideForTremp {
     public void addRank(User user, Driver.Rank rank){
         this.subRides.forEach(subRide -> subRide.getOriginalRide().getRideOwner().addRank(rank));
         this.allRanks.put(user, rank);
+    }
+
+    public int getID() {
+        return id;
+    }
+
+    public List<String> getDrivers(){
+        return this.subRides.stream().map( subRide -> subRide.getOriginalRide().getRideOwner().getUser().getName()).distinct().collect(Collectors.toList());
     }
 }

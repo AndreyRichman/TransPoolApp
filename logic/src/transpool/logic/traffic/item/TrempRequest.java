@@ -46,6 +46,10 @@ public class TrempRequest {
         this.schedule = new RequestSchedule(time, day, RepeatType.ONE_TIME, desiredTimeType);
     }
 
+    public void setMaxDiffMinutes(int minutes){
+        this.schedule.setMaxDiffInMinutes(minutes);
+    }
+
     public int getID(){
         return this.id;
     }
@@ -99,9 +103,4 @@ public class TrempRequest {
 
         return  ranked;
     }
-
-    public void setMaxDiffMinutes(int minutes){
-        this.schedule.setMaxDiffInMinutes(minutes);
-    }
-
 }

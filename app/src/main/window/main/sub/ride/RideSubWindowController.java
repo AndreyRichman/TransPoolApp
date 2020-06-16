@@ -72,7 +72,13 @@ public class RideSubWindowController {
 
     @FXML
     void onClickAssignTrempBtn(ActionEvent event) {
+        this.mainController.assignSelectedTrempRequestToRide();
         updateAfterDoneWithTremps();
+    }
+
+    public RideForTremp getSelectedTremp(){
+        int index = this.ridesListView.getSelectionModel().getSelectedIndex();
+        return this.trempsVisibleInView.get(index);
     }
 
     @FXML
@@ -153,6 +159,8 @@ public class RideSubWindowController {
     private void updateTrempInfo() {
         int index = this.ridesListView.getSelectionModel().getSelectedIndex();
         RideForTremp selectedRide = this.trempsVisibleInView.get(index);
+
+        this.mainController.showRideForTremp(selectedRide);
     }
 
     private void updateRideInfo() {
@@ -204,5 +212,13 @@ public class RideSubWindowController {
 
     public void clearSelection() {
         this.ridesListView.getSelectionModel().clearSelection();
+    }
+
+    public void showNoTrempsAvailableTitle() {
+        this.mainTitle.setText("Sorry.... no matches for your request");
+    }
+
+    public void showRidesTitle() {
+        this.mainTitle.setText("Rides");
     }
 }

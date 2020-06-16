@@ -138,4 +138,7 @@ public class SubRide {
         return this.originalRide.isNotRankedBySomeTrempists();
     }
 
+    public List<PartOfRide> getSelectedPartsOfRide() {
+        return selectedPartsOfRide;
+    }
 }

@@ -115,7 +115,12 @@ public class TrempSubWindowController {
 //        }
         int index = this.trempsListView.getSelectionModel().getSelectedIndex();
         TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
-        this.mainController.showTremps(selectedTremp);
+
+        if (this.directChoiceBox.getSelectionModel().getSelectedIndex() != 0)
+            selectedTremp.setMaxNumberOfConnections(10);
+
+        int maxOptions = Integer.parseInt(this.maxOfffersTextField.getText());
+        this.mainController.showTremps(selectedTremp, maxOptions);
     }
 
     @FXML
@@ -132,6 +137,7 @@ public class TrempSubWindowController {
         if (this.mainController != null && !this.trempsListView.getSelectionModel().isEmpty()){
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
             TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+
 
             this.mainController.switchLiveMapOff();
             this.mainController.updateMapWithTrempRequest(selectedTremp);
@@ -155,6 +161,11 @@ public class TrempSubWindowController {
         else
             statusValue.setText(String.format("Assigned" ));
         //tremp.getSelectedRide().getSubRides().get(0).getOriginalRide().getID()
+    }
+
+    public TrempRequest getSelectedTrempRequest(){
+        int index = this.trempsListView.getSelectionModel().getSelectedIndex();
+        return this.trempsVisibleInView.get(index);
     }
 
     public void setMainController(MainWindowController mainController) {

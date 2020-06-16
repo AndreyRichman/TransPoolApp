@@ -1,14 +1,15 @@
 package main.window.main.sub.map;
 
 import com.fxgraph.graph.Graph;
-import com.fxgraph.graph.ICell;
 import com.fxgraph.graph.Model;
 import com.fxgraph.graph.PannableCanvas;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import main.window.main.MainWindowController;
 import main.window.map.component.coordinate.CoordinateNode;
 import main.window.map.component.coordinate.CoordinatesManager;
@@ -21,6 +22,7 @@ import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
 import transpool.logic.time.Schedule;
+import transpool.logic.traffic.item.Ride;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -33,7 +35,7 @@ public class DynamicMapController {
     private final int MAX_BOARD_SCALE = 100;
     private int currentBoardScale = 25;
 
-    MainWindowController mainController;
+    private MainWindowController mainController;
     private Graph graphMap;
     private CoordinatesManager coordinatesManager;
     private StationManager stationManager;
@@ -107,6 +109,20 @@ public class DynamicMapController {
     private void updateDateTimeTextFieldsAccordingToTime(LocalDateTime dateTime){
         this.dayTextField.textProperty().set(String.format("%d", Schedule.getDayOfDateTime(dateTime)));
         this.timeTextField.textProperty().set(dateTime.toLocalTime().toString());
+    }
+
+    public List<String> getRidersName() {
+        List<String> ridersNames = new ArrayList<>();
+
+        int index = 0;
+        List<Ride> allRides = this.mainController.getAllRides();
+        for (Ride ride : allRides) {
+            String toSHow = String.format("%d - %s",
+                    ride.getID(),
+                    ride.getRideOwner().getUser().getName());
+            ridersNames.add(toSHow);
+        }
+        return ridersNames;
     }
 
     @FXML
@@ -256,10 +272,7 @@ public class DynamicMapController {
 
             stationNode.setDetailsSupplier(() -> {
                 List<String> trips = new ArrayList<>();
-//                trips.add("Mosh");
-//                trips.add("Menash");
-//                trips.add("Tikva");
-//                trips.add("Mazal");
+
                 return new StationDetailsDTO(trips);
             });
         });

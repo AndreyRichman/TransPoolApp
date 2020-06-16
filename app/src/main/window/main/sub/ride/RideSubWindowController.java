@@ -57,6 +57,9 @@ public class RideSubWindowController {
     private Button addNewRideBtn;
 
     @FXML
+    private Label rideDuration;
+
+    @FXML
     void onAddNewRideBtnClick(ActionEvent event) throws IOException {
         this.mainController.createNewRide();
 
@@ -94,8 +97,7 @@ public class RideSubWindowController {
             Ride selectedRide = this.ridesVisibleInView.get(index);
             initLabels(selectedRide);
             this.mainController.switchLiveMapOff();
-            if (selectedRide != null)
-                this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
+            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
         }
     }
 
@@ -105,6 +107,7 @@ public class RideSubWindowController {
         arriveValue.setText(String.valueOf(ride.getSchedule().getEndTime()));
         ppkValue.setText(String.valueOf(ride.getPricePerKilometer()));
         fuelValue.setText(String.valueOf(ride.getAverageFuelUsage()));
+        rideDuration.setText(String.valueOf(ride.getTotalTimeOfRide()));
     }
 
     public void clear(){

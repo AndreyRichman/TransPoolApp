@@ -25,13 +25,14 @@
     <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+      <VBox prefHeight="200.0" prefWidth="120.0" spacing="2.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <children>
             <Label fx:id="userTitle" styleClass="field-title" text="User Name:" />
             <Label fx:id="departTitle" styleClass="field-title" text="Depart Time:" />
             <Label fx:id="ArriveTitle" styleClass="field-title" text="Arrive Time:" />
             <Label fx:id="ppkTitle" styleClass="field-title" text="PPK:" />
             <Label fx:id="fuelTitle" styleClass="field-title" text="Average Fuel:" />
+            <Label styleClass="field-title" text="ride Duration:" />
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
@@ -41,9 +42,10 @@
             <Label fx:id="arriveValue" styleClass="field-title" />
             <Label fx:id="ppkValue" styleClass="field-title" />
             <Label fx:id="fuelValue" styleClass="field-title" />
+            <Label fx:id="rideDuration" />
          </children>
       </VBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="579.0" styleClass="mid-title" text="Rides" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="168.0" styleClass="mid-title" text="Rides" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
       <ListView fx:id="ridesListView" onMouseClicked="#onRideSelected" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Button fx:id="addNewRideBtn" mnemonicParsing="false" onAction="#onAddNewRideBtnClick" prefHeight="31.0" prefWidth="229.0" styleClass="menu-btn" text="Add New Ride" GridPane.columnIndex="1" GridPane.rowIndex="3" />
    </children>

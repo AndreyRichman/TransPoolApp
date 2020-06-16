@@ -175,6 +175,8 @@ public class RideSubWindowController {
         this.mainController.switchLiveMapOff();
         if (selectedRide != null)
             this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
+
+        this.mainController.updateMatchBtn();
     }
 
     private void updateTrempButtons() {

@@ -246,6 +246,7 @@ public class MainWindowController {
     }
 
     public void switchLiveMapOn() {
+        this.trempComponentController.updateMatchText();
         this.rideComponentController.clearSelection();
         this.trempComponentController.clearSelection();
         this.rideComponentController.updateRidesList();
@@ -367,4 +368,7 @@ public class MainWindowController {
         this.mapComponentController.hideRoads(roadsToHide);
     }
 
+    public void updateMatchBtn() {
+        this.trempComponentController.updateMatchText();
+    }
 }

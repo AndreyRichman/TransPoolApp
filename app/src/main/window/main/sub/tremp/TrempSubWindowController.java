@@ -138,7 +138,7 @@ public class TrempSubWindowController {
         this.matchRideBtn.setMinWidth(240);
     }
 
-    private void updateMatchText(){
+    public void updateMatchText(){
         this.matchRideBtn.setMinWidth(50);
         this.matchRideBtn.setText("Match");
     }

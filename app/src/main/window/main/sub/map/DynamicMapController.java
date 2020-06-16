@@ -22,6 +22,7 @@ import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
 import transpool.logic.time.Schedule;
+import transpool.logic.traffic.item.Ride;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -108,6 +109,20 @@ public class DynamicMapController {
     private void updateDateTimeTextFieldsAccordingToTime(LocalDateTime dateTime){
         this.dayTextField.textProperty().set(String.format("%d", Schedule.getDayOfDateTime(dateTime)));
         this.timeTextField.textProperty().set(dateTime.toLocalTime().toString());
+    }
+
+    public List<String> getRidersName() {
+        List<String> ridersNames = new ArrayList<>();
+
+        int index = 0;
+        List<Ride> allRides = this.mainController.getAllRides();
+        for (Ride ride : allRides) {
+            String toSHow = String.format("%d - %s",
+                    ride.getID(),
+                    ride.getRideOwner().getUser().getName());
+            ridersNames.add(toSHow);
+        }
+        return ridersNames;
     }
 
     @FXML

@@ -33,7 +33,7 @@
             <Label fx:id="wantToTitle" styleClass="field-title" text="Want to:" />
             <Label fx:id="atTimeTitle" styleClass="field-title" text="At:" />
             <Label fx:id="statusTitle" styleClass="field-title" text="Status:" />
-            <Label styleClass="field-title" text="max Offfers:" />
+            <Label fx:id="maxOfferLabel" styleClass="field-title" text="max Offfers:" />
             <Label styleClass="field-title" text="Direct:" />
          </children>
       </VBox>

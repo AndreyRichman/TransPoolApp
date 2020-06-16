@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
@@ -82,6 +83,9 @@ public class TrempSubWindowController {
     @FXML
     private ChoiceBox<String> directChoiceBox;
 
+    @FXML
+    private Label maxOfferLabel;
+
 
     @FXML
     void onClickCreateNewTrempBtn(ActionEvent event) throws IOException {
@@ -109,18 +113,30 @@ public class TrempSubWindowController {
     @FXML
     void onClickMatchRideBtn(ActionEvent event) {
 
-//        if(this.trempsVisibleInView.get(this.trempsListView.getSelectionModel().getSelectedIndex()) != null)
-//        {
-//
-//        }
-        int index = this.trempsListView.getSelectionModel().getSelectedIndex();
-        TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+        if(validations()){
 
-        if (this.directChoiceBox.getSelectionModel().getSelectedIndex() != 0)
-            selectedTremp.setMaxNumberOfConnections(10);
+            maxOfferLabel.setTextFill(Color.WHITE);
+            maxOfffersTextField.setPromptText("");
 
-        int maxOptions = Integer.parseInt(this.maxOfffersTextField.getText());
-        this.mainController.showTremps(selectedTremp, maxOptions);
+            int index = this.trempsListView.getSelectionModel().getSelectedIndex();
+            TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+
+            if (this.directChoiceBox.getSelectionModel().getSelectedIndex() != 0)
+                selectedTremp.setMaxNumberOfConnections(10);
+
+            int maxOptions = Integer.parseInt(this.maxOfffersTextField.getText());
+            this.mainController.showTremps(selectedTremp, maxOptions);
+        }
+
+    }
+
+    private boolean validations() {
+        if (Integer.parseInt(this.maxOfffersTextField.getText() )< 1) {
+            maxOfferLabel.setTextFill(Color.RED);
+            maxOfffersTextField.setPromptText("number > 0");
+            return false;
+        }
+        return true;
     }
 
     @FXML

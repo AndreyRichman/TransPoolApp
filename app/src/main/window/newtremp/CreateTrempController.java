@@ -95,7 +95,8 @@ public class CreateTrempController {
     }
 
     private boolean vaildTimeDeviation() {
-
+        if (Integer.parseInt(timeDeviation.getText()) > 0)
+            return true;
         return false;
     }
 

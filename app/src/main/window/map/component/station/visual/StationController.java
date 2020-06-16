@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -59,14 +59,15 @@ public class StationController {
             FXMLLoader fxmlLoader = new FXMLLoader();
             URL url = getClass().getResource("../../details/visual/StationDetailsView.fxml");
             fxmlLoader.setLocation(url);
-            GridPane root = fxmlLoader.load(url.openStream());
+            AnchorPane root = fxmlLoader.load(url.openStream());
 
             StationDetailsController controller = fxmlLoader.getController();
-            controller.setData(stationDetailsDTO);
+            //controller.setData(stationDetailsDTO);
 
             Stage details = new Stage();
             details.initModality(Modality.APPLICATION_MODAL);
-            final Scene scene = new Scene(root, 300, 300);
+            final Scene scene = new Scene(root, 739, 206);
+            details.setResizable(false);
             details.setScene(scene);
             details.show();
         } catch (IOException e) {

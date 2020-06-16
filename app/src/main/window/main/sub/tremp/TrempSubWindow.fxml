@@ -47,7 +47,7 @@
             <ChoiceBox fx:id="directChoiceBox" prefHeight="19.0" prefWidth="105.0" styleClass="menu-btn" />
          </children>
       </VBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="55.0" prefWidth="612.0" styleClass="mid-title" text="Tremps" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+      <Label alignment="CENTER" prefHeight="55.0" prefWidth="178.0" styleClass="mid-title" text="Tremps" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <ListView fx:id="trempsListView" onMouseClicked="#onTrempSelected" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Button fx:id="createNewTrempBtn" mnemonicParsing="false" onAction="#onClickCreateNewTrempBtn" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Add Tremp" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Button fx:id="RankRiderBtn" mnemonicParsing="false" onAction="#onClickRankRiderBtn" prefHeight="31.0" prefWidth="201.0" styleClass="menu-btn" text="Rank" GridPane.columnIndex="4" GridPane.rowIndex="3" />

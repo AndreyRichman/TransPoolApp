@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import main.window.main.MainWindowController;
 import transpool.logic.handler.LogicHandler;
@@ -56,6 +57,12 @@ public class CreateTrempController {
     private ChoiceBox<String> searchByChoiceBox;
 
     @FXML
+    private TextField timeDeviation;
+
+    @FXML
+    private Label timeDeviationLabel;
+
+    @FXML
     void onClickCancelButton(ActionEvent event) {
         stage.close();
     }
@@ -72,10 +79,25 @@ public class CreateTrempController {
         request.setDepartDay(daySpinner.getValue());
         if (searchByChoiceBox.getValue().equals("DEPART")) {  request.setDesiredTimeType(DesiredTimeType.DEPART.toString()); }
         else { request.setDesiredTimeType(DesiredTimeType.ARRIVE.toString());  }
+        if(vaildTimeDeviation()){
+            timeDeviationLabel.setTextFill(Color.WHITE);
+            addNewTrempFromRequest(request);
+            this.mainController.updateTrempsList();
+            this.stage.close();
+        }
+        else
+        {
+            timeDeviationLabel.setTextFill(Color.RED);
+            timeDeviation.setText("");
+            timeDeviation.setPromptText("please enter num > 0");
+        }
 
-        addNewTrempFromRequest(request);
-        this.mainController.updateTrempsList();
-        this.stage.close();
+    }
+
+    private boolean vaildTimeDeviation() {
+        if (Integer.parseInt(timeDeviation.getText()) > 0)
+            return true;
+        return false;
     }
 
     @FXML
@@ -160,7 +182,7 @@ public class CreateTrempController {
             LocalTime desiredTime = LocalTime.parse(request.getChosenTime());
             int onDay = request.getDepartDay();
             newTrempRequest.setDesiredDayAndTime(onDay, desiredTime, desiredTimeType);
-
+            newTrempRequest.setMaxNumberOfConnections(Integer.parseInt(timeDeviation.getText()));
             logicHandler.addTrempRequest(newTrempRequest);
 
         }  catch (NoPathExistBetweenStationsException e) { e.printStackTrace();  }

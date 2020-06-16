@@ -103,4 +103,9 @@ public class TrempRequest {
 
         return  ranked;
     }
+
+    public void setMaxDiffMinutes(int minutes){
+        this.schedule.setMaxDiffInMinutes(minutes);
+    }
+
 }

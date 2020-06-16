@@ -68,7 +68,9 @@ public class RideSubWindowController {
 
     @FXML
     private Button cancelTrempsBtn;
-
+  
+    @FXML
+     private Label rideDuration;
 
     @FXML
     void onClickAssignTrempBtn(ActionEvent event) {
@@ -101,6 +103,9 @@ public class RideSubWindowController {
         updateTrempsList(tremps);
         updateNewButton();
     }
+
+
+
 
     @FXML
     void onAddNewRideBtnClick(ActionEvent event) throws IOException {
@@ -145,7 +150,6 @@ public class RideSubWindowController {
     @FXML
     void onRideSelected(MouseEvent event) {
         if (this.mainController != null){
-
             updateTrempButtons();
 
             if (this.showingTremps)
@@ -204,6 +208,7 @@ public class RideSubWindowController {
         arriveValue.setText(String.valueOf(ride.getSchedule().getEndTime()));
         ppkValue.setText(String.valueOf(ride.getPricePerKilometer()));
         fuelValue.setText(String.valueOf(ride.getAverageFuelUsage()));
+        rideDuration.setText(String.valueOf(ride.getTotalTimeOfRide()));
     }
 
     public void clear(){

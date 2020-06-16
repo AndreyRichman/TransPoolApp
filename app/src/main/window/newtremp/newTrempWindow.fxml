@@ -45,9 +45,10 @@
             <Label styleClass="field-title" text="Hour" />
             <Label styleClass="field-title" text="Minutes" />
             <Label styleClass="field-title" text="Search by:" />
+            <Label fx:id="timeDeviationLabel" styleClass="field-title" text="Time Deviation in minutes:" />
          </children>
       </VBox>
-      <VBox prefHeight="296.0" prefWidth="152.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+      <VBox prefHeight="346.0" prefWidth="211.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <children>
             <TextField fx:id="userNameTextField" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" styleClass="field-text-box" />
             <ChoiceBox fx:id="fromStationChoiceBox" maxWidth="1.7976931348623157E308" onMouseClicked="#onFromStationSelected" prefWidth="150.0" styleClass="menu-select">
@@ -70,6 +71,7 @@
                </children>
             </GridPane>
             <ChoiceBox fx:id="searchByChoiceBox" prefHeight="38.0" prefWidth="272.0" styleClass="menu-select" />
+            <TextField fx:id="timeDeviation" prefHeight="38.0" prefWidth="211.0" styleClass="menu-btn" />
          </children>
       </VBox>
    </children>

@@ -307,6 +307,9 @@ public class DynamicMapController {
             stationNode.setDetailsSupplier(() -> {
                 return new StationDetailsDTO(getRidersName());
             });
+
+
+
         });
 
         return stationManager;

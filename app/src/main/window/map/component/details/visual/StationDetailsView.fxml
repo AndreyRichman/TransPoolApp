@@ -1,41 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="206.0" prefWidth="739.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <GridPane layoutY="-2.0" prefHeight="206.0" prefWidth="739.0" stylesheets="@StationDetailsStyle.css">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="370.0" minWidth="10.0" prefWidth="236.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="385.0" minWidth="10.0" prefWidth="244.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="262.0" minWidth="10.0" prefWidth="254.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="296.0" styleClass="data-label" text="Joining" GridPane.rowIndex="2" />
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="401.0" styleClass="data-label" text="Droping" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <ListView fx:id="JoinRideListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3" GridPane.rowSpan="3" />
-            <ListView fx:id="dropRideListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="3" />
-            <Label fx:id="stationName" alignment="CENTER" prefHeight="17.0" prefWidth="761.0" styleClass="information-label" GridPane.columnSpan="3" />
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="523.0" styleClass="information-label" stylesheets="@StationDetailsStyle.css" text="Tremps" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="281.0" styleClass="information-label" text="Riders" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="351.0" styleClass="data-label" text="Passing" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ListView fx:id="passingRideListView" prefHeight="200.0" prefWidth="255.0" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.rowSpan="3" />
-         </children>
-      </GridPane>
-   </children>
-</AnchorPane>
+<?import javafx.scene.layout.*?>
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="414.0" stylesheets="@StationDetailsStyle.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="main.window.map.component.details.visual.StationDetailsController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" />
+        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" />
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="10.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="NEVER" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="10.0" vgrow="ALWAYS" />
+    </rowConstraints>
+    <children>
+        <Label styleClass="information-label" text="Name:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label fx:id="stationNameLabel" styleClass="data-label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <Label styleClass="information-label" text="Visiting:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label fx:id="visitingTripsLabel" styleClass="data-label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+    </children>
+</GridPane>

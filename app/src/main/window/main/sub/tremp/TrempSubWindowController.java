@@ -159,6 +159,10 @@ public class TrempSubWindowController {
 
     @FXML
     void onTrempSelected(MouseEvent event) {
+
+        RankRiderBtn.setVisible(true);
+        matchRideBtn.setVisible(true);
+
         updateMatchText();
         updateAccordingToSelectedTremp();
     }
@@ -205,6 +209,10 @@ public class TrempSubWindowController {
     private Map<Integer, TrempRequest> trempsVisibleInView;
 
     public void updateTrempsList(){
+        createNewTrempBtn.setVisible(true);
+        RankRiderBtn.setVisible(false);
+        matchRideBtn.setVisible(false);
+
         this.trempsVisibleInView = new HashMap<>();
 
         this.trempsListView.getItems().clear();
@@ -232,8 +240,9 @@ public class TrempSubWindowController {
     public void initialize() {
         directChoiceBox.getItems().add("YES");
         directChoiceBox.getItems().add("NO");
-        RankRiderBtn.disableProperty().bind(lastSelectedIsAssigned.not());
-        matchRideBtn.disableProperty().bind(lastSelectedIsAssigned);
+        RankRiderBtn.setVisible(false);
+        matchRideBtn.setVisible(false);
+        createNewTrempBtn.setVisible(false);
 
     }
 

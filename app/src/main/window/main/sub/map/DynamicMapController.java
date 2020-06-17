@@ -43,9 +43,7 @@ public class DynamicMapController {
     private List<ArrowedEdge> markedRedEdges;
     private List<ArrowedEdge> edgesWithText;
     private List<ArrowedEdge> markedBlueEdges;
-
-    Map<Road, ArrowedEdge> road2Edge;
-
+    private Map<Road, ArrowedEdge> road2Edge;
     private String[] addSubOptions = {"Add(+)", "Sub(-)"};
     private int addSubIndex = 0;
     private String[] timeOptions = {"5 min", "30 min", "1 hour", "2 hours", "1 day"};
@@ -281,8 +279,6 @@ public class DynamicMapController {
                 Station to = partOfRide.getRoad().getEndStation();
                 StationNode startStationNode = this.allStationNodes.get(from);
                 StationNode endStationNode = this.allStationNodes.get(to);
-
-
                 //TO Change Existing Details:
                 StationDetailsDTO existingDetails = startStationNode.getStationDetailsDTO();
                 existingDetails.setName("New Details");
@@ -307,10 +303,9 @@ public class DynamicMapController {
             graphModel.addCell(stationNode);
 
             allStationNodes.put(station, stationNode);
-            stationNode.setDetailsSupplier(() -> {
-                List<String> trips = new ArrayList<>();
 
-                return new StationDetailsDTO(trips);
+            stationNode.setDetailsSupplier(() -> {
+                return new StationDetailsDTO(getRidersName());
             });
         });
 

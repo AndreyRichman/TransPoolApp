@@ -23,6 +23,7 @@ public class StationNode extends AbstractCell {
     private int y;
     private String name;
     private Supplier<StationDetailsDTO> detailsSupplier;
+    private StationDetailsDTO stationDetailsDTO;
     StationController controller;
     HBox root;
     public StationNode(int x, int y) {
@@ -36,6 +37,15 @@ public class StationNode extends AbstractCell {
 
     public void setDetailsSupplier(Supplier<StationDetailsDTO> detailsSupplier) {
         this.detailsSupplier = detailsSupplier;
+    }
+
+    public void setStationDetailsDTO(StationDetailsDTO stationDetailsDTO) {
+        this.stationDetailsDTO = stationDetailsDTO;
+        this.detailsSupplier = () -> stationDetailsDTO;
+    }
+
+    public StationDetailsDTO getStationDetailsDTO() {
+        return stationDetailsDTO;
     }
 
     public int getX() {

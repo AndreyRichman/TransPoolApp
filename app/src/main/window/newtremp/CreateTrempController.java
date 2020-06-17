@@ -95,8 +95,10 @@ public class CreateTrempController {
     }
 
     private boolean vaildTimeDeviation() {
-        if (Integer.parseInt(timeDeviation.getText()) > 0)
-            return true;
+        if(!timeDeviation.getText().equals("")){
+            if (Integer.parseInt(timeDeviation.getText()) > 0)
+                return true;
+        }
         return false;
     }
 
@@ -127,6 +129,8 @@ public class CreateTrempController {
         initHourAndMin();
 
         initChoiceBox();
+
+        timeDeviation.setText("5");
     }
 
     private void initChoiceBox() {

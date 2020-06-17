@@ -66,7 +66,7 @@ public class StationController {
 
             Stage details = new Stage();
             details.initModality(Modality.APPLICATION_MODAL);
-            final Scene scene = new Scene(root, 300, 300);
+            final Scene scene = new Scene(root, 575, 333);
             details.setScene(scene);
             details.show();
         } catch (IOException e) {

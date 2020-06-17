@@ -104,9 +104,6 @@ public class RideSubWindowController {
         updateNewButton();
     }
 
-
-
-
     @FXML
     void onAddNewRideBtnClick(ActionEvent event) throws IOException {
         this.mainController.createNewRide();
@@ -117,6 +114,7 @@ public class RideSubWindowController {
     }
 
     public void updateRidesList(){
+        this.addNewRideBtn.setVisible(true);
         updateAfterDoneWithTremps();
         this.ridesVisibleInView = new HashMap<>();
         int index = 0;
@@ -161,6 +159,10 @@ public class RideSubWindowController {
     }
 
     private void updateTrempInfo() {
+
+        assignTrempBtn.setVisible(true);
+        cancelTrempsBtn.setVisible(true);
+
         int index = this.ridesListView.getSelectionModel().getSelectedIndex();
         RideForTremp selectedRide = this.trempsVisibleInView.get(index);
 
@@ -168,6 +170,10 @@ public class RideSubWindowController {
     }
 
     private void updateRideInfo() {
+
+        assignTrempBtn.setVisible(false);
+        cancelTrempsBtn.setVisible(false);
+
         int index = this.ridesListView.getSelectionModel().getSelectedIndex();
         Ride selectedRide = this.ridesVisibleInView.get(index);
         initRideLabels(selectedRide);
@@ -219,6 +225,12 @@ public class RideSubWindowController {
 
     public void clearSelection() {
         this.ridesListView.getSelectionModel().clearSelection();
+        userValue.setText("");
+        departValue.setText("");
+        arriveValue.setText("");
+        ppkValue.setText("");
+        fuelValue.setText("");
+        rideDuration.setText("");
     }
 
     public void showNoTrempsAvailableTitle() {
@@ -227,5 +239,12 @@ public class RideSubWindowController {
 
     public void showRidesTitle() {
         this.mainTitle.setText("Rides");
+    }
+
+    @FXML
+    public void initialize() {
+        this.assignTrempBtn.setVisible(false);
+        this.cancelTrempsBtn.setVisible(false);
+        this.addNewRideBtn.setVisible(false);
     }
 }

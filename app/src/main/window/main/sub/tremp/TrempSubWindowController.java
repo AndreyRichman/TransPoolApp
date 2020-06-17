@@ -159,6 +159,7 @@ public class TrempSubWindowController {
 
     @FXML
     void onTrempSelected(MouseEvent event) {
+
         updateMatchText();
         updateAccordingToSelectedTremp();
     }
@@ -172,10 +173,18 @@ public class TrempSubWindowController {
             this.mainController.switchLiveMapOff();
             this.mainController.updateMapWithTrempRequest(selectedTremp);
 
-            if (selectedTremp.isNotAssignedToRides())
+            if (selectedTremp.isNotAssignedToRides()){
                 lastSelectedIsAssigned.set(false);
-            if (selectedTremp.rankedAssignedRide())
+                RankRiderBtn.setVisible(false);
+                matchRideBtn.setVisible(true);
+            }
+
+            if (selectedTremp.rankedAssignedRide()){
                 lastSelectedIsAssigned.set(true);
+                RankRiderBtn.setVisible(true);
+                matchRideBtn.setVisible(false);
+            }
+
 
 
             initTrempsLabel(selectedTremp);
@@ -205,6 +214,10 @@ public class TrempSubWindowController {
     private Map<Integer, TrempRequest> trempsVisibleInView;
 
     public void updateTrempsList(){
+        createNewTrempBtn.setVisible(true);
+        RankRiderBtn.setVisible(false);
+        matchRideBtn.setVisible(false);
+
         this.trempsVisibleInView = new HashMap<>();
 
         this.trempsListView.getItems().clear();
@@ -217,6 +230,10 @@ public class TrempSubWindowController {
     }
 
     public void clearSelection() {
+        userValue.setText("");
+        wantToValue.setText("");
+        atTimeValue.setText("");
+        statusValue.setText("");
         this.trempsListView.getSelectionModel().clearSelection();
     }
 
@@ -232,8 +249,9 @@ public class TrempSubWindowController {
     public void initialize() {
         directChoiceBox.getItems().add("YES");
         directChoiceBox.getItems().add("NO");
-        RankRiderBtn.disableProperty().bind(lastSelectedIsAssigned.not());
-        matchRideBtn.disableProperty().bind(lastSelectedIsAssigned);
+        RankRiderBtn.setVisible(false);
+        matchRideBtn.setVisible(false);
+        createNewTrempBtn.setVisible(false);
 
     }
 

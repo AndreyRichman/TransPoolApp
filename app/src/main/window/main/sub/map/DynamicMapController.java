@@ -305,9 +305,12 @@ public class DynamicMapController {
             allStationNodes.put(station, stationNode);
 
             stationNode.setDetailsSupplier(() -> {
-                return new StationDetailsDTO(getRidersName());
+                StationDetailsDTO sta =  new StationDetailsDTO(getRidersName());
+                sta.setDrives(getRidersName()); //needs to get riders on this station
+                sta.setOnTremp(getRidersName()); //needs to get on- Tremps on this station
+                sta.setOffTremp(getRidersName()); // needs to get off-tremp on this station
+                return sta;
             });
-
 
 
         });

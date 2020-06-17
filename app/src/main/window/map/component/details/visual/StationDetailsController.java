@@ -7,7 +7,7 @@ import main.window.map.component.details.StationDetailsDTO;
 
 public class StationDetailsController {
 
-    private final String STATION_NAME_FORMAT = "%s ( %s ; %s)";
+    private final String STATION_NAME_FORMAT = "%s ( %s ; %s )";
     private StationDetailsDTO data;
 
     @FXML
@@ -17,35 +17,26 @@ public class StationDetailsController {
     private ListView<String> RidersListVIew;
 
     @FXML
-    private ListView<String> RidersonTrempistsListVIew;
+    private ListView<String> onTrempistsListVIew;
 
     @FXML
     private ListView<String> offTrempistsListVIew;
 
 
     public void setData(StationDetailsDTO data) {
-        this.data = data;
+        stationNameLabel.setText(String.format(STATION_NAME_FORMAT, data.getName(), String.valueOf(data.getX()), String.valueOf(data.getY())));
+        this.RidersListVIew.getItems().addAll(data.getDrives());
+        this.onTrempistsListVIew.getItems().addAll(data.getOnTremp());
+        this.offTrempistsListVIew.getItems().addAll(data.getOffTremp());
+
     }
 
     public StationDetailsController(){
         RidersListVIew = new ListView<>();
-        RidersonTrempistsListVIew = new ListView<>();
+        onTrempistsListVIew = new ListView<>();
         offTrempistsListVIew = new ListView<>();
     }
 
-    public void setStationNameLabel() {
-        stationNameLabel.setText(String.format(STATION_NAME_FORMAT, data.getName(), String.valueOf(data.getX()), String.valueOf(data.getY())));
-    }
 
-    public void setRidersListVIew(ListView<String> ridersListVIew) {
-        this.RidersListVIew.getItems().addAll(data.getDrives());
-    }
 
-    public void setOffTrempistsListVIew(ListView<String> offTrempistsListVIew) {
-        this.offTrempistsListVIew = offTrempistsListVIew;
-    }
-
-    public void setRidersonTrempistsListVIew(ListView<String> ridersonTrempistsListVIew) {
-        this.RidersonTrempistsListVIew = ridersonTrempistsListVIew;
-    }
 }

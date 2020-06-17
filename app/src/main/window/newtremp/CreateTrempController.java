@@ -129,6 +129,8 @@ public class CreateTrempController {
         initHourAndMin();
 
         initChoiceBox();
+
+        timeDeviation.setText("5");
     }
 
     private void initChoiceBox() {

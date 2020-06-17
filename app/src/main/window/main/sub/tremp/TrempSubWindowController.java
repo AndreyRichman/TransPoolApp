@@ -145,7 +145,7 @@ public class TrempSubWindowController {
 
     private boolean validations() {
         if (!maxOfffersTextField.getText().equals(""))
-            if (Integer.parseInt(this.maxOfffersTextField.getText() )< 1) {
+            if (Integer.parseInt(this.maxOfffersTextField.getText()) < 1) {
                 maxOfferLabel.setTextFill(Color.RED);
                 maxOfffersTextField.setPromptText("number > 0");
                 return false;
@@ -254,6 +254,7 @@ public class TrempSubWindowController {
         matchRideBtn.setVisible(false);
         createNewTrempBtn.setVisible(false);
         maxOfffersTextField.setText("5");
+
 
 
     }

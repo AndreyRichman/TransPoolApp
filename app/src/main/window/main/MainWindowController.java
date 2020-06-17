@@ -228,7 +228,7 @@ public class MainWindowController {
                 .filter(partOfRide -> partOfRide.getSchedule().hasInstanceContainingDateTime(currentDateTime))
                 .collect(Collectors.toMap(
                         PartOfRide::getRoad,
-                        partOfRide -> String.format("%d", partOfRide.getTrempistsManager().getAllTrempists().size())
+                        partOfRide -> String.format("%s-%s(%d)", partOfRide.getSchedule().getStartTime(), partOfRide.getSchedule().getEndTime(), partOfRide.getTrempistsManager().getAllTrempists().size())
                 ));
         this.mapComponentController.updateEdgesWithTexts(roads2Messages);
     }

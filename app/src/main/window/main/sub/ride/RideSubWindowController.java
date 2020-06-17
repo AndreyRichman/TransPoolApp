@@ -225,6 +225,12 @@ public class RideSubWindowController {
 
     public void clearSelection() {
         this.ridesListView.getSelectionModel().clearSelection();
+        userValue.setText("");
+        departValue.setText("");
+        arriveValue.setText("");
+        ppkValue.setText("");
+        fuelValue.setText("");
+        rideDuration.setText("");
     }
 
     public void showNoTrempsAvailableTitle() {

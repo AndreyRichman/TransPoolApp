@@ -225,6 +225,10 @@ public class TrempSubWindowController {
     }
 
     public void clearSelection() {
+        userValue.setText("");
+        wantToValue.setText("");
+        atTimeValue.setText("");
+        statusValue.setText("");
         this.trempsListView.getSelectionModel().clearSelection();
     }
 

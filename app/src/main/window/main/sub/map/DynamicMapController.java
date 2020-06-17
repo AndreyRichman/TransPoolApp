@@ -272,14 +272,41 @@ public class DynamicMapController {
         showArrow(edgesToBlue); //showBlueArrow
     }
 
+    private Map<Station, StationNode> allStationNodes;
+
+    private void updateStationsWindowWithRides(List<Ride> rides){
+        rides.forEach(ride -> {
+            ride.getPartsOfRide().forEach(partOfRide -> {
+                Station from = partOfRide.getRoad().getStartStation();
+                Station to = partOfRide.getRoad().getEndStation();
+                StationNode startStationNode = this.allStationNodes.get(from);
+                StationNode endStationNode = this.allStationNodes.get(to);
+
+
+                //TO Change Existing Details:
+                StationDetailsDTO existingDetails = startStationNode.getStationDetailsDTO();
+                existingDetails.setName("New Details");
+//                existingDetails.setWhateverYouWant(ride); //You can Even Add ride
+
+                //TO Replace existing details with new one
+                List<String> trips = new ArrayList<>();
+                StationDetailsDTO details = new StationDetailsDTO(trips);
+                startStationNode.setStationDetailsDTO(details);
+
+            });
+        });
+    }
+
     private StationManager loadStations(Model graphModel, List<Station> allStations) {
         StationManager stationManager = new StationManager(StationNode::new);
+        allStationNodes = new HashMap<>();
 
         allStations.forEach(station -> {
             StationNode stationNode = stationManager.getOrCreate(station.getCoordinate().getX(), station.getCoordinate().getY());
             stationNode.setName(station.getName());
             graphModel.addCell(stationNode);
 
+            allStationNodes.put(station, stationNode);
             stationNode.setDetailsSupplier(() -> {
                 List<String> trips = new ArrayList<>();
 

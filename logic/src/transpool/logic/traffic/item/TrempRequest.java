@@ -4,6 +4,7 @@ import enums.DesiredTimeType;
 import enums.RepeatType;
 import transpool.logic.map.structure.Station;
 import transpool.logic.time.RequestSchedule;
+import transpool.logic.user.Driver;
 import transpool.logic.user.User;
 
 import java.time.LocalTime;
@@ -102,5 +103,10 @@ public class TrempRequest {
         }
 
         return  ranked;
+    }
+
+    public void setRank(Driver.Rank rank) {
+        if(this.selectedRide != null)
+            this.selectedRide.addRank(this.getUser(), rank);
     }
 }

@@ -1,6 +1,7 @@
 package transpool.logic.user;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ public class Driver {
     public Driver(User user) {
         this.user = user;
         this.allRanks = new HashMap<>();
+        this.ranks = new LinkedList<>();
     }
 
     public User getUser() {

@@ -113,7 +113,7 @@ public class TrempSubWindowController {
     @FXML
     void onClickMatchRideBtn(ActionEvent event) {
 
-        if(validations()){
+        if(matchFieldsWereFilledCorrect()){
 
             maxOfferLabel.setTextFill(Color.WHITE);
             maxOfffersTextField.setPromptText("");
@@ -143,7 +143,14 @@ public class TrempSubWindowController {
         this.matchRideBtn.setText("Match");
     }
 
-    private boolean validations() {
+    private boolean matchFieldsWereFilledCorrect() {
+        boolean maxOffersValid = !maxOfffersTextField.getText().equals("") || Integer.parseInt(this.maxOfffersTextField.getText() )< 1;
+
+        if (!maxOffersValid)
+            maxOfffersTextField.setStyle("-fx-border-color: #ff7369");
+        else
+            maxOfffersTextField.setStyle("-fx-border-color: white");
+
         if (Integer.parseInt(this.maxOfffersTextField.getText() )< 1) {
             maxOfferLabel.setTextFill(Color.RED);
             maxOfffersTextField.setPromptText("number > 0");
@@ -177,11 +184,13 @@ public class TrempSubWindowController {
                 lastSelectedIsAssigned.set(false);
                 RankRiderBtn.setVisible(false);
                 matchRideBtn.setVisible(true);
-            }
-
-            if (selectedTremp.rankedAssignedRide()){
-                lastSelectedIsAssigned.set(true);
+            } else if (!selectedTremp.rankedAssignedRide()){
+                this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
                 RankRiderBtn.setVisible(true);
+                matchRideBtn.setVisible(false);
+            } else { //ride is assigned and ranked
+                lastSelectedIsAssigned.set(true);
+                RankRiderBtn.setVisible(false);
                 matchRideBtn.setVisible(false);
             }
 
@@ -249,6 +258,9 @@ public class TrempSubWindowController {
     public void initialize() {
         directChoiceBox.getItems().add("YES");
         directChoiceBox.getItems().add("NO");
+        directChoiceBox.getSelectionModel().select(1);
+        maxOfffersTextField.setText("5");
+
         RankRiderBtn.setVisible(false);
         matchRideBtn.setVisible(false);
         createNewTrempBtn.setVisible(false);

@@ -160,9 +160,6 @@ public class TrempSubWindowController {
     @FXML
     void onTrempSelected(MouseEvent event) {
 
-        RankRiderBtn.setVisible(true);
-        matchRideBtn.setVisible(true);
-
         updateMatchText();
         updateAccordingToSelectedTremp();
     }
@@ -176,10 +173,18 @@ public class TrempSubWindowController {
             this.mainController.switchLiveMapOff();
             this.mainController.updateMapWithTrempRequest(selectedTremp);
 
-            if (selectedTremp.isNotAssignedToRides())
+            if (selectedTremp.isNotAssignedToRides()){
                 lastSelectedIsAssigned.set(false);
-            if (selectedTremp.rankedAssignedRide())
+                RankRiderBtn.setVisible(false);
+                matchRideBtn.setVisible(true);
+            }
+
+            if (selectedTremp.rankedAssignedRide()){
                 lastSelectedIsAssigned.set(true);
+                RankRiderBtn.setVisible(true);
+                matchRideBtn.setVisible(false);
+            }
+
 
 
             initTrempsLabel(selectedTremp);

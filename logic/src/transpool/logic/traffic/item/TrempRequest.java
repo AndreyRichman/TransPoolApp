@@ -96,7 +96,7 @@ public class TrempRequest {
         return this.schedule;
     }
 
-    public boolean rankedAssignedRide(){
+    public boolean assignedRideWasRanked(){
         boolean ranked = false;
         if (this.selectedRide != null){
             ranked = this.selectedRide.isRankedByUser(this.user);

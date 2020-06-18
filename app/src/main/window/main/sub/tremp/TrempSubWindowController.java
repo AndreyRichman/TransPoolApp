@@ -181,18 +181,27 @@ public class TrempSubWindowController {
             this.mainController.updateMapWithTrempRequest(selectedTremp);
 
             if (selectedTremp.isNotAssignedToRides()){
-                lastSelectedIsAssigned.set(false);
+//                lastSelectedIsAssigned.set(false);
                 RankRiderBtn.setVisible(false);
                 matchRideBtn.setVisible(true);
-            } else if (!selectedTremp.rankedAssignedRide()){
+            } else {
                 this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
-                RankRiderBtn.setVisible(true);
                 matchRideBtn.setVisible(false);
-            } else { //ride is assigned and ranked
-                lastSelectedIsAssigned.set(true);
-                RankRiderBtn.setVisible(false);
-                matchRideBtn.setVisible(false);
+
+                if(!selectedTremp.assignedRideWasRanked())
+                    RankRiderBtn.setVisible(true);
+                else
+                    RankRiderBtn.setVisible(false);
             }
+//            if (!selectedTremp.assignedRideWasRanked()){
+//                this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
+//                RankRiderBtn.setVisible(true);
+//                matchRideBtn.setVisible(false);
+//            } else { //ride is assigned and ranked
+//                lastSelectedIsAssigned.set(true);
+//                RankRiderBtn.setVisible(false);
+//                matchRideBtn.setVisible(false);
+//            }
 
 
 

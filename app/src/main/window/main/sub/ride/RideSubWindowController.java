@@ -9,12 +9,17 @@ import javafx.scene.input.MouseEvent;
 import main.window.main.MainWindowController;
 import transpool.logic.traffic.item.Ride;
 import transpool.logic.traffic.item.RideForTremp;
+import transpool.logic.traffic.item.SubRide;
+import transpool.logic.user.Driver;
+import transpool.logic.user.User;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RideSubWindowController {
 
@@ -71,6 +76,12 @@ public class RideSubWindowController {
   
     @FXML
      private Label rideDuration;
+
+    @FXML
+    private Label rideRankTextField;
+
+    @FXML
+    private Label ridePriceTextField;
 
     @FXML
     void onClickAssignTrempBtn(ActionEvent event) {
@@ -166,7 +177,37 @@ public class RideSubWindowController {
         int index = this.ridesListView.getSelectionModel().getSelectedIndex();
         RideForTremp selectedRide = this.trempsVisibleInView.get(index);
 
+        updateTrempTextFields(selectedRide);
         this.mainController.showRideForTremp(selectedRide);
+    }
+
+    private void updateTrempTextFields(RideForTremp selectedRide) {
+        String owners = selectedRide.getSubRides().stream().map(SubRide::getOriginalRide)
+                .map(Ride::getRideOwner)
+                .map(Driver::getUser)
+                .map(User::getName).collect(Collectors.joining());
+        userValue.setText(owners);
+
+        String departTime = selectedRide.getSubRides().get(0).getSchedule().getStartTime().toString();
+        departValue.setText(departTime);
+
+        String arriveTime = selectedRide.getSubRides().get(selectedRide.getSubRides().size() - 1).getSchedule().getEndTime().toString();
+        arriveValue.setText(arriveTime);
+
+        String ppks = selectedRide.getSubRides().stream().map(SubRide::getOriginalRide).map(Ride::getPricePerKilometer).map(Object::toString).collect(Collectors.joining(", "));
+        ppkValue.setText(ppks);
+
+        double avgFuel = selectedRide.getAverageFuelUsage();
+        fuelValue.setText(String.format("%.2f", avgFuel));
+
+        long duration = Duration.between(selectedRide.getSchedule().getEndDateTime(),
+                selectedRide.getSchedule().getStartDateTime()).abs().toMinutes();
+        rideDuration.setText(String.valueOf(duration));
+
+        double averageRank = selectedRide.getAverageRank();
+        rideRankTextField.setText(String.format("Rank: %.2f" ,averageRank));
+        ridePriceTextField.setText(String.format("Price: %.2f", selectedRide.getTotalCost()));
+        ridePriceTextField.setVisible(true);
     }
 
     private void updateRideInfo() {
@@ -215,8 +256,11 @@ public class RideSubWindowController {
         departValue.setText(String.valueOf(ride.getSchedule().getStartTime()));
         arriveValue.setText(String.valueOf(ride.getSchedule().getEndTime()));
         ppkValue.setText(String.valueOf(ride.getPricePerKilometer()));
-        fuelValue.setText(String.valueOf(ride.getAverageFuelUsage()));
+        fuelValue.setText(String.format("%.2f", ride.getAverageFuelUsage()));
         rideDuration.setText(String.valueOf(ride.getTotalTimeOfRide()));
+        rideRankTextField.setText(String.format("Rank: %.2f" ,ride.getRideOwner().getAverageScore()));
+        ridePriceTextField.setText("");
+        ridePriceTextField.setVisible(false);
     }
 
     public void clear(){
@@ -231,6 +275,9 @@ public class RideSubWindowController {
         ppkValue.setText("");
         fuelValue.setText("");
         rideDuration.setText("");
+        rideRankTextField.setText("");
+        ridePriceTextField.setText("");
+        ridePriceTextField.setVisible(false);
     }
 
     public void showNoTrempsAvailableTitle() {

@@ -143,6 +143,7 @@ public class TrempSubWindowController {
         this.matchRideBtn.setText("Match");
     }
 
+
     private boolean matchFieldsWereFilledCorrect() {
         boolean maxOffersValid = !maxOfffersTextField.getText().equals("") || Integer.parseInt(this.maxOfffersTextField.getText() )< 1;
 
@@ -156,6 +157,7 @@ public class TrempSubWindowController {
             maxOfffersTextField.setPromptText("number > 0");
             return false;
         }
+
         return true;
     }
 
@@ -273,6 +275,9 @@ public class TrempSubWindowController {
         RankRiderBtn.setVisible(false);
         matchRideBtn.setVisible(false);
         createNewTrempBtn.setVisible(false);
+        maxOfffersTextField.setText("5");
+
+
 
     }
 

@@ -16,6 +16,6 @@ public class reviewsWindowController {
 
     public void setReviewTextAreaValue(List<Driver.Rank> str) {
         for(Driver.Rank rank : str)
-            ReviewTextAreaValue.appendText(String.format("stars: %d \ncomment:", rank.getStars()) + rank.getComment());
+            ReviewTextAreaValue.appendText(String.format("stars: %d \ncomment: ", rank.getStars()) + rank.getComment() + "\n");
     }
 }

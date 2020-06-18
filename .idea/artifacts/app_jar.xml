@@ -5,6 +5,7 @@
       <element id="module-output" name="app" />
       <element id="module-output" name="logic" />
       <element id="module-output" name="ui" />
+      <element id="library" level="project" name="lib" />
     </root>
   </artifact>
 </component>

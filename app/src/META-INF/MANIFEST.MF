@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: main.Main
-Class-Path: logic.jar ui.jar
+Class-Path: logic.jar ui.jar fxgraph-0.0.3.jar controlsfx-8.40.16.jar
 

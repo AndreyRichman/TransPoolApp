@@ -185,7 +185,7 @@ public class RideSubWindowController {
         String owners = selectedRide.getSubRides().stream().map(SubRide::getOriginalRide)
                 .map(Ride::getRideOwner)
                 .map(Driver::getUser)
-                .map(User::getName).collect(Collectors.joining());
+                .map(User::getName).collect(Collectors.joining(","));
         userValue.setText(owners);
 
         String departTime = selectedRide.getSubRides().get(0).getSchedule().getStartTime().toString();
@@ -194,7 +194,7 @@ public class RideSubWindowController {
         String arriveTime = selectedRide.getSubRides().get(selectedRide.getSubRides().size() - 1).getSchedule().getEndTime().toString();
         arriveValue.setText(arriveTime);
 
-        String ppks = selectedRide.getSubRides().stream().map(SubRide::getOriginalRide).map(Ride::getPricePerKilometer).map(Object::toString).collect(Collectors.joining(", "));
+        String ppks = selectedRide.getSubRides().stream().map(SubRide::getOriginalRide).map(Ride::getPricePerKilometer).map(Object::toString).collect(Collectors.joining(","));
         ppkValue.setText(ppks);
 
         double avgFuel = selectedRide.getAverageFuelUsage();

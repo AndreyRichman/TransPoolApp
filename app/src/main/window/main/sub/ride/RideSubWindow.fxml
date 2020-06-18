@@ -58,7 +58,7 @@
       <Button fx:id="addNewRideBtn" mnemonicParsing="false" onAction="#onAddNewRideBtnClick" prefHeight="76.0" prefWidth="232.0" styleClass="menu-btn" text="Add New Ride" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
          <children>
-            <Button fx:id="assignTrempBtn" mnemonicParsing="false" onAction="#onClickAssignTrempBtn" prefHeight="40.0" prefWidth="142.0" styleClass="menu-btn" text="Assign Tremp" />
+            <Button fx:id="assignTrempBtn" mnemonicParsing="false" onAction="#onClickAssignTrempBtn" prefHeight="40.0" prefWidth="142.0" styleClass="menu-btn" text="Assign" />
             <Button id="quitBtn" fx:id="cancelTrempsBtn" mnemonicParsing="false" onAction="#onClickCancelTrempBtn" prefHeight="69.0" prefWidth="118.0" styleClass="menu-btn" text="Cancel" />
          </children>
       </HBox>

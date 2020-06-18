@@ -52,7 +52,7 @@
             </HBox>
             <Pane fx:id="mapComponent" minHeight="444.0" minWidth="519.0" prefHeight="444.0" prefWidth="519.0" styleClass="sub-window" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="4">
                <children>
-                  <fx:include fx:id="dynamicMapComponent" source="sub/map/DynamicMap.fxml" />
+                  <fx:include fx:id="mapComponent" source="sub/map/DynamicMap.fxml" />
                </children>
             </Pane>
          </children>

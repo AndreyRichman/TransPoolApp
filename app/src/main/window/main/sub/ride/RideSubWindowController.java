@@ -30,22 +30,7 @@ public class RideSubWindowController {
     private boolean showingTremps = false;
 
     @FXML
-    private Label userTitle;
-
-    @FXML
-    private Label departTitle;
-
-    @FXML
-    private Label ArriveTitle;
-
-    @FXML
-    private Label ppkTitle;
-
-    @FXML
-    private Label fuelTitle;
-
-    @FXML
-    private Label mainTitle;
+    private Label ridePriceTextField;
 
     @FXML
     private Label userValue;
@@ -63,6 +48,21 @@ public class RideSubWindowController {
     private Label fuelValue;
 
     @FXML
+    private Label rideDuration;
+
+    @FXML
+    private Label rideRankValue;
+
+    @FXML
+    private Label StartingdayValue;
+
+    @FXML
+    private Label ReputabelValue;
+
+    @FXML
+    private Label mainTitle;
+
+    @FXML
     private ListView<String> ridesListView;
 
     @FXML
@@ -73,15 +73,6 @@ public class RideSubWindowController {
 
     @FXML
     private Button cancelTrempsBtn;
-  
-    @FXML
-     private Label rideDuration;
-
-    @FXML
-    private Label rideRankTextField;
-
-    @FXML
-    private Label ridePriceTextField;
 
     @FXML
     void onClickAssignTrempBtn(ActionEvent event) {
@@ -205,7 +196,7 @@ public class RideSubWindowController {
         rideDuration.setText(String.valueOf(duration));
 
         double averageRank = selectedRide.getAverageRank();
-        rideRankTextField.setText(String.format("Rank: %.2f" ,averageRank));
+        rideRankValue.setText(String.format("%.2f" ,averageRank));
         ridePriceTextField.setText(String.format("Price: %.2f", selectedRide.getTotalCost()));
         ridePriceTextField.setVisible(true);
     }
@@ -258,7 +249,10 @@ public class RideSubWindowController {
         ppkValue.setText(String.valueOf(ride.getPricePerKilometer()));
         fuelValue.setText(String.format("%.2f", ride.getAverageFuelUsage()));
         rideDuration.setText(String.valueOf(ride.getTotalTimeOfRide()));
-        rideRankTextField.setText(String.format("Rank: %.2f" ,ride.getRideOwner().getAverageScore()));
+        rideRankValue.setText("");
+        rideRankValue.setText(String.format("%.2f(%d)" ,ride.getRideOwner().getAverageScore(),ride.getRideOwner().getRankNum()));
+        StartingdayValue.setText(String.valueOf(ride.getSchedule().getStartDay()));
+        ReputabelValue.setText(String.valueOf(ride.getSchedule().getRepeatType()));
         ridePriceTextField.setText("");
         ridePriceTextField.setVisible(false);
     }
@@ -275,7 +269,9 @@ public class RideSubWindowController {
         ppkValue.setText("");
         fuelValue.setText("");
         rideDuration.setText("");
-        rideRankTextField.setText("");
+        rideRankValue.setText("");
+        StartingdayValue.setText("");
+        ReputabelValue.setText("");
         ridePriceTextField.setText("");
         ridePriceTextField.setVisible(false);
     }

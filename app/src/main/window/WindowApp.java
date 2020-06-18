@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import transpool.logic.handler.LogicHandler;
 import main.window.main.MainWindowController;
 
 import java.net.URL;
@@ -31,7 +30,7 @@ public class WindowApp extends Application implements Runnable{
         controller.setPrimaryStage(primaryStage);
 
         // set stage
-        Scene scene = new Scene(root, 1050, 780);
+        Scene scene = new Scene(root, 1050, 860);
         primaryStage.setScene(scene);
         primaryStage.show();
 

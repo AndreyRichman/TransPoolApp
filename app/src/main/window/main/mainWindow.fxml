@@ -21,15 +21,15 @@
             <ColumnConstraints hgrow="NEVER" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints maxHeight="234.0" minHeight="20.0" prefHeight="77.0" valignment="TOP" vgrow="NEVER" />
-            <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="51.0" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints maxHeight="234.0" minHeight="20.0" prefHeight="85.0" valignment="TOP" vgrow="NEVER" />
+            <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="43.0" valignment="CENTER" vgrow="NEVER" />
             <RowConstraints maxHeight="370.0" minHeight="221.0" prefHeight="366.0" valignment="TOP" vgrow="NEVER" />
             <RowConstraints maxHeight="93.0" minHeight="0.0" prefHeight="23.0" vgrow="NEVER" />
             <RowConstraints maxHeight="399.0" minHeight="10.0" prefHeight="334.0" vgrow="NEVER" />
             <RowConstraints maxHeight="20.0" minHeight="0.0" prefHeight="0.0" vgrow="NEVER" />
          </rowConstraints>
          <children>
-            <Label id="main-title" maxHeight="-Infinity" maxWidth="522.0" minWidth="147.0" prefHeight="73.0" prefWidth="522.0" text="Welcome to TransPool!" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
+            <Label id="main-title" maxHeight="-Infinity" maxWidth="522.0" minWidth="147.0" prefHeight="62.0" prefWidth="517.0" text="Welcome to TransPool!" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
             <Pane minHeight="233.0" minWidth="475.0" prefHeight="292.0" prefWidth="475.0" styleClass="sub-window" GridPane.columnIndex="3" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2" GridPane.vgrow="SOMETIMES">
                <children>
                   <fx:include fx:id="rideComponent" source="sub/ride/RideSubWindow.fxml" />

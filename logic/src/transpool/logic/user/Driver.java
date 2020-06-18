@@ -64,6 +64,10 @@ public class Driver {
         return averageScore;
     }
 
+    public List<Rank> getRanks() {
+        return ranks;
+    }
+
     public int getTotalScore() {
         return totalScore;
     }

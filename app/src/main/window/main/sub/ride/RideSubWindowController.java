@@ -2,18 +2,25 @@ package main.window.main.sub.ride;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import main.window.main.MainWindowController;
+import main.window.main.sub.rating.newRatingController;
+import main.window.main.sub.rating.reviewsWindowController;
 import transpool.logic.traffic.item.Ride;
 import transpool.logic.traffic.item.RideForTremp;
 import transpool.logic.traffic.item.SubRide;
 import transpool.logic.user.Driver;
 import transpool.logic.user.User;
-
 import java.io.IOException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -75,6 +82,32 @@ public class RideSubWindowController {
     private Button cancelTrempsBtn;
 
     @FXML
+    private Button reviewsBtn;
+
+    @FXML
+    void onClickReviewBtn(ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        stage.setResizable(false);
+        URL resource = getClass().getResource("../rating/newReviewWindow.fxml");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(resource);
+        Parent root = loader.load();
+        reviewsWindowController controller = loader.getController();
+
+        int index = this.ridesListView.getSelectionModel().getSelectedIndex();
+        Ride selectedRide = this.ridesVisibleInView.get(index);
+
+        if(index != -1)
+            controller.setReviewTextAreaValue(selectedRide.getRideOwner().getRanks());
+
+        Scene scene = new Scene(root, 356, 363);
+
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
     void onClickAssignTrempBtn(ActionEvent event) {
         this.mainController.assignSelectedTrempRequestToRide();
         updateAfterDoneWithTremps();
@@ -117,6 +150,7 @@ public class RideSubWindowController {
 
     public void updateRidesList(){
         this.addNewRideBtn.setVisible(true);
+
         updateAfterDoneWithTremps();
         this.ridesVisibleInView = new HashMap<>();
         int index = 0;
@@ -205,6 +239,7 @@ public class RideSubWindowController {
 
         assignTrempBtn.setVisible(false);
         cancelTrempsBtn.setVisible(false);
+        this.reviewsBtn.setVisible(true);
 
         int index = this.ridesListView.getSelectionModel().getSelectedIndex();
         Ride selectedRide = this.ridesVisibleInView.get(index);
@@ -274,6 +309,7 @@ public class RideSubWindowController {
         ReputabelValue.setText("");
         ridePriceTextField.setText("");
         ridePriceTextField.setVisible(false);
+        reviewsBtn.setVisible(false);
     }
 
     public void showNoTrempsAvailableTitle() {
@@ -289,5 +325,6 @@ public class RideSubWindowController {
         this.assignTrempBtn.setVisible(false);
         this.cancelTrempsBtn.setVisible(false);
         this.addNewRideBtn.setVisible(false);
+        this.reviewsBtn.setVisible(false);
     }
 }

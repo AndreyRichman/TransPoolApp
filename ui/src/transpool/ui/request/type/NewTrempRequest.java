@@ -11,6 +11,7 @@ public class NewTrempRequest implements UserRequest {
     private int departDay = 1;
     private String desiredTimeType;
     private boolean directOnly;
+    private int diffMinutes = 0;
 
     @Override
     public RequestType getRequestType() {
@@ -45,6 +46,10 @@ public class NewTrempRequest implements UserRequest {
         this.desiredTimeType = desiredTimeType;
     }
 
+    public void setDiffMinutes(int diffMinutes) {
+        this.diffMinutes = diffMinutes;
+    }
+
     public int getDepartDay() {
         return departDay;
     }
@@ -67,5 +72,9 @@ public class NewTrempRequest implements UserRequest {
 
     public String getDesiredTimeType() {
         return desiredTimeType;
+    }
+
+    public int getDiffMinutes() {
+        return diffMinutes;
     }
 }

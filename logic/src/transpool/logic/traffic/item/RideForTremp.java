@@ -63,6 +63,10 @@ public class RideForTremp {
         return this.subRides.stream().mapToDouble(SubRide::getTotalCost).sum();
     }
 
+    public double getAverageRank(){
+        return this.subRides.stream().map(SubRide::getOriginalRide).map(Ride::getRideOwner).mapToDouble(Driver::getAverageScore).average().orElse(0);
+    }
+
     public int getNumOfConnections(){
         return this.subRides.size() - 1;
     }

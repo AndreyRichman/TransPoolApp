@@ -220,9 +220,11 @@ public class TrafficManager {
 
     private boolean subRidesMatchSchedule(List<SubRide> subRides, RequestSchedule schedule) {
 
-        List<Schedule> schedules = subRides.stream().map(SubRide::getSchedule).collect(Collectors.toList());
+        List<Schedule> subRidesSchedules = new LinkedList<>();
+        subRides.forEach(subRide -> subRidesSchedules.add(subRide.getSchedule()));
+//        List<Schedule> schedules = subRides.stream().map(SubRide::getSchedule).collect(Collectors.toList());
 
-        return schedulesAreOrderedAndFitRequestedSchedule(schedules, schedule);
+        return schedulesAreOrderedAndFitRequestedSchedule(subRidesSchedules, schedule);
 
         //create total schedule using RideForTremp and verify free space on each part
         //check there is free space according to the new schedule
@@ -263,7 +265,7 @@ public class TrafficManager {
         boolean isRelevant = depart.scheduleIsRelevantForRequestSchedule(requestSchedule);
 
         if (isRelevant) {
-            LocalDateTime relevantDateTime = requestSchedule.getDesiredDateTimeAccordingToTimeType();
+            LocalDateTime relevantDateTime = depart.getStartDateTime();//requestSchedule.getDesiredDateTimeAccordingToTimeType();
             for (Schedule currentSchedule : schedules) {
                 if (currentSchedule.hasInstanceStartsAfterDateTime(relevantDateTime)) {
                     Duration scheduleDuration = Duration.between(currentSchedule.getStartDateTime(), currentSchedule.getEndDateTime()).abs();

@@ -23,6 +23,7 @@ import transpool.logic.traffic.item.*;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -288,18 +289,6 @@ public class MainWindowController {
             tremps = tremps.stream().limit(maxOptions).collect(Collectors.toList());
             this.rideComponentController.showTremps(tremps);
 
-//            if (tremps.size() == 0) {
-//
-//                this.rideComponentController.showNoTrempsAvailableTitle();
-//                try {
-//                    Thread.sleep(4000);
-//                } catch (Exception ignore) {
-//                }
-//                this.rideComponentController.showRidesTitle();
-//                this.rideComponentController.updateRidesList();
-
-//            }
-
         } else{
             trempComponentController.updateNoTrempsAvailable();
         }
@@ -343,17 +332,21 @@ public class MainWindowController {
                 this.mapComponentController.markRoadsInBlue(allRoadsToMark);
             else
                 this.mapComponentController.markRoadsInRed(allRoadsToMark);
-            hideRoads(allRoadsToMark);
 
+            hideRoads(allRoadsToMark);
             blue = !blue;
         }
-
-
-
-//        rides.forEach(ride -> mapComponentController.markStations(ride.getStartStation(), ride.getEndStation()));
-//        this.mapComponentController.markRoadsInRed(allRoadsToMark);
-
-
+        Map<Road, String> roadsWithTimes = new HashMap<>();
+        subRides.forEach(subRide -> {
+            subRide.getSelectedPartsOfRide().forEach(partOfRide -> {
+                Road road = partOfRide.getRoad();
+                LocalTime start = partOfRide.getSchedule().getStartTime();
+                LocalTime end = partOfRide.getSchedule().getEndTime();
+                String title = String.format("%s-%s", start, end);
+                roadsWithTimes.put(road, title);
+            });
+        });
+        this.mapComponentController.updateEdgesWithTexts(roadsWithTimes);
     }
 
     private void hideRoads(List<Road> roadsToMark){

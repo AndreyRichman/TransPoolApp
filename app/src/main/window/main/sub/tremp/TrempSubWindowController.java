@@ -113,7 +113,7 @@ public class TrempSubWindowController {
     @FXML
     void onClickMatchRideBtn(ActionEvent event) {
 
-        if(validations()){
+        if(matchFieldsWereFilledCorrect()){
 
             maxOfferLabel.setTextFill(Color.WHITE);
             maxOfffersTextField.setPromptText("");
@@ -143,13 +143,21 @@ public class TrempSubWindowController {
         this.matchRideBtn.setText("Match");
     }
 
-    private boolean validations() {
-        if (!maxOfffersTextField.getText().equals(""))
-            if (Integer.parseInt(this.maxOfffersTextField.getText()) < 1) {
-                maxOfferLabel.setTextFill(Color.RED);
-                maxOfffersTextField.setPromptText("number > 0");
-                return false;
-            }
+
+    private boolean matchFieldsWereFilledCorrect() {
+        boolean maxOffersValid = !maxOfffersTextField.getText().equals("") || Integer.parseInt(this.maxOfffersTextField.getText() )< 1;
+
+        if (!maxOffersValid)
+            maxOfffersTextField.setStyle("-fx-border-color: #ff7369");
+        else
+            maxOfffersTextField.setStyle("-fx-border-color: white");
+
+        if (Integer.parseInt(this.maxOfffersTextField.getText() )< 1) {
+            maxOfferLabel.setTextFill(Color.RED);
+            maxOfffersTextField.setPromptText("number > 0");
+            return false;
+        }
+
         return true;
     }
 
@@ -175,16 +183,27 @@ public class TrempSubWindowController {
             this.mainController.updateMapWithTrempRequest(selectedTremp);
 
             if (selectedTremp.isNotAssignedToRides()){
-                lastSelectedIsAssigned.set(false);
+//                lastSelectedIsAssigned.set(false);
                 RankRiderBtn.setVisible(false);
                 matchRideBtn.setVisible(true);
-            }
-
-            if (selectedTremp.rankedAssignedRide()){
-                lastSelectedIsAssigned.set(true);
-                RankRiderBtn.setVisible(true);
+            } else {
+                this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
                 matchRideBtn.setVisible(false);
+
+                if(!selectedTremp.assignedRideWasRanked())
+                    RankRiderBtn.setVisible(true);
+                else
+                    RankRiderBtn.setVisible(false);
             }
+//            if (!selectedTremp.assignedRideWasRanked()){
+//                this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
+//                RankRiderBtn.setVisible(true);
+//                matchRideBtn.setVisible(false);
+//            } else { //ride is assigned and ranked
+//                lastSelectedIsAssigned.set(true);
+//                RankRiderBtn.setVisible(false);
+//                matchRideBtn.setVisible(false);
+//            }
 
 
 
@@ -250,6 +269,9 @@ public class TrempSubWindowController {
     public void initialize() {
         directChoiceBox.getItems().add("YES");
         directChoiceBox.getItems().add("NO");
+        directChoiceBox.getSelectionModel().select(1);
+        maxOfffersTextField.setText("5");
+
         RankRiderBtn.setVisible(false);
         matchRideBtn.setVisible(false);
         createNewTrempBtn.setVisible(false);

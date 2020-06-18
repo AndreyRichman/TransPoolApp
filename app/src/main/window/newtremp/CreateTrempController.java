@@ -80,6 +80,7 @@ public class CreateTrempController {
         if (searchByChoiceBox.getValue().equals("DEPART")) {  request.setDesiredTimeType(DesiredTimeType.DEPART.toString()); }
         else { request.setDesiredTimeType(DesiredTimeType.ARRIVE.toString());  }
         if(vaildTimeDeviation()){
+            request.setDiffMinutes(Integer.parseInt(timeDeviation.getText()));
             timeDeviationLabel.setTextFill(Color.WHITE);
             addNewTrempFromRequest(request);
             this.mainController.updateTrempsList();
@@ -96,7 +97,7 @@ public class CreateTrempController {
 
     private boolean vaildTimeDeviation() {
         if(!timeDeviation.getText().equals("")){
-            if (Integer.parseInt(timeDeviation.getText()) > 0)
+            if (Integer.parseInt(timeDeviation.getText()) >= 0)
                 return true;
         }
         return false;
@@ -130,7 +131,9 @@ public class CreateTrempController {
 
         initChoiceBox();
 
-        timeDeviation.setText("5");
+        this.timeDeviation.setText("0");
+        this.searchByChoiceBox.getSelectionModel().select(0);
+
     }
 
     private void initChoiceBox() {
@@ -187,6 +190,7 @@ public class CreateTrempController {
             int onDay = request.getDepartDay();
             newTrempRequest.setDesiredDayAndTime(onDay, desiredTime, desiredTimeType);
             newTrempRequest.setMaxNumberOfConnections(Integer.parseInt(timeDeviation.getText()));
+            newTrempRequest.setMaxDiffMinutes(request.getDiffMinutes());
             logicHandler.addTrempRequest(newTrempRequest);
 
         }  catch (NoPathExistBetweenStationsException e) { e.printStackTrace();  }

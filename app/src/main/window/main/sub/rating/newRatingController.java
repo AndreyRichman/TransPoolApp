@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 import main.window.main.sub.tremp.TrempSubWindowController;
 import org.controlsfx.control.Rating;
 import transpool.logic.handler.LogicHandler;
+import transpool.logic.traffic.item.TrempRequest;
+import transpool.logic.user.Driver;
+import transpool.logic.user.User;
 
 public class newRatingController {
 
@@ -26,6 +29,15 @@ public class newRatingController {
 
     @FXML
     void onClickSubmit(ActionEvent event) {
+        TrempRequest trempRequest = this.mainController.getSelectedTrempRequest();
+        int score = (int) ratingValue.getRating();
+        User user = trempRequest.getUser();
+        Driver.Rank rank = new Driver.Rank(user, score);
+
+        if(!this.commentValue.getText().equals(""))
+            rank.setComment(this.commentValue.getText());
+
+        trempRequest.setRank(rank);
         this.stage.close();
     }
 

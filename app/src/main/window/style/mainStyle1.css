@@ -111,7 +111,7 @@
     -fx-text-fill: white;
     -fx-border-insets: 5px;
     -fx-background-insets: 5px;
-    -fx-padding: 8px;
+    -fx-padding: 4px;
 }
 
 .toggle-on{

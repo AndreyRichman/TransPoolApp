@@ -159,3 +159,7 @@
     -fx-border-radius: 12px;
     -fx-padding: 10px;
 }
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}

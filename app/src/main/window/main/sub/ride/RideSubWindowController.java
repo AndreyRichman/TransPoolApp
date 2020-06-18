@@ -250,7 +250,7 @@ public class RideSubWindowController {
         fuelValue.setText(String.format("%.2f", ride.getAverageFuelUsage()));
         rideDuration.setText(String.valueOf(ride.getTotalTimeOfRide()));
         rideRankValue.setText("");
-        //rideRankValue.setText(String.format("%.2f" ,ride.getRideOwner().getAverageScore()));
+        rideRankValue.setText(String.format("%.2f(%d)" ,ride.getRideOwner().getAverageScore(),ride.getRideOwner().getRankNum()));
         StartingdayValue.setText(String.valueOf(ride.getSchedule().getStartDay()));
         ReputabelValue.setText(String.valueOf(ride.getSchedule().getRepeatType()));
         ridePriceTextField.setText("");

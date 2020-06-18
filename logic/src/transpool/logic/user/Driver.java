@@ -12,8 +12,7 @@ public class Driver {
     private int totalScore = 0;
     private float averageScore = 0;
     private Map<User, Rank> allRanks;
-
-
+    private int rankNum = 0;
     public static class Rank {
         private int score;
         private String comment;
@@ -42,6 +41,7 @@ public class Driver {
         this.user = user;
         this.allRanks = new HashMap<>();
         this.ranks = new LinkedList<>();
+
     }
 
     public User getUser() {
@@ -53,6 +53,11 @@ public class Driver {
         this.ranks.add(rank);
         this.totalScore += rank.score;
         this.averageScore = (float) totalScore / this.ranks.size();
+        this.rankNum++;
+    }
+
+    public int getRankNum() {
+        return rankNum;
     }
 
     public float getAverageScore() {

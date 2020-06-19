@@ -62,6 +62,6 @@
             <Button id="quitBtn" fx:id="cancelTrempsBtn" mnemonicParsing="false" onAction="#onClickCancelTrempBtn" prefHeight="69.0" prefWidth="118.0" styleClass="menu-btn" text="Cancel" />
          </children>
       </HBox>
-      <Button fx:id="reviewsBtn" mnemonicParsing="false" onAction="#onClickReviewBtn" prefHeight="64.0" prefWidth="171.0" styleClass="menu-btn" text="Shpw Reviews" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <Button fx:id="reviewsBtn" mnemonicParsing="false" onAction="#onClickReviewBtn" prefHeight="64.0" prefWidth="171.0" styleClass="menu-btn" text="Show Reviews" GridPane.columnIndex="2" GridPane.rowIndex="3" />
    </children>
 </GridPane>

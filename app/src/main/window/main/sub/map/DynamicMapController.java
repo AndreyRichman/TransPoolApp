@@ -22,7 +22,10 @@ import transpool.logic.map.WorldMap;
 import transpool.logic.map.structure.Road;
 import transpool.logic.map.structure.Station;
 import transpool.logic.time.Schedule;
+import transpool.logic.traffic.item.PartOfRide;
 import transpool.logic.traffic.item.Ride;
+import transpool.logic.user.Trempist;
+import transpool.logic.user.TrempistsManager;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -272,26 +275,137 @@ public class DynamicMapController {
 
     private Map<Station, StationNode> allStationNodes;
 
-    private void updateStationsWindowWithRides(List<Ride> rides){
-        rides.forEach(ride -> {
-            ride.getPartsOfRide().forEach(partOfRide -> {
-                Station from = partOfRide.getRoad().getStartStation();
-                Station to = partOfRide.getRoad().getEndStation();
-                StationNode startStationNode = this.allStationNodes.get(from);
-                StationNode endStationNode = this.allStationNodes.get(to);
-                //TO Change Existing Details:
-                StationDetailsDTO existingDetails = startStationNode.getStationDetailsDTO();
-                existingDetails.setName("New Details");
+    public void clearAllStationsData(){
+        if (allStationNodes != null)
+            this.allStationNodes.forEach((station, stationNode) -> stationNode.getStationDetailsDTO().clearAllLists());
+    }
+
+    public void updateStationsWindowWithPartOfRide(PartOfRide partOfRide, LocalDateTime dateTime){
+
+//        rides.forEach(ride -> {
+//            ride.getPartsOfRide().forEach(partOfRide -> {
+        Station from = partOfRide.getRoad().getStartStation();
+        Station to = partOfRide.getRoad().getEndStation();
+        StationNode startStationNode = this.allStationNodes.get(from);
+        StationNode endStationNode = this.allStationNodes.get(to);
+        updateStartStationNodeWithTrempists(startStationNode, partOfRide, dateTime);
+        updateEndStationNodeWithTrempists(endStationNode, partOfRide, dateTime);
+//
+//                //TO Change Existing Details:
+//                StationDetailsDTO startExistingDetails = startStationNode.getStationDetailsDTO();
+//                StationDetailsDTO endExistingDetails = endStationNode.getStationDetailsDTO();
+
+//                List<String> allTrempists = startExistingDetails.getAllTrempists();
+//                List<String> leavingTrempists = startExistingDetails.getOffTremp();
+//                List<String> gettingOnTrempists = startExistingDetails.getOnTremp();
+//
+//                partOfRide.getTrempistsManager().getAllTrempists(Schedule.getDayOfDateTime(when)).forEach(
+//                        trempist -> {
+//                            if(!allTrempists.contains(trempist.getUser().getName()))
+//                                allTrempists.add(trempist.getUser().getName());
+//                            if(leavingTrempists.contains(trempist))
+//                        }
+//                );
+//                existingDetails.setName("New Details");
 //                existingDetails.setWhateverYouWant(ride); //You can Even Add ride
 
                 //TO Replace existing details with new one
-                List<String> trips = new ArrayList<>();
-                StationDetailsDTO details = new StationDetailsDTO(trips);
-                startStationNode.setStationDetailsDTO(details);
+//                List<String> trips = new ArrayList<>();
+//                StationDetailsDTO details = new StationDetailsDTO();
+//                startStationNode.setStationDetailsDTO(details);
 
-            });
-        });
+//            });
+//        });
     }
+
+//    private void updateEndStationNodeWithTrempists(StationNode endStationNode, PartOfRide partOfRide,
+//                                                   LocalDateTime when) {
+//        StationDetailsDTO startExistingDetails = endStationNode.getStationDetailsDTO();
+//
+//        List<String> allRiders = startExistingDetails.getAllRiders();
+//        List<String> leavingTrempists = startExistingDetails.getOffTremp();
+//        String rider = String.format("%s - ride %d", partOfRide.getRide().getRideOwner().getUser().getName(),
+//                partOfRide.getRide().getID());
+//
+//        if(allRiders.contains(rider))
+//            allRiders.add(rider);
+//
+//        partOfRide.getTrempistsManager().getAllTrempists(Schedule.getDayOfDateTime(when)).forEach(
+//                trempist -> {
+//                    String trempistName = String.format("%s - leaving %s", trempist.getUser().getName(), partOfRide.getRide().getID());
+//
+//                    if(!leavingTrempists.contains(trempistName))
+//                        leavingTrempists.add(trempistName);
+//                }
+//        );
+//    }
+
+    private void updateEndStationNodeWithTrempists(StationNode endStationNode, PartOfRide partOfRide, LocalDateTime dateTime) {
+        StationDetailsDTO endExistingDetails = endStationNode.getStationDetailsDTO();
+
+        List<String> allRiders = endExistingDetails.getAllRiders();
+        List<String> gettingOffTrempists = endExistingDetails.getOffTremp();
+
+        String rider = String.format("%s - ride %d", partOfRide.getRide().getRideOwner().getUser().getName(), partOfRide.getRide().getID());
+
+        if(!allRiders.contains(rider))
+            allRiders.add(rider);
+
+        TrempistsManager manager = partOfRide.getTrempistsManager();
+        List<Trempist> allLeavingTrempists = dateTime == null? manager.getLeavingTrempistsAllDays()
+                : manager.getLeavingTrempists(Schedule.getDayOfDateTime(dateTime));
+
+        allLeavingTrempists.forEach(
+                trempist -> {
+                    String trempistName = String.format("%s - leave %s(day %d %s)",
+                            trempist.getUser().getName(),
+                            partOfRide.getRide().getID(),
+                            Schedule.getDayOfDateTime(partOfRide.getSchedule().getEndDateTime()),
+                            partOfRide.getSchedule().getEndTime());
+
+                    if(!gettingOffTrempists.contains(trempistName))
+                        gettingOffTrempists.add(trempistName);
+                }
+        );
+
+        endExistingDetails.setAllRiders(allRiders);
+        endExistingDetails.setOffTremp(gettingOffTrempists);
+        endStationNode.setStationDetailsDTO(endExistingDetails);
+    }
+
+    private void updateStartStationNodeWithTrempists(StationNode startStationNode, PartOfRide partOfRide, LocalDateTime dateTime) {
+        StationDetailsDTO startExistingDetails = startStationNode.getStationDetailsDTO();
+
+        List<String> allRiders = startExistingDetails.getAllRiders();
+        List<String> gettingOnTrempists = startExistingDetails.getOnTremp();
+
+        String rider = String.format("%s - ride %d", partOfRide.getRide().getRideOwner().getUser().getName(), partOfRide.getRide().getID());
+
+        if(!allRiders.contains(rider))
+            allRiders.add(rider);
+
+        TrempistsManager manager = partOfRide.getTrempistsManager();
+        List<Trempist> allJoiningTrempists = dateTime == null? manager.getJustJoinedTrempistsAllDays()
+                : manager.getJustJoinedTrempists(Schedule.getDayOfDateTime(dateTime));
+
+        allJoiningTrempists.forEach(
+                trempist -> {
+                    String trempistName = String.format("%s - join %s(day %d %s)",
+                            trempist.getUser().getName(),
+                            partOfRide.getRide().getID(),
+                            Schedule.getDayOfDateTime(partOfRide.getSchedule().getStartDateTime()),
+                            partOfRide.getSchedule().getStartTime());
+
+                    if(!gettingOnTrempists.contains(trempistName))
+                        gettingOnTrempists.add(trempistName);
+                }
+        );
+
+        startExistingDetails.setAllRiders(allRiders);
+        startExistingDetails.setOnTremp(gettingOnTrempists);
+        startStationNode.setStationDetailsDTO(startExistingDetails);
+    }
+
 
     private StationManager loadStations(Model graphModel, List<Station> allStations) {
         StationManager stationManager = new StationManager(StationNode::new);
@@ -304,13 +418,14 @@ public class DynamicMapController {
 
             allStationNodes.put(station, stationNode);
 
-            stationNode.setDetailsSupplier(() -> {
-                StationDetailsDTO sta =  new StationDetailsDTO(getRidersName());
-                sta.setDrives(getRidersName()); //needs to get riders on this station
-                sta.setOnTremp(getRidersName()); //needs to get on- Tremps on this station
-                sta.setOffTremp(getRidersName()); // needs to get off-tremp on this station
-                return sta;
-            });
+            stationNode.setStationDetailsDTO(new StationDetailsDTO());
+//            stationNode.setDetailsSupplier(() -> {
+//                StationDetailsDTO sta =  ;
+////                sta.setDrives(getRidersName()); //needs to get riders on this station
+////                sta.setOnTremp(getRidersName()); //needs to get on- Tremps on this station
+////                sta.setOffTremp(getRidersName()); // needs to get off-tremp on this station
+//                return sta;
+//            });
 
 
         });

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TrempistsManager {
 
@@ -58,6 +59,14 @@ public class TrempistsManager {
             justJoinedTrempists.put(onDay, new LinkedList<>());
 
         return justJoinedTrempists.get(onDay);
+    }
+
+    public List<Trempist> getJustJoinedTrempistsAllDays(){
+        return this.justJoinedTrempists.values().stream().flatMap(List::stream).distinct().collect(Collectors.toList());
+    }
+
+    public List<Trempist> getLeavingTrempistsAllDays() {
+        return this.leavingTrempists.values().stream().flatMap(List::stream).distinct().collect(Collectors.toList());
     }
 
     public List<Trempist> getLeavingTrempists(int onDay) {

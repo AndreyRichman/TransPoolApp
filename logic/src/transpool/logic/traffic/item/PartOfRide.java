@@ -10,14 +10,20 @@ import java.time.LocalDateTime;
 public class PartOfRide {
 
     private Road road;
+    private Ride ride;
     private int capacity;
     private TrempistsManager trempistsManager;
     private Schedule schedule;
 
-    public PartOfRide(Road road, int capacity) {
+    public PartOfRide(Ride ride, Road road, int capacity) {
         this.road = road;
         this.capacity = capacity;
         this.trempistsManager = new TrempistsManager();
+        this.ride = ride;
+    }
+
+    public Ride getRide() {
+        return ride;
     }
 
     public void addTrempist(Trempist trempist, int onDay) {

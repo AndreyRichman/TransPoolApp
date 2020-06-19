@@ -23,7 +23,7 @@
       <ListView fx:id="RidersListVIew" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
       <Label alignment="CENTER" prefHeight="17.0" prefWidth="358.0" styleClass="information-label" text="On-trempists" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Label alignment="CENTER" prefHeight="17.0" prefWidth="317.0" styleClass="information-label" text="Off-Trempists" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-      <ListView fx:id="RidersonTrempistsListVIew" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <ListView fx:id="onTrempistsListVIew" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <ListView fx:id="offTrempistsListVIew" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
     </children>
 </GridPane>

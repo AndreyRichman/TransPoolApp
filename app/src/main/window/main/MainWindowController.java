@@ -196,11 +196,14 @@ public class MainWindowController {
         this.mapComponentController.unMarkBlueMarkedEdges();
         this.mapComponentController.removeTextFromEdges();
         this.mapComponentController.unMarkAllStations();
+        this.mapComponentController.clearAllStationsData();
 
         markRidesStations(ridesRunningNow);
         updateMapRoadsByRides(ridesRunningNow);
         updateMapWithRideStatus(ridesRunningNow, currentDateTime);
         updateMapRoadsTextByRides(ridesRunningNow, currentDateTime);
+
+        ridesRunningNow.forEach(ride -> updateMapStationsWithPartsOfRides(ride.getPartsOfRide(), currentDateTime));
     }
 
     private void markRidesStations(List<Ride> ridesRunningNow) {
@@ -268,10 +271,12 @@ public class MainWindowController {
     public void switchLiveMapOff() {
         this.mapComponentController.toggleLiveMapOff();
         this.mapComponentController.unMarkAllStations();
+        this.mapComponentController.clearAllStationsData();
     }
 
     public void clearMap(){
         this.mapComponentController.clearMap();
+        this.mapComponentController.clearAllStationsData();
     }
 
     public void updateMapWithTrempRequest(TrempRequest selectedTremp) {
@@ -317,6 +322,10 @@ public class MainWindowController {
         this.mapComponentController.unMarkRedMarkedEdges();
         this.mapComponentController.unMarkBlueMarkedEdges();
         this.mapComponentController.removeTextFromEdges();
+
+
+        this.mapComponentController.clearAllStationsData();
+        selectedRide.getSubRides().forEach(sub -> updateMapStationsWithPartsOfRides(sub.getSelectedPartsOfRide(), null));
 //        this.mapComponentController.unMarkAllStations();
         updateMapRoadsBySubRides(selectedRide.getSubRides());
 
@@ -351,6 +360,15 @@ public class MainWindowController {
             });
         });
         this.mapComponentController.updateEdgesWithTexts(roadsWithTimes);
+        subRides.forEach(subRide -> updateMapStationsWithPartsOfRides(subRide.getSelectedPartsOfRide(), null));
+    }
+
+    public void clearMapStationsData(){
+        this.mapComponentController.clearAllStationsData();
+    }
+
+    public void updateMapStationsWithPartsOfRides(List<PartOfRide> allParts, LocalDateTime currentDateTIme){
+        allParts.forEach(part -> mapComponentController.updateStationsWindowWithPartOfRide(part, currentDateTIme));
     }
 
     private void hideRoads(List<Road> roadsToMark){

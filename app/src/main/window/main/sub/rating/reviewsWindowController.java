@@ -10,12 +10,8 @@ public class reviewsWindowController {
     @FXML
     private TextArea ReviewTextAreaValue;
 
-    public void show(){
-        System.out.println("Hii");
-    }
-
     public void setReviewTextAreaValue(List<Driver.Rank> str) {
         for(Driver.Rank rank : str)
-            ReviewTextAreaValue.appendText(String.format("stars: %d \ncomment:", rank.getStars()) + rank.getComment());
+            ReviewTextAreaValue.appendText(String.format("stars: %d \ncomment: ", rank.getStars()) + rank.getComment() + "\n");
     }
 }

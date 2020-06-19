@@ -1,5 +1,7 @@
 package main.window.main;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +14,11 @@ import javafx.stage.Stage;
 import main.window.main.sub.map.DynamicMapController;
 import main.window.main.sub.ride.RideSubWindowController;
 import main.window.main.sub.tremp.TrempSubWindowController;
+import main.window.main.task.assainTrempTask;
 import main.window.newride.createRideController;
 import main.window.newtremp.CreateTrempController;
 import main.window.newxmlload.newXmlLoadController;
+import tasks.loadFile.loadXmlFileTask;
 import transpool.logic.handler.LogicHandler;
 import transpool.logic.map.structure.Road;
 import transpool.logic.traffic.item.*;
@@ -63,7 +67,7 @@ public class MainWindowController {
     public void loadXmlFile() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
-        URL resource = getClass().getResource("../newxmlload/newXmlLoadWindow.fxml");
+        URL resource = getClass().getResource("/main/window/newxmlload/newXmlLoadWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
@@ -82,7 +86,7 @@ public class MainWindowController {
     public void createNewRide() throws IOException{
         Stage stage = new Stage();
         stage.setResizable(false);
-        URL resource = getClass().getResource("../newride/newRideWindow.fxml");
+        URL resource = getClass().getResource("/main/window/newride/newRideWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
@@ -126,7 +130,7 @@ public class MainWindowController {
     public void createNewTremp() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
-        URL resource = getClass().getResource("../newtremp/newTrempWindow.fxml");
+        URL resource = getClass().getResource("/main/window/newtremp/newTrempWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
@@ -301,13 +305,14 @@ public class MainWindowController {
     }
 
     public void assignSelectedTrempRequestToRide() {
-        TrempRequest trempRequest = this.trempComponentController.getSelectedTrempRequest();
-        RideForTremp rideForTremp = this.rideComponentController.getSelectedTremp();
 
-        if(trempRequest != null && rideForTremp != null){
-            rideForTremp.assignTrempRequest(trempRequest);
-            trempRequest.assignRides(rideForTremp);
-        }
+
+        Task<Boolean> currentRunningTask = new assainTrempTask(
+                this.trempComponentController.getSelectedTrempRequest(),
+                this.rideComponentController.getSelectedTremp());
+
+        //run the task in background thread
+        new Thread(currentRunningTask).start();
 
         this.trempComponentController.updateTrempsList();
         this.rideComponentController.updateRidesList();

@@ -96,7 +96,7 @@ public class TrempSubWindowController {
     void onClickRankRiderBtn(ActionEvent event) throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
-        URL resource = getClass().getResource("../rating/ratingWindow.fxml");
+        URL resource = getClass().getResource("/main/window/main/sub/rating/ratingWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
@@ -108,6 +108,7 @@ public class TrempSubWindowController {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.show();
+        RankRiderBtn.setVisible(false);
     }
 
     @FXML

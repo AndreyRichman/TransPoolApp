@@ -246,8 +246,13 @@ public class RideSubWindowController {
         initRideLabels(selectedRide);
 
         this.mainController.switchLiveMapOff();
-        if (selectedRide != null)
-            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>(){{add(selectedRide);}});
+        if (selectedRide != null) {
+            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>() {{
+                add(selectedRide);
+            }});
+            this.mainController.clearMapStationsData();
+            this.mainController.updateMapStationsWithPartsOfRides(selectedRide.getPartsOfRide(), null);
+        }
 
         this.mainController.updateMatchBtn();
     }

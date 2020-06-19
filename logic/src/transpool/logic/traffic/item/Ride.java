@@ -46,7 +46,7 @@ public class Ride {
         this.allStations.add(roads.get(0).getStartStation());
         roads.forEach( road -> {
             this.allStations.add(road.getEndStation());
-            PartOfRide partOfRide = new PartOfRide(road, carCapacity);
+            PartOfRide partOfRide = new PartOfRide(this, road, carCapacity);
             this.partsOfRide.add(partOfRide);
             this.mapFromStationToRoad.put(road.getStartStation(), partOfRide);
         });

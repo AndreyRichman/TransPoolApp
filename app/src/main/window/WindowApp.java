@@ -28,6 +28,7 @@ public class WindowApp extends Application implements Runnable{
         MainWindowController controller = loader.getController();
         //controller.setLogic(new LogicHandler());
         controller.setPrimaryStage(primaryStage);
+        primaryStage.setTitle("TransPool App");
 
         // set stage
         Scene scene = new Scene(root, 1050, 860);

@@ -1,5 +1,6 @@
 package main.window.map.component.details;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /*
@@ -10,12 +11,14 @@ public class StationDetailsDTO {
     private String name;
     private int x;
     private int y;
-    private List<String> drives;
+    private List<String> allRiders;
     private List<String> onTremp;
     private List<String> offTremp;
 
-    public StationDetailsDTO(List<String> drives) {
-        this.drives = drives;
+    public StationDetailsDTO() {
+        this.allRiders = new LinkedList<>();
+        this.onTremp = new LinkedList<>();
+        this.offTremp = new LinkedList<>();
     }
 
     public void setOnTremp(List<String> onTremp) {
@@ -34,8 +37,8 @@ public class StationDetailsDTO {
         return onTremp;
     }
 
-    public void setDrives(List<String> drives) {
-        this.drives = drives;
+    public void setAllRiders(List<String> allRiders) {
+        this.allRiders = allRiders;
     }
 
 
@@ -64,7 +67,13 @@ public class StationDetailsDTO {
         return name;
     }
 
-    public List<String> getDrives() {
-        return drives;
+    public List<String> getAllRiders() {
+        return allRiders;
+    }
+
+    public void clearAllLists() {
+        this.offTremp = new LinkedList<>();
+        this.onTremp = new LinkedList<>();
+        this.allRiders = new LinkedList<>();
     }
 }

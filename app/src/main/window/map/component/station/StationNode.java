@@ -77,7 +77,7 @@ public class StationNode extends AbstractCell {
             controller.setX(x);
             controller.setY(y);
             controller.setName(name);
-            controller.setDetailsDTOSupplier(detailsSupplier);
+            controller.setDetailsDTOSupplier(() -> this.stationDetailsDTO);
 
             return root;
         } catch (Exception e) {

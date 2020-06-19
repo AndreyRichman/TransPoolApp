@@ -25,7 +25,7 @@ public class StationDetailsController {
 
     public void setData(StationDetailsDTO data) {
         stationNameLabel.setText(String.format(STATION_NAME_FORMAT, data.getName(), String.valueOf(data.getX()), String.valueOf(data.getY())));
-        this.RidersListVIew.getItems().addAll(data.getDrives());
+        this.RidersListVIew.getItems().addAll(data.getAllRiders());
         this.onTrempistsListVIew.getItems().addAll(data.getOnTremp());
         this.offTrempistsListVIew.getItems().addAll(data.getOffTremp());
 

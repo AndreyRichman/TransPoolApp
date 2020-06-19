@@ -108,6 +108,7 @@ public class TrempSubWindowController {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.show();
+        RankRiderBtn.setVisible(false);
     }
 
     @FXML

@@ -175,40 +175,32 @@ public class TrempSubWindowController {
     }
 
     public void updateAccordingToSelectedTremp(){
-        if (this.mainController != null && !this.trempsListView.getSelectionModel().isEmpty()){
+        if (this.mainController != null && !this.trempsListView.getSelectionModel().isEmpty()) {
+
             int index = this.trempsListView.getSelectionModel().getSelectedIndex();
-            TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
+            if (index >= 0) {
+                TrempRequest selectedTremp = this.trempsVisibleInView.get(index);
 
 
-            this.mainController.switchLiveMapOff();
-            this.mainController.updateMapWithTrempRequest(selectedTremp);
+                this.mainController.switchLiveMapOff();
+                this.mainController.updateMapWithTrempRequest(selectedTremp);
 
-            if (selectedTremp.isNotAssignedToRides()){
+                if (selectedTremp.isNotAssignedToRides()) {
 //                lastSelectedIsAssigned.set(false);
-                RankRiderBtn.setVisible(false);
-                matchRideBtn.setVisible(true);
-            } else {
-                this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
-                matchRideBtn.setVisible(false);
-
-                if(!selectedTremp.assignedRideWasRanked())
-                    RankRiderBtn.setVisible(true);
-                else
                     RankRiderBtn.setVisible(false);
+                    matchRideBtn.setVisible(true);
+                } else {
+                    this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
+                    matchRideBtn.setVisible(false);
+
+                    if (!selectedTremp.assignedRideWasRanked())
+                        RankRiderBtn.setVisible(true);
+                    else
+                        RankRiderBtn.setVisible(false);
+                }
+
+                initTrempsLabel(selectedTremp);
             }
-//            if (!selectedTremp.assignedRideWasRanked()){
-//                this.mainController.showRideForTremp(selectedTremp.getSelectedRide());
-//                RankRiderBtn.setVisible(true);
-//                matchRideBtn.setVisible(false);
-//            } else { //ride is assigned and ranked
-//                lastSelectedIsAssigned.set(true);
-//                RankRiderBtn.setVisible(false);
-//                matchRideBtn.setVisible(false);
-//            }
-
-
-
-            initTrempsLabel(selectedTremp);
         }
     }
 

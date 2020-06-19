@@ -200,10 +200,12 @@ public class RideSubWindowController {
         cancelTrempsBtn.setVisible(true);
 
         int index = this.ridesListView.getSelectionModel().getSelectedIndex();
-        RideForTremp selectedRide = this.trempsVisibleInView.get(index);
+        if (index >=0) {
+            RideForTremp selectedRide = this.trempsVisibleInView.get(index);
 
-        updateTrempTextFields(selectedRide);
-        this.mainController.showRideForTremp(selectedRide);
+            updateTrempTextFields(selectedRide);
+            this.mainController.showRideForTremp(selectedRide);
+        }
     }
 
     private void updateTrempTextFields(RideForTremp selectedRide) {
@@ -242,19 +244,21 @@ public class RideSubWindowController {
         this.reviewsBtn.setVisible(true);
 
         int index = this.ridesListView.getSelectionModel().getSelectedIndex();
-        Ride selectedRide = this.ridesVisibleInView.get(index);
-        initRideLabels(selectedRide);
+        if (index >=0 ) {
+            Ride selectedRide = this.ridesVisibleInView.get(index);
+            initRideLabels(selectedRide);
 
-        this.mainController.switchLiveMapOff();
-        if (selectedRide != null) {
-            this.mainController.updateMapRoadsByRides(new LinkedList<Ride>() {{
-                add(selectedRide);
-            }});
-            this.mainController.clearMapStationsData();
-            this.mainController.updateMapStationsWithPartsOfRides(selectedRide.getPartsOfRide(), null);
+            this.mainController.switchLiveMapOff();
+            if (selectedRide != null) {
+                this.mainController.updateMapRoadsByRides(new LinkedList<Ride>() {{
+                    add(selectedRide);
+                }});
+                this.mainController.clearMapStationsData();
+                this.mainController.updateMapStationsWithPartsOfRides(selectedRide.getPartsOfRide(), null);
+            }
+
+            this.mainController.updateMatchBtn();
         }
-
-        this.mainController.updateMatchBtn();
     }
 
     private void updateTrempButtons() {

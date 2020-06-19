@@ -57,7 +57,7 @@ public class StationController {
             stationDetailsDTO.setY(y);
 
             FXMLLoader fxmlLoader = new FXMLLoader();
-            URL url = getClass().getResource("../../details/visual/StationDetailsView.fxml");
+            URL url = getClass().getResource("/main/window/map/component/details/visual/StationDetailsView.fxml");
             fxmlLoader.setLocation(url);
             GridPane root = fxmlLoader.load(url.openStream());
 

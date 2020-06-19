@@ -64,7 +64,7 @@ public class MainWindowController {
     public void loadXmlFile() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
-        URL resource = getClass().getResource("../newxmlload/newXmlLoadWindow.fxml");
+        URL resource = getClass().getResource("/main/window/newxmlload/newXmlLoadWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
@@ -83,7 +83,7 @@ public class MainWindowController {
     public void createNewRide() throws IOException{
         Stage stage = new Stage();
         stage.setResizable(false);
-        URL resource = getClass().getResource("../newride/newRideWindow.fxml");
+        URL resource = getClass().getResource("/main/window/newride/newRideWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
@@ -127,7 +127,7 @@ public class MainWindowController {
     public void createNewTremp() throws IOException {
         Stage stage = new Stage();
         stage.setResizable(false);
-        URL resource = getClass().getResource("../newtremp/newTrempWindow.fxml");
+        URL resource = getClass().getResource("/main/window/newtremp/newTrempWindow.fxml");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(resource);
         Parent root = loader.load();
